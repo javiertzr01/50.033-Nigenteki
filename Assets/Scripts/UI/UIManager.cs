@@ -6,6 +6,8 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
+    public LobbyVariables lobbyVariables;
+
     [SerializeField]
     private Button startHostButton;
 
@@ -33,5 +35,10 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         //playersInGameText.text = $"Players in game: {LobbyManager.Instance.playersInGame}";
+    }
+
+    public void UpdatePlayersInLobbyText()
+    {
+        playersInGameText.text = $"Players in game: {lobbyVariables.playersInLobby.Value}";
     }
 }
