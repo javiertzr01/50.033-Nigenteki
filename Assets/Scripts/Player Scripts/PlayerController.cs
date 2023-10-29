@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Unity.Netcode;
 
 public class PlayerController : NetworkBehaviour
 {
+
+    public UnityEvent cameraFollow;
 
     public PlayerVariables playerVariables;
     float maxHealth;
@@ -27,14 +30,19 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (!IsOwner && !IsClient) return;
+        GetCameraFollow();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner && !IsClient) return;
+
         Movement();
         Look();
+        
     }
 
     void Movement()
@@ -58,5 +66,10 @@ public class PlayerController : NetworkBehaviour
     public void LookCheck(Vector2 value)
     {
         mousePos = value;
+    }
+
+    public void GetCameraFollow()
+    {
+        cameraFollow.Invoke();
     }
 }
