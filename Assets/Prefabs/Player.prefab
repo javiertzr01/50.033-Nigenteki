@@ -418,7 +418,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
-  rightArm: {fileID: 6033170929718270675}
+  rightArm: {fileID: 2414511880055015545}
   leftArm: {fileID: 3559073833464222868}
 --- !u!1 &5009592937786224158
 GameObject:
@@ -496,7 +496,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5009592939184010621}
   - component: {fileID: 5009592939184010620}
-  - component: {fileID: 6033170929718270675}
+  - component: {fileID: 2414511880055015545}
   m_Layer: 0
   m_Name: Right Arm
   m_TagString: Untagged
@@ -571,7 +571,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6033170929718270675
+--- !u!114 &2414511880055015545
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -580,12 +580,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5009592939184010618}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651faf87a4dd33442a3d4cff2821e764, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d7faffd45486fa4d9cb4c561dc8e548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldPrefab: {fileID: 3768260979392352733, guid: 9a269261f6d3fcb40b6805a114d93186, type: 3}
   firePoint: {fileID: 5742347928002638424}
-  bulletPrefab: {fileID: 3761020491583631807, guid: 73c914829cf9f844e87f6ec569ad8eec, type: 3}
-  bulletForce: 20
+  shieldHealth: 100
 --- !u!1 &5009592939212433363
 GameObject:
   m_ObjectHideFlags: 0

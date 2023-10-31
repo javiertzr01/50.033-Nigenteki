@@ -17,7 +17,6 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDir;
     private Vector2 mousePos;
-
     public BasicWeapon rightArm;
     public BasicWeapon leftArm;
 
