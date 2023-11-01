@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public abstract class Arm : MonoBehaviour
+public abstract class Arm : NetworkBehaviour
 {
     public ArmVariables armVariable;
 

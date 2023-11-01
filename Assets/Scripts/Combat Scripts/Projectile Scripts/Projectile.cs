@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public abstract class Projectile : MonoBehaviour
+public abstract class Projectile : NetworkBehaviour
 {
     private float _maxDistance = 20f;
 

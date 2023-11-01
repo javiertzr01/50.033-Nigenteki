@@ -24,7 +24,6 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     private HashSet<Vector2Int> floorPositions = null;
 
-
     protected override void RunProceduralGeneration()
     {
         nodePositions = RunRTT();

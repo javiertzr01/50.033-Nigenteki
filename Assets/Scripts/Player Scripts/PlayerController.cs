@@ -27,6 +27,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private GameObject baseArmPrefab;
 
+    private bool rightArmBasicUse = false;
+    private bool leftArmBasicUse = false;
+
     private void Awake()
     {
         maxHealth = playerVariables.maxHealth;
@@ -71,7 +74,8 @@ public class PlayerController : NetworkBehaviour
 
         Movement();
         Look();
-        
+        LeftArmBasicAttack();
+        RightArmBasicAttack();
     }
 
     void Movement()
@@ -104,10 +108,13 @@ public class PlayerController : NetworkBehaviour
 
     public void LeftArmBasicAttackCheck(bool value)
     {
-    	if (value)
-        {
-        	leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
-        }
+        leftArmBasicUse = value;
+    }
+    void LeftArmBasicAttack()
+    {
+        if (!leftArmBasicUse) return;
+
+        leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
     }
 
     public void LeftArmSkillCheck(bool value)
@@ -128,10 +135,13 @@ public class PlayerController : NetworkBehaviour
 
     public void RightArmBasicAttackCheck(bool value)
     {
-    	if (value)
-        {
-        	rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
-        }
+        rightArmBasicUse = value;
+    }
+    void RightArmBasicAttack()
+    {
+        if (!rightArmBasicUse) return;
+
+        rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
     }
 
     public void RightArmSkillCheck(bool value)
