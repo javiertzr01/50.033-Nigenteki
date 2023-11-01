@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicShooter : BasicWeapon
+public class Silkworm : BasicWeapon
 {
     public Transform firePoint;
     public GameObject bulletPrefab;
@@ -10,7 +10,7 @@ public class BasicShooter : BasicWeapon
 
     void Awake()
     {
-        bulletForce = combatSO.basicShooterSpeed;
+        bulletForce = combatSO.silkwormBulletSpeed;
     }
 
     void Update()

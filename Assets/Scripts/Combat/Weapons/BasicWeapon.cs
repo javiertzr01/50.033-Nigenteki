@@ -4,5 +4,6 @@ using UnityEngine;
 
 public abstract class BasicWeapon : MonoBehaviour
 {
+    public CombatSO combatSO;
     public abstract void Shoot();
 }

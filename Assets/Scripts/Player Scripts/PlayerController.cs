@@ -17,8 +17,8 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDir;
     private Vector2 mousePos;
-    public BasicWeapon rightArm;
-    public BasicWeapon leftArm;
+    private BasicWeapon rightArm;
+    private BasicWeapon leftArm;
 
     private void Awake()
     {
@@ -26,6 +26,14 @@ public class PlayerController : NetworkBehaviour
         moveSpeed = playerVariables.moveSpeed;
 
         currentHealth = playerVariables.currentHealth;
+
+
+        Transform rightArmHolder = transform.Find("Right Arm Holder");
+        Transform leftArmHolder = transform.Find("Left Arm Holder");
+        rightArm = rightArmHolder.GetChild(0).gameObject.GetComponent<BasicWeapon>();
+        leftArm = leftArmHolder.GetChild(0).gameObject.GetComponent<BasicWeapon>();
+
+
     }
 
     // Start is called before the first frame update

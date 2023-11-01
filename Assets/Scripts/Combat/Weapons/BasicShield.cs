@@ -6,10 +6,15 @@ public class BasicShield : BasicWeapon
 {
     public GameObject shieldPrefab;
     public Transform firePoint;
-    public int shieldHealth = 100;
+    private int shieldHealth;
 
     // Track the currently active shield
     private GameObject currentShield;
+
+    void Awake()
+    {
+        shieldHealth = combatSO.basicShieldHealth;
+    }
 
     void Update()
     {
