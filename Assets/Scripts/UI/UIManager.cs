@@ -1,0 +1,76 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using Unity.Netcode;
+using TMPro;
+
+public class UIManager : MonoBehaviour
+{
+    public LobbyVariables lobbyVariables;
+
+    [SerializeField]
+    private Button startHostButton;
+
+    [SerializeField]
+    private Button startServerButton;
+
+    [SerializeField]
+    private Button startClientButton;
+
+    [SerializeField]
+    private TextMeshProUGUI playersInGameText;
+
+    [SerializeField]
+    private TMP_InputField joinCodeInputField;
+
+    private Logger logger;
+
+    private void Awake()
+    {
+        Cursor.visible = true;
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+
+        startServerButton?.onClick.AddListener(() =>
+        {
+            if (NetworkManager.Singleton.StartServer())
+            {
+                Logger.Instance.LogInfo("Server Started");
+            }
+        });
+
+        startHostButton?.onClick.AddListener(async () =>
+        {
+            if (RelayManager.Instance.IsRelayEnabled)
+                await RelayManager.Instance.SetupRelay();
+
+            if (NetworkManager.Singleton.StartHost())
+                Logger.Instance.LogInfo("Host Started");
+
+        });
+
+        startClientButton?.onClick.AddListener(async () =>
+        {
+            if (RelayManager.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCodeInputField.text))
+                await RelayManager.Instance.JoinRelay(joinCodeInputField.text);
+
+            if (NetworkManager.Singleton.StartClient())
+                Logger.Instance.LogInfo("Client Started");
+        });
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        //playersInGameText.text = $"Players in game: {LobbyManager.Instance.playersInGame}";
+    }
+
+    public void UpdatePlayersInLobbyText()
+    {
+        playersInGameText.text = $"Players in game: {lobbyVariables.playersInLobby.Value}";
+    }
+}
