@@ -17,23 +17,42 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDir;
     private Vector2 mousePos;
-    private BasicWeapon rightArm;
-    private BasicWeapon leftArm;
+
+    [SerializeField]
+    private GameObject leftArmHolder;
+
+    [SerializeField]
+    private GameObject rightArmHolder;
+
+    [SerializeField]
+    private GameObject baseArmPrefab;
 
     private void Awake()
     {
         maxHealth = playerVariables.maxHealth;
         moveSpeed = playerVariables.moveSpeed;
-
         currentHealth = playerVariables.currentHealth;
 
 
-        Transform rightArmHolder = transform.Find("Right Arm Holder");
-        Transform leftArmHolder = transform.Find("Left Arm Holder");
-        rightArm = rightArmHolder.GetChild(0).gameObject.GetComponent<BasicWeapon>();
-        leftArm = leftArmHolder.GetChild(0).gameObject.GetComponent<BasicWeapon>();
+        // Instantiate and Initialize Basic Arm as the child to the Arm Holder
+        DestroyAllChildObjects(leftArmHolder);
+        DestroyAllChildObjects(rightArmHolder);
+        Instantiate(baseArmPrefab, leftArmHolder.transform);
+        Instantiate(baseArmPrefab, rightArmHolder.transform);
 
+    }
 
+    private void DestroyAllChildObjects(GameObject parentGameObject)
+    {
+        // Check if the parent GameObject has any children
+        if (parentGameObject.transform.childCount > 0)
+        {
+            // Loop through all child objects and destroy them
+            foreach (Transform child in parentGameObject.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -52,7 +71,7 @@ public class PlayerController : NetworkBehaviour
 
         Movement();
         Look();
-
+        
     }
 
     void Movement()
@@ -64,12 +83,7 @@ public class PlayerController : NetworkBehaviour
     {
         Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
-
-        // Rotation of character towards mouse
-        // 0 Degrees = Facing Right. Since Player Sprite by Default faces up, we reduce the Euler angle by 90 degrees
-        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-        transform.eulerAngles = new Vector3(0, 0, angle);
-        // Debug.Log(angle);
+        transform.up = lookDir;
 
     }
 
@@ -83,30 +97,56 @@ public class PlayerController : NetworkBehaviour
         mousePos = value;
     }
 
-
-    public void LeftArmCheck(bool value)
-    {
-        if (value)
-        {
-            Debug.Log("Left Arm Trigger");
-            leftArm.Shoot();
-        }
-    }
-
-
-    public void RightArmCheck(bool value)
-    {
-        if (value)
-        {
-            Debug.Log("Right Arm Trigger");
-            rightArm.Shoot();
-        }
-    }
-
-
     public void GetCameraFollow()
     {
         cameraFollow.Invoke();
     }
 
+    public void LeftArmBasicAttackCheck(bool value)
+    {
+    	if (value)
+        {
+        	leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+        }
+    }
+
+    public void LeftArmSkillCheck(bool value)
+    {
+        if (value)
+        {
+            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkill();
+        }
+    }
+
+    public void LeftArmUltimateCheck(bool value)
+    {
+        if (value)
+        {
+            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
+        }
+    }
+
+    public void RightArmBasicAttackCheck(bool value)
+    {
+    	if (value)
+        {
+        	rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+        }
+    }
+
+    public void RightArmSkillCheck(bool value)
+    {
+        if (value)
+        {
+            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkill();
+        }
+    }
+
+    public void RightArmUltimateCheck(bool value)
+    {
+        if (value)
+        {
+            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
+        }
+    }
 }
