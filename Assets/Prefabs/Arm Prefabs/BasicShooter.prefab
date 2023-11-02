@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 1294338583857297939}
   - component: {fileID: 7311356241214326498}
   m_Layer: 0
-  m_Name: BasicArm
+  m_Name: BasicShooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

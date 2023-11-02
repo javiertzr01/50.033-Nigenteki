@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ArmVariables", menuName = "ScriptableObjects/ArmVariables", order = 2)]
+[CreateAssetMenu(fileName = "ArmVariables", menuName = "ScriptableObjects/Combat/ArmVariables", order = 3)]
 public class ArmVariables : ScriptableObject
 {
 
@@ -13,5 +13,8 @@ public class ArmVariables : ScriptableObject
     public float skillCoolDown;
     public float ultimateForce;
     public int ultimateCharge;
+
+    [Space(10f), Header("Shield")]
+    public float shieldMaxHealth;
 
 }

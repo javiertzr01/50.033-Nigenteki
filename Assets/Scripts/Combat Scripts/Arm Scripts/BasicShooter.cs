@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicArm : Arm
+public class BasicShooter : Arm
 {
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;

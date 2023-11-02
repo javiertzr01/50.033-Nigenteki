@@ -9,9 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c07e014a5f8d1847a77afcde0787715, type: 3}
-  m_Name: BasicProjectileVariables
+  m_Script: {fileID: 11500000, guid: 371915ed5e35a6a4fa025f598048d0a5, type: 3}
+  m_Name: BasicShooterVariables
   m_EditorClassIdentifier: 
-  projectileName: Basic Projectile
-  damage: 10
-  maxDistance: 20
+  armName: Basic Shooter
+  baseForce: 10
+  baseFireRate: 0.1
+  skillForce: 15
+  skillCoolDown: 30
+  ultimateForce: 20
+  ultimateCharge: 0
+  shieldMaxHealth: 0

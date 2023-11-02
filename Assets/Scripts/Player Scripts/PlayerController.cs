@@ -25,7 +25,9 @@ public class PlayerController : NetworkBehaviour
     private GameObject rightArmHolder;
 
     [SerializeField]
-    private GameObject baseArmPrefab;
+    private GameObject leftArmPrefab;
+    [SerializeField]
+    private GameObject rightArmPrefab;
 
     private void Awake()
     {
@@ -37,8 +39,8 @@ public class PlayerController : NetworkBehaviour
         // Instantiate and Initialize Basic Arm as the child to the Arm Holder
         DestroyAllChildObjects(leftArmHolder);
         DestroyAllChildObjects(rightArmHolder);
-        Instantiate(baseArmPrefab, leftArmHolder.transform);
-        Instantiate(baseArmPrefab, rightArmHolder.transform);
+        Instantiate(leftArmPrefab, leftArmHolder.transform);
+        Instantiate(rightArmPrefab, rightArmHolder.transform);
 
     }
 
