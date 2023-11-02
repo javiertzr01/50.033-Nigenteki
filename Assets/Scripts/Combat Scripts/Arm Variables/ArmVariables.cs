@@ -7,17 +7,11 @@ public class ArmVariables : ScriptableObject
 {
 
     public string armName;
-    
-    public float baseDamage;
     public float baseForce;
     public float baseFireRate;
-
-    public float skillDamage;
     public float skillForce;
-    public float skillFireRate;
-
-    public float ultimateDamage;
+    public float skillCoolDown;
     public float ultimateForce;
-    public float ultimateFireRate;
+    public int ultimateCharge;
 
 }

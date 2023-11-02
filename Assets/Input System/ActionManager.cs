@@ -20,20 +20,20 @@ public class ActionManager : MonoBehaviour
             Vector2 moveDir = context.ReadValue<Vector2>();
             movement.Invoke(moveDir);
 
-            Debug.Log("MOVING");
+            // Debug.Log("MOVING");
         }
         else if (context.performed)
         {
             Vector2 moveDir = context.ReadValue<Vector2>();
             movement.Invoke(moveDir);
 
-            Debug.Log("MOVING");
+            // Debug.Log("MOVING");
         }
         else if (context.canceled)
         {
             movement.Invoke(new Vector2(0, 0));
 
-            Debug.Log("STOPPED MOVING");
+            // Debug.Log("STOPPED MOVING");
         }
     }
 
@@ -44,21 +44,21 @@ public class ActionManager : MonoBehaviour
             Vector2 mousePos = context.ReadValue<Vector2>();
             look.Invoke(mousePos);
 
-            Debug.Log("MOVING");
+            // Debug.Log("MOVING");
         }
         else if (context.performed)
         {
             Vector2 mousePos = context.ReadValue<Vector2>();
             look.Invoke(mousePos);
 
-            Debug.Log("MOVING");
+            // Debug.Log("MOVING");
         }
         else if (context.canceled)
         {
             Vector2 mousePos = context.ReadValue<Vector2>();
             look.Invoke(mousePos);
 
-            Debug.Log("STOPPED MOVING");
+            // Debug.Log("STOPPED MOVING");
         }
     }
 
@@ -72,13 +72,13 @@ public class ActionManager : MonoBehaviour
         {
             rightArmUse.Invoke(true);
 
-            Debug.Log("USING RIGHT ARM");
+            // Debug.Log("USING RIGHT ARM");
         }
         else if (context.canceled)
         {
             rightArmUse.Invoke(false);
 
-            Debug.Log("STOP USING RIGHT ARM");
+            // Debug.Log("STOP USING RIGHT ARM");
         }
     }
 
@@ -92,25 +92,25 @@ public class ActionManager : MonoBehaviour
         {
             leftArmUse.Invoke(true);
 
-            Debug.Log("USING LEFT ARM");
+            // Debug.Log("USING LEFT ARM");
         }
         else if (context.canceled)
         {
             leftArmUse.Invoke(false);
 
-            Debug.Log("STOP USING LEFT ARM");
+            // Debug.Log("STOP USING LEFT ARM");
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

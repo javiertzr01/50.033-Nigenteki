@@ -29,14 +29,13 @@ public class BasicArm : Arm
 
     public override void CastBasicAttack()
     {
-        if(Time.time >= nextBasicFireTime)
+        if (Time.time >= nextBasicFireTime)
         {
             // Implement the BasicArm's basic attack
-            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + armVariable.baseDamage);
             GameObject firedBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectile.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
 
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
@@ -45,14 +44,14 @@ public class BasicArm : Arm
     public override void CastSkill()
     {
         // Implement the BasicArm's skill
-        Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + armVariable.skillDamage);
+        // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + armVariable.skillDamage);
         GameObject shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
     }
 
     public override void CastUltimate()
     {
         // Implement the BasicArm's ultimate skill
-        Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);
+        // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);
         GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
     }
 }
