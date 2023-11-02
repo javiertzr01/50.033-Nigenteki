@@ -3,7 +3,9 @@ guid: a0eed48df925d55409406712de45a670
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - generatedMapVariables: {fileID: 11400000, guid: 122e76bfe73197a4cbf4432d288466b9, type: 2}
+  - tilemapVisualizer: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

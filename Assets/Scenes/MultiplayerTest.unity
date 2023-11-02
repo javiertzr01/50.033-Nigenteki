@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 54001361}
   - component: {fileID: 54001362}
+  - component: {fileID: 54001363}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -168,6 +169,26 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 2
   m_CellSwizzle: 0
+--- !u!114 &54001363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54001360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1119985432
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &110645626
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,6 +200,7 @@ GameObject:
   - component: {fileID: 110645628}
   - component: {fileID: 110645627}
   - component: {fileID: 110645629}
+  - component: {fileID: 110645630}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -214,10 +236,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  visualizeMap:
+  loadMap:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 555550613a1a9724ea764c1a9170cdc8, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[UnityEngine.Object, UnityEngine
+        m_MethodName: Raise
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  saveMap:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: d22d5663443f434488679d419696750f, type: 2}
         m_TargetAssemblyTypeName: GameEvent`1[[UnityEngine.Object, UnityEngine
         m_MethodName: Raise
         m_Mode: 2
@@ -277,6 +314,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &110645630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110645626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3367038852
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &193647352
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,8 +652,10 @@ GameObject:
   m_Component:
   - component: {fileID: 309026501}
   - component: {fileID: 309026502}
+  - component: {fileID: 309026505}
   - component: {fileID: 309026503}
   - component: {fileID: 309026504}
+  - component: {fileID: 309026506}
   m_Layer: 0
   m_Name: RTTGenerator
   m_TagString: Untagged
@@ -631,6 +690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0eed48df925d55409406712de45a670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  generatedMapVariables: {fileID: 11400000, guid: 122e76bfe73197a4cbf4432d288466b9, type: 2}
   tilemapVisualizer: {fileID: 1749435363}
   startPosition: {x: 0, y: 0}
   viewNodes: 0
@@ -685,7 +745,55 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 309026502}
         m_TargetAssemblyTypeName: AbstractProceduralGenerator, Assembly-CSharp
-        m_MethodName: VisualizeMap
+        m_MethodName: LoadMapForClient
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &309026505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309026500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2718469464
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &309026506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309026500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de1f26a12be96124e8a7f83743267c15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: d22d5663443f434488679d419696750f, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 309026502}
+        m_TargetAssemblyTypeName: AbstractProceduralGenerator, Assembly-CSharp
+        m_MethodName: SaveMapInstance
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1056,6 +1164,7 @@ GameObject:
   - component: {fileID: 708006135}
   - component: {fileID: 708006137}
   - component: {fileID: 708006136}
+  - component: {fileID: 708006138}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -1165,6 +1274,26 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &708006138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708006134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4149201039
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &709449094
 GameObject:
   m_ObjectHideFlags: 0
@@ -1741,6 +1870,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1222004772}
+  - component: {fileID: 1222004773}
   m_Layer: 0
   m_Name: Map Generator
   m_TagString: Untagged
@@ -1766,6 +1896,26 @@ Transform:
   - {fileID: 54001361}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1222004773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222004771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 761008201
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1312086331
 GameObject:
   m_ObjectHideFlags: 0
@@ -2202,6 +2352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1749435364}
   - component: {fileID: 1749435363}
+  - component: {fileID: 1749435365}
   m_Layer: 0
   m_Name: TilemapVisualizer
   m_TagString: Untagged
@@ -2238,6 +2389,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1222004772}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1749435365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749435362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1180471640
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1751751534
 GameObject:
   m_ObjectHideFlags: 0

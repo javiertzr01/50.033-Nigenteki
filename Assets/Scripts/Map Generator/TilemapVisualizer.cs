@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.Tilemaps;
 
-public class TilemapVisualizer : MonoBehaviour
+public class TilemapVisualizer : NetworkBehaviour
 {
     [SerializeField]
     private Tilemap floorTilemap;
@@ -15,7 +16,7 @@ public class TilemapVisualizer : MonoBehaviour
         PaintTiles(floorPositions, floorTilemap, floorTile);
     }
 
-    private void PaintTiles(IEnumerable<Vector2Int> positions, Tilemap tilemap, TileBase tile)
+    public void PaintTiles(IEnumerable<Vector2Int> positions, Tilemap tilemap, TileBase tile)
     {
         foreach(var position in positions)
         {
@@ -23,7 +24,7 @@ public class TilemapVisualizer : MonoBehaviour
         }
     }
 
-    private void PaintSingleTile(Tilemap tilemap, TileBase tile, Vector2Int position)
+    public void PaintSingleTile(Tilemap tilemap, TileBase tile, Vector2Int position)
     {
         var tilePosition = tilemap.WorldToCell((Vector3Int)position);
         tilemap.SetTile(tilePosition, tile);

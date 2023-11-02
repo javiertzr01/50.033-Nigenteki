@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class RTTGenerator : AbstractProceduralGenerator
 {
@@ -14,7 +16,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     [SerializeField]
     protected int maxLength = 10;
 
-    private HashSet<Vector2Int> nodePositions = null;
+    public HashSet<Vector2Int> nodePositions = null;
 
     // RandomWalkBased
     [SerializeField]
@@ -22,15 +24,17 @@ public class RTTGenerator : AbstractProceduralGenerator
     [SerializeField]
     public int walkLength = 50;
 
-    private HashSet<Vector2Int> floorPositions = null;
+    public HashSet<Vector2Int> floorPositions = null;
 
-    protected override void RunProceduralGeneration()
+    private HashSet<Vector2Int> instanceFP = null;
+
+    public override void RunProceduralGeneration()
     {
         nodePositions = RunRTT();
         floorPositions = RunRandomWalk(nodePositions);
     }
 
-    protected override void ViewMap()
+    public override void ViewMap()
     {
         if (viewNodes && nodePositions != null)
         {
@@ -42,9 +46,26 @@ public class RTTGenerator : AbstractProceduralGenerator
         }
     }
 
+    public override void SaveMap()
+    {
+        foreach (Vector2Int position in floorPositions)
+        {
+            generatedMapVariables.savedFloorPositions.Add(position);
+        }
+    }
+    public override void LoadMap()
+    {
+        HashSet<Vector2Int> loadedMap = new HashSet<Vector2Int>();
 
+        foreach (Vector2Int position in generatedMapVariables.savedFloorPositions)
+        {
+            loadedMap.Add(position); 
+        }
 
-    protected HashSet<Vector2Int> RunRTT()
+        tilemapVisualizer.PaintFloorTiles(loadedMap);
+    }
+
+    public HashSet<Vector2Int> RunRTT()
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
         root = new ProceduralGenerationAlgorithms.RTTNode(Vector2Int.zero);
@@ -59,12 +80,12 @@ public class RTTGenerator : AbstractProceduralGenerator
         return root.GetAllNodePositions();
     }
 
-    private Vector2Int RandomSample()
+    public Vector2Int RandomSample()
     {
         return new Vector2Int(Random.Range(-worldSize.x / 2, worldSize.x / 2), Random.Range(-worldSize.y / 2, worldSize.y / 2));
     }
 
-    protected HashSet<Vector2Int> RunRandomWalk(HashSet<Vector2Int> nodePosition)
+    public HashSet<Vector2Int> RunRandomWalk(HashSet<Vector2Int> nodePosition)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
         foreach(Vector2Int startPosition in nodePosition)

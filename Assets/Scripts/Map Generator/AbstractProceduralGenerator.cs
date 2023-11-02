@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public abstract class AbstractProceduralGenerator : MonoBehaviour
+public abstract class AbstractProceduralGenerator : NetworkBehaviour
 {
+    // Generated Map Storage
+    public GeneratedMapVariables generatedMapVariables;
+
     [SerializeField]
     protected TilemapVisualizer tilemapVisualizer = null;
     [SerializeField]
@@ -24,6 +28,20 @@ public abstract class AbstractProceduralGenerator : MonoBehaviour
         ViewMap();
     }
 
-    protected abstract void RunProceduralGeneration();
-    protected abstract void ViewMap();
+    public void SaveMapInstance()
+    {
+        SaveMap();
+    }
+
+    public void LoadMapForClient()
+    {
+        tilemapVisualizer.Clear();
+        LoadMap();
+    }
+
+    public abstract void RunProceduralGeneration();
+    public abstract void ViewMap();
+
+    public abstract void SaveMap();
+    public abstract void LoadMap();
 }

@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c270dd5791df2c48b1e5ba35210528a, type: 3}
-  m_Name: VisualizeMap
+  m_Script: {fileID: 11500000, guid: 90bbab2f57f777b4f985f4760fb95b76, type: 3}
+  m_Name: GeneratedMapVariables
   m_EditorClassIdentifier: 
