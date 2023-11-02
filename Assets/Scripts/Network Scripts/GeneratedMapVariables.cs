@@ -6,5 +6,5 @@ using Unity.Netcode;
 [CreateAssetMenu(fileName = "GeneratedMapVariables", menuName = "NetworkScriptableObjects/GeneratedMapVariables", order = 1)]
 public class GeneratedMapVariables : ScriptableObject
 {
-    public NetworkList<Vector2Int> savedFloorPositions = new NetworkList<Vector2Int>();
+    public NetworkVariable<HashSet<Vector2Int>> savedFloorPositions = new NetworkVariable<HashSet<Vector2Int>>();
 }

@@ -5,8 +5,7 @@ using Unity.Netcode;
 
 public abstract class AbstractProceduralGenerator : NetworkBehaviour
 {
-    // Generated Map Storage
-    public GeneratedMapVariables generatedMapVariables;
+    public NetworkStore netStore;
 
     [SerializeField]
     protected TilemapVisualizer tilemapVisualizer = null;

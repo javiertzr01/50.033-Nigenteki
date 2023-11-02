@@ -26,8 +26,6 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public HashSet<Vector2Int> floorPositions = null;
 
-    private HashSet<Vector2Int> instanceFP = null;
-
     public override void RunProceduralGeneration()
     {
         nodePositions = RunRTT();
@@ -48,21 +46,11 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public override void SaveMap()
     {
-        foreach (Vector2Int position in floorPositions)
-        {
-            generatedMapVariables.savedFloorPositions.Add(position);
-        }
+         
     }
     public override void LoadMap()
     {
-        HashSet<Vector2Int> loadedMap = new HashSet<Vector2Int>();
-
-        foreach (Vector2Int position in generatedMapVariables.savedFloorPositions)
-        {
-            loadedMap.Add(position); 
-        }
-
-        tilemapVisualizer.PaintFloorTiles(loadedMap);
+        
     }
 
     public HashSet<Vector2Int> RunRTT()
