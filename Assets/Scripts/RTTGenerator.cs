@@ -15,6 +15,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     protected int maxLength = 10;
 
     private HashSet<Vector2Int> nodePositions = null;
+    private HashSet<Vector2Int> pathPositions = null;
 
     // RandomWalkBased
     [SerializeField]
@@ -27,7 +28,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     protected override void RunProceduralGeneration()
     {
-        nodePositions = RunRTT();
+        (nodePositions, pathPositions) = RunRTT();
         floorPositions = RunRandomWalk(nodePositions);
     }
 
@@ -37,16 +38,20 @@ public class RTTGenerator : AbstractProceduralGenerator
         {
             tilemapVisualizer.PaintFloorTiles(nodePositions);
         }
+        else if (viewPaths && pathPositions != null)
+        {
+            tilemapVisualizer.PaintFloorTiles(pathPositions);
+        }
         else if (floorPositions != null)
         {
             tilemapVisualizer.PaintFloorTiles(floorPositions);
+            WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
         }
-        WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
     }
 
 
 
-    protected HashSet<Vector2Int> RunRTT()
+    protected (HashSet<Vector2Int>, HashSet<Vector2Int>) RunRTT()
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
         root = new ProceduralGenerationAlgorithms.RTTNode(Vector2Int.zero);
@@ -58,7 +63,7 @@ public class RTTGenerator : AbstractProceduralGenerator
             (ProceduralGenerationAlgorithms.RTTNode closest, int closestDist) = root.GetClosest(newPosition);
             closest.Grow(newPosition, maxLength);
         }
-        return root.GetAllNodePositions();
+        return (root.GetAllNodePositions(), root.GetAllPathPositions());
     }
 
     private Vector2Int RandomSample()
