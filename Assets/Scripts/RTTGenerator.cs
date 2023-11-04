@@ -41,6 +41,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         {
             tilemapVisualizer.PaintFloorTiles(floorPositions);
         }
+        WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
     }
 
 
