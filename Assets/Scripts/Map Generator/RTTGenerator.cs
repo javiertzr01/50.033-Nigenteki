@@ -46,11 +46,22 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public override void SaveMap()
     {
-         
+        netStore.generatedMapData.Value = new GeneratedMapData
+        {
+            Size = floorPositions.Count(),
+            FloorPositions = floorPositions.ToArray(),
+        };
+
+        Logger.Instance.LogInfo("Saved map info: " + netStore.generatedMapData.Value.FloorPositions.Count().ToString());
     }
+
+
     public override void LoadMap()
     {
-        
+        HashSet<Vector2Int> currentFloorPositions = netStore.generatedMapData.Value.FloorPositions.ToHashSet();
+        Logger.Instance.LogInfo("Loading map info: " + currentFloorPositions.Count().ToString());
+
+        tilemapVisualizer.PaintFloorTiles(currentFloorPositions);
     }
 
     public HashSet<Vector2Int> RunRTT()

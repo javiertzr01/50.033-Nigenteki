@@ -37,11 +37,12 @@ public class PlayerController : NetworkBehaviour
         currentHealth = playerVariables.currentHealth;
 
 
-        // Instantiate and Initialize Basic Arm as the child to the Arm Holder
+        /*// Instantiate and Initialize Basic Arm as the child to the Arm Holder
+        if (!IsOwner && !IsClient) return;
         DestroyAllChildObjects(leftArmHolder);
         DestroyAllChildObjects(rightArmHolder);
         Instantiate(baseArmPrefab, leftArmHolder.transform);
-        Instantiate(baseArmPrefab, rightArmHolder.transform);
+        Instantiate(baseArmPrefab, rightArmHolder.transform);*/
 
     }
 
@@ -114,7 +115,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!leftArmBasicUse) return;
 
-        leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+        leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void LeftArmSkillCheck(bool value)
@@ -141,7 +142,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!rightArmBasicUse) return;
 
-        rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+        rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void RightArmSkillCheck(bool value)

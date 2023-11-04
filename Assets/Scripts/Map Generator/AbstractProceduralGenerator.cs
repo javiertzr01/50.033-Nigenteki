@@ -40,7 +40,6 @@ public abstract class AbstractProceduralGenerator : NetworkBehaviour
 
     public abstract void RunProceduralGeneration();
     public abstract void ViewMap();
-
     public abstract void SaveMap();
     public abstract void LoadMap();
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class BasicArm : Arm
 {
@@ -26,20 +27,44 @@ public class BasicArm : Arm
         }
     }
 
-
+    /*
     public override void CastBasicAttack()
     {
-        if(Time.time >= nextBasicFireTime)
+
+        if (Time.time >= nextBasicFireTime)
         {
             // Implement the BasicArm's basic attack
             Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + armVariable.baseDamage);
             GameObject firedBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            firedBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
             firedBasicProjectile.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
+    }*/
+    [ServerRpc]
+    public override void CastBasicAttackServerRpc()
+    {
+
+        if(Time.time >= nextBasicFireTime)
+        {
+            // Implement the BasicArm's basic attack
+            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + armVariable.baseDamage);
+            GameObject firedBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            firedBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
+            firedBasicProjectile.GetComponent<Projectile>().maxDistance = 20f;
+            Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
+            rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+
+            nextBasicFireTime = Time.time + armVariable.baseFireRate;
+        }
+    }
+    [ClientRpc]
+    public override void CastBasicAttackClientRpc()
+    {
+        throw new System.NotImplementedException();
     }
 
     public override void CastSkill()
