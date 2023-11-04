@@ -104,8 +104,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.8",
-      "depth": 3,
+      "version": "1.8.7",
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1"
