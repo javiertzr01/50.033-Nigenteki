@@ -24,12 +24,14 @@ public class RTTGenerator : AbstractProceduralGenerator
     public int walkLength = 50;
 
     private HashSet<Vector2Int> floorPositions = null;
+    private List<Vector2Int> endPoints = null;
 
 
     protected override void RunProceduralGeneration()
     {
         (nodePositions, pathPositions) = RunRTT();
         floorPositions = RunRandomWalk(nodePositions);
+        endPoints = FindEndPoints(nodePositions, pathPositions);
     }
 
     protected override void ViewMap()
@@ -49,8 +51,6 @@ public class RTTGenerator : AbstractProceduralGenerator
         }
     }
 
-
-
     protected (HashSet<Vector2Int>, HashSet<Vector2Int>) RunRTT()
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
@@ -64,6 +64,25 @@ public class RTTGenerator : AbstractProceduralGenerator
             closest.Grow(newPosition, maxLength);
         }
         return (root.GetAllNodePositions(), root.GetAllPathPositions());
+    }
+
+    private List<Vector2Int> FindEndPoints(HashSet<Vector2Int> nodePositions, HashSet<Vector2Int> pathPositions)
+    {
+        List<Vector2Int> endPoints = new List<Vector2Int>();
+        foreach(var node in nodePositions)
+        {
+            int neighboursCount = 0;
+            foreach(var direction in Direction2D.cardinalDirectionsList)
+            {
+                if(pathPositions.Contains(node + direction))
+                    neighboursCount++;
+            }
+            if (neighboursCount == 1)
+            {
+                endPoints.Add(node);
+            }
+        }
+        return endPoints;
     }
 
     private Vector2Int RandomSample()
