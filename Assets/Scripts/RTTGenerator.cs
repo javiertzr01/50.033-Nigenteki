@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RTTGenerator : AbstractProceduralGenerator
 {
@@ -23,6 +25,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     // Information about the map
     public HashSet<Vector2Int> nodePositions = null;
+    public Dictionary<Vector2Int, ProceduralGenerationAlgorithms.RTTNode> nodeDictionary = null;
     public HashSet<Vector2Int> pathPositions = null;
     public HashSet<Vector2Int> floorPositions = null;
     public List<Vector2Int> endPoints = null;
@@ -32,8 +35,9 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     protected override void RunProceduralGeneration()
     {
-        (nodePositions, pathPositions) = RunRTT();
+        (nodePositions, nodeDictionary, pathPositions) = RunRTT();
         (floorPositions, zones) = RunRandomWalk(nodePositions);
+        floorPositions.UnionWith(pathPositions);                // Make sure that there is a walkable path to all places
         endPoints = FindEndPoints(nodePositions, pathPositions);
     }
 
@@ -51,17 +55,19 @@ public class RTTGenerator : AbstractProceduralGenerator
         }
         else if (floorPositions != null)
         {
-            tilemapVisualizer.PaintFloorTiles(floorPositions);
+            // tilemapVisualizer.PaintFloorTiles(floorPositions);
+            tilemapVisualizer.PaintBiomeTiles(zones, nodeDictionary);
             WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
         }
     }
 
 
 
-    protected (HashSet<Vector2Int>, HashSet<Vector2Int>) RunRTT()
+    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, ProceduralGenerationAlgorithms.RTTNode>, HashSet<Vector2Int>) RunRTT()
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
         root = new ProceduralGenerationAlgorithms.RTTNode(Vector2Int.zero);
+        root.biome = (Biomes)Random.Range(3, Enum.GetValues(typeof(Biomes)).Length);
         // startPosition = root.pos;
 
         for (int i = 0; i < numNodes; i++)
@@ -70,7 +76,7 @@ public class RTTGenerator : AbstractProceduralGenerator
             (ProceduralGenerationAlgorithms.RTTNode closest, int closestDist) = root.GetClosest(newPosition);
             closest.Grow(newPosition, maxLength);
         }
-        return (root.GetAllNodePositions(), root.GetAllPathPositions());
+        return (root.GetAllNodePositions(), root.GetNodeDictionary(), root.GetAllPathPositions());
     }
 
 

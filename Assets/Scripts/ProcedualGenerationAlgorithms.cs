@@ -31,6 +31,11 @@ public static class ProceduralGenerationAlgorithms
         public HashSet<Vector2Int> pathsToChildren = new HashSet<Vector2Int>();
         public Dictionary<RTTNode, int> pathWeight = new Dictionary<RTTNode, int>();
         private int pathCount;
+        private int biomeCount;
+        [SerializeField]
+        private int consecutiveBiomeDistance = 12;
+        private int maxConsecutiveBiomeCount = 5;
+        public Biomes biome = Biomes.None;
 
         public RTTNode(Vector2Int position)
         {
@@ -67,6 +72,7 @@ public static class ProceduralGenerationAlgorithms
         public void Grow(Vector2Int sample, int max_length)
         {
             pathCount = 0;
+            biomeCount = 0;
             int d = (int)Mathf.Sqrt(Dist(sample));          // Distance between this node and sample
             int length = Mathf.Min(d, max_length);          // Length to move before placing child node
             float diffX = (sample.x - pos.x) / (float)d;    
@@ -77,6 +83,20 @@ public static class ProceduralGenerationAlgorithms
             RTTNode child = new RTTNode(step);
             this.GeneratePath(this.pos, child.pos);
             pathWeight.Add(child, pathCount);
+            if (this.biome == Biomes.None)
+            {
+                Debug.Log("Empty Biome at" + this.pos);
+            }
+            if(pathCount <= consecutiveBiomeDistance && biomeCount < maxConsecutiveBiomeCount)
+            {
+                child.biome = this.biome;
+                biomeCount++;
+            }
+            else
+            {
+                child.biome = (Biomes)Random.Range(3, Enum.GetValues(typeof(Biomes)).Length);
+                biomeCount = 0;
+            }
             children.Add(child);
         }
 
@@ -161,6 +181,23 @@ public static class ProceduralGenerationAlgorithms
             }
         }
 
+        public Dictionary<Vector2Int, RTTNode> GetNodeDictionary()
+        {
+            Dictionary<Vector2Int, RTTNode> nodeDictionary = new Dictionary<Vector2Int, RTTNode>();
+            GetNodeDictionaryRecursive(this, nodeDictionary);
+            return nodeDictionary;
+        }
+
+        private static void GetNodeDictionaryRecursive(RTTNode node, Dictionary<Vector2Int, RTTNode> dictionary)
+        {
+            dictionary.Add(node.pos, node);
+    
+            foreach (RTTNode child in node.children)
+            {
+                GetNodeDictionaryRecursive(child, dictionary);
+            }
+        }
+
         public HashSet<Vector2Int> GetAllPathPositions()
         {
             HashSet<Vector2Int> positions = new HashSet<Vector2Int>();
@@ -198,4 +235,18 @@ public static class Direction2D
     {
         return cardinalDirectionsList[Random.Range(0, cardinalDirectionsList.Count)];
     }
+}
+
+
+
+public enum Biomes
+{
+    None,
+    RedSpawn,
+    BlueSpawn,
+    One,
+    Two,
+    Three,
+    Four,
+    Five
 }
