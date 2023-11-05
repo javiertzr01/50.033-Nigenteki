@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RTTGenerator : AbstractProceduralGenerator
@@ -12,10 +13,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     [SerializeField]
     protected int numNodes = 50;
     [SerializeField]
-    protected int maxLength = 10;
-
-    private HashSet<Vector2Int> nodePositions = null;
-    private HashSet<Vector2Int> pathPositions = null;
+    protected int maxLength = 10;    
 
     // RandomWalkBased
     [SerializeField]
@@ -23,8 +21,13 @@ public class RTTGenerator : AbstractProceduralGenerator
     [SerializeField]
     public int walkLength = 50;
 
-    private HashSet<Vector2Int> floorPositions = null;
-    private List<Vector2Int> endPoints = null;
+    // Information about the map
+    public HashSet<Vector2Int> nodePositions = null;
+    public HashSet<Vector2Int> pathPositions = null;
+    public HashSet<Vector2Int> floorPositions = null;
+    public List<Vector2Int> endPoints = null;
+    public Dictionary<Vector2Int, HashSet<Vector2Int>> zones = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
+
 
 
     protected override void RunProceduralGeneration()
@@ -33,6 +36,8 @@ public class RTTGenerator : AbstractProceduralGenerator
         floorPositions = RunRandomWalk(nodePositions);
         endPoints = FindEndPoints(nodePositions, pathPositions);
     }
+
+
 
     protected override void ViewMap()
     {
@@ -51,6 +56,8 @@ public class RTTGenerator : AbstractProceduralGenerator
         }
     }
 
+
+
     protected (HashSet<Vector2Int>, HashSet<Vector2Int>) RunRTT()
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
@@ -66,15 +73,17 @@ public class RTTGenerator : AbstractProceduralGenerator
         return (root.GetAllNodePositions(), root.GetAllPathPositions());
     }
 
-    private List<Vector2Int> FindEndPoints(HashSet<Vector2Int> nodePositions, HashSet<Vector2Int> pathPositions)
+
+
+    private List<Vector2Int> FindEndPoints(HashSet<Vector2Int> nodes, HashSet<Vector2Int> path)
     {
         List<Vector2Int> endPoints = new List<Vector2Int>();
-        foreach(var node in nodePositions)
+        foreach(var node in nodes)
         {
             int neighboursCount = 0;
             foreach(var direction in Direction2D.cardinalDirectionsList)
             {
-                if(pathPositions.Contains(node + direction))
+                if(path.Contains(node + direction))
                     neighboursCount++;
             }
             if (neighboursCount == 1)
@@ -85,25 +94,38 @@ public class RTTGenerator : AbstractProceduralGenerator
         return endPoints;
     }
 
+
+
     private Vector2Int RandomSample()
     {
         return new Vector2Int(Random.Range(-worldSize.x / 2, worldSize.x / 2), Random.Range(-worldSize.y / 2, worldSize.y / 2));
     }
+
+
 
     protected HashSet<Vector2Int> RunRandomWalk(HashSet<Vector2Int> nodePosition)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
         foreach(Vector2Int startPosition in nodePosition)
         {
+            HashSet<Vector2Int> nodeFloorPositions = new HashSet<Vector2Int>();  // To hold the zone around one node
             for (int i = 0; i < iterations; i++)
             {
                 var path = ProceduralGenerationAlgorithms.SimpleRandomWalk(startPosition, walkLength);
+                // Add to the hashset containing all the floorpositions
                 floorPositions.UnionWith(path);
+
+                // Add to the hashset containing the floorpositions specific to the node
+                // Each iteration hold 1 path around zone, we want all iterations but don't want overlapping tiles
+                nodeFloorPositions.UnionWith(path);      
+
+                // Uncomment the code below if "more spread out" RandomWalk is desired                        
                 // if(startRandomlyEachIteration)
                 // {
                 //     currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
                 // }
             }
+            zones.Add(startPosition, nodeFloorPositions);    // Add to the dictionary, the node and the surrounding zone floorpositions
         }
         return floorPositions;
     }
