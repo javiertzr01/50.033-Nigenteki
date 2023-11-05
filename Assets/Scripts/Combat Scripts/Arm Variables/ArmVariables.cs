@@ -13,6 +13,7 @@ public class ArmVariables : ScriptableObject
     public float skillCoolDown;
     public float skillDuration;
     public float ultimateForce;
+    public float ultimateFireRate;
     public int ultimateCharge;
     public float ultimateDuration;
 

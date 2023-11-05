@@ -5,17 +5,21 @@ using UnityEngine.AI;
 
 public class Beetle : Arm
 {
+    [SerializeField]
+    protected GameObject ultShootPoint;
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
     private float _shieldCurrentHealth;
     private float _skillCoolDown;
+    private float _ultimateCharge;
     private float shieldRegenTimer;
     protected bool activated;
     protected bool destroyed;
     protected GameObject currentShield;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
     private float nextBasicFireTime = 0f; // for alt fire
+    private bool ulted;
 
 
 
@@ -32,6 +36,8 @@ public class Beetle : Arm
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
         shieldRegenTimer = 0f; // Initialize shield regen timer to zero
 
+        UltimateCharge = armVariable.ultimateCharge;
+        ulted = false;
 
         activated = true;
         destroyed = false;
@@ -77,6 +83,26 @@ public class Beetle : Arm
         set
         {
             _skillCoolDown = value;
+        }
+    }
+
+    public float UltimateCharge
+    {
+        get
+        {
+            return _ultimateCharge;
+        }
+        set
+        {
+            if (value >= 100)
+            {
+                _ultimateCharge = 100;
+            }
+            else
+            {
+                _ultimateCharge = value;
+            }
+
         }
     }
 
@@ -154,14 +180,30 @@ public class Beetle : Arm
 
     public override void CastBasicAttack()
     {
-        if (destroyed)
+        if (ulted)
+        {
+            // Handle ultimate-specific behavior here
+            // For example, instantiate ultimate projectiles instead of the regular ones
+            if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
+            {
+                GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
+                shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+                Rigidbody2D rb = shotUltimateProjectile.GetComponent<Rigidbody2D>();
+                rb.AddForce(ultShootPoint.transform.up * armVariable.ultimateForce, ForceMode2D.Impulse);
+                Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack with damage: " + shotUltimateProjectile.GetComponent<Projectile>().Damage);
+
+                nextBasicFireTime = Time.time + armVariable.ultimateFireRate;
+            }
+        }
+        else if (destroyed)
         {
             if (altProjectile != null && Time.time >= nextBasicFireTime)
             {
-                GameObject firedBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
-                Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
+                GameObject shotBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
+                shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+                Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
+                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + shotBasicProjectile.GetComponent<Projectile>().Damage);
 
                 nextBasicFireTime = Time.time + armVariable.baseFireRate;
             }
@@ -178,6 +220,7 @@ public class Beetle : Arm
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            shotSpellProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
             Destroy(shotSpellProjectile, armVariable.skillDuration);
 
             // Set the skill cooldown to initial value
@@ -192,7 +235,33 @@ public class Beetle : Arm
 
     public override void CastUltimate()
     {
-        // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);
-        GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
+        if (UltimateCharge >= 100f)
+        {
+            Debug.Log("BEETLE ULTIMATE: Casting");
+            ulted = true;
+            UltimateCharge = 0f; // Reset Ultimate Charge
+
+            // Toggle the shield if it is on
+            if (activated)
+            {
+                ToggleShield();
+            }
+
+            // Start a timer for the ultimate's duration
+            StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
+        }
+        else
+        {
+            Debug.Log("BEETLE ULTIMATE: Not enough Ult Charge");
+        }
+
+    }
+
+    // Coroutine to handle the duration of the ultimate
+    private IEnumerator UltimateDurationTimer(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ulted = false; // Reset the ulted flag after the ultimate duration
+        Debug.Log("BEETLE ULTIMATE: Expired");
     }
 }

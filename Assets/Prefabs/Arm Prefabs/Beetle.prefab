@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1842468663822812149
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7136023327347767151}
+  m_Layer: 0
+  m_Name: AltShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7136023327347767151
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842468663822812149}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1746608597252347332}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2242956570738579607
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 2578164899720361747}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -230,6 +261,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4116494676872541820}
+  - {fileID: 7136023327347767151}
   - {fileID: 5385786035187281805}
   - {fileID: 7445084545776671108}
   m_Father: {fileID: 0}
@@ -250,6 +282,7 @@ MonoBehaviour:
   projectiles:
   - {fileID: 6093875963110399478, guid: 305250e271c47004fa8ca6414636edd9, type: 3}
   - {fileID: 7034513550059083727, guid: 6a746f7a72d6a224dbf385a8e837af72, type: 3}
-  - {fileID: 1925523533900438677, guid: 83b9f20461c259a40954dfbe07905cae, type: 3}
+  - {fileID: 4740422706544774022, guid: f909e3900386d5847af8dd7ff00290f9, type: 3}
   - {fileID: 3866945137309950759, guid: 2aa06897cf9bf7a409e19479b119e9cb, type: 3}
   shootPoint: {fileID: 2578164899720361747}
+  ultShootPoint: {fileID: 1842468663822812149}

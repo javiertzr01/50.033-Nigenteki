@@ -9,6 +9,9 @@ public abstract class Projectile : MonoBehaviour
     private float _maxDistance;
     private float _damage;
 
+    [System.NonSerialized]
+    public GameObject instantiatingArm; // References the Arm that instantiated this projectile
+
     protected Vector3 startingPosition;
 
     public float maxDistance
