@@ -7,12 +7,15 @@ public class Beetle : Arm
 {
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
+    protected GameObject altProjectile;
     private float _shieldCurrentHealth;
     private float _skillCoolDown;
+    private float shieldRegenTimer;
     protected bool activated;
     protected bool destroyed;
     protected GameObject currentShield;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
+    private float nextBasicFireTime = 0f; // for alt fire
 
 
 
@@ -27,6 +30,8 @@ public class Beetle : Arm
 
         ShieldHealth = armVariable.shieldMaxHealth; // Shield Variable
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
+        shieldRegenTimer = 0f; // Initialize shield regen timer to zero
+
 
         activated = true;
         destroyed = false;
@@ -41,6 +46,11 @@ public class Beetle : Arm
         if (projectiles[2] != null)
         {
             ultimateProjectile = projectiles[2];
+        }
+
+        if (projectiles[3] != null)
+        {
+            altProjectile = projectiles[3];
         }
 
     }
@@ -84,7 +94,31 @@ public class Beetle : Arm
         }
 
 
-        // TODO: Implement shield regeneration function - after 5 seconds of no activation it will start regenerating health
+        // Shield regeneration
+        if (!activated)
+        {
+            shieldRegenTimer += Time.deltaTime;
+            if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
+            {
+                if (ShieldHealth < armVariable.shieldMaxHealth)
+                {
+                    ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
+                    Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
+                    if (ShieldHealth >= armVariable.shieldMaxHealth)
+                    {
+                        ShieldHealth = armVariable.shieldMaxHealth;
+                        destroyed = false; // Reset destroyed flag if the shield is fully regenerated
+                        Debug.Log("BEETLE SHIELD: restored");
+                    }
+                }
+            }
+        }
+        else
+        {
+            shieldRegenTimer = 0f; // Reset the timer if the shield is activated again
+        }
+
+
         // Break shield if shield HP drops to 0 or past 0
         if (ShieldHealth < 0 && !destroyed)
         {
@@ -120,7 +154,22 @@ public class Beetle : Arm
 
     public override void CastBasicAttack()
     {
-        ToggleShield();
+        if (destroyed)
+        {
+            if (altProjectile != null && Time.time >= nextBasicFireTime)
+            {
+                GameObject firedBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
+                Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
+                rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
+
+                nextBasicFireTime = Time.time + armVariable.baseFireRate;
+            }
+        }
+        else
+        {
+            ToggleShield();
+        }
     }
 
     public override void CastSkill()
@@ -136,7 +185,7 @@ public class Beetle : Arm
         }
         else
         {
-            Debug.Log("BEETLE SKILL; Cannot cast yet");
+            Debug.Log("BEETLE SKILL: Cannot cast yet");
         }
 
     }

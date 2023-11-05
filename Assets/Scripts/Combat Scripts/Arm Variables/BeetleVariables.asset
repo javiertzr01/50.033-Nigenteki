@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BeetleVariables
   m_EditorClassIdentifier: 
   armName: Beetle
-  baseForce: 0
-  baseFireRate: 0
+  baseForce: 5
+  baseFireRate: 0.5
   skillForce: 0
   skillCoolDown: 13
   skillDuration: 10
