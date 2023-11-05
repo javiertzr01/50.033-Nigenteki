@@ -27,44 +27,40 @@ public class BasicArm : Arm
         }
     }
 
-    /*
-    public override void CastBasicAttack()
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
 
         if (Time.time >= nextBasicFireTime)
         {
-            // Implement the BasicArm's basic attack
-            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + armVariable.baseDamage);
-            GameObject firedBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
-            firedBasicProjectile.GetComponent<Projectile>().maxDistance = 20f;
-            Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
+            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+
+            GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            firedBasicProjectileClone.transform.GetComponent<NetworkObject>().Spawn(true);
+            firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
+            Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+
+            CastBasicAttackClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
 
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
-    }*/
-    [ServerRpc]
-    public override void CastBasicAttackServerRpc()
-    {
 
-        if(Time.time >= nextBasicFireTime)
-        {
-            // Implement the BasicArm's basic attack
-            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + armVariable.baseDamage);
-            GameObject firedBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
-            firedBasicProjectile.GetComponent<Projectile>().maxDistance = 20f;
-            Rigidbody2D rb = firedBasicProjectile.GetComponent<Rigidbody2D>();
-            rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-
-            nextBasicFireTime = Time.time + armVariable.baseFireRate;
-        }
     }
     [ClientRpc]
-    public override void CastBasicAttackClientRpc()
+    public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        throw new System.NotImplementedException();
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
     public override void CastSkill()

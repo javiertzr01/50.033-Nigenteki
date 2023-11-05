@@ -30,10 +30,10 @@ public abstract class Arm : NetworkBehaviour
     }
 
     // The basic attack method
-    [ServerRpc]
-    public virtual void CastBasicAttackServerRpc() { }
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
     [ClientRpc]
-    public virtual void CastBasicAttackClientRpc() { }
+    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
 
     // The skill method
     public abstract void CastSkill();
