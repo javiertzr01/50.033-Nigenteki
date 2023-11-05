@@ -40,6 +40,42 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Left Arm Skill Use",
+                    "type": "Button",
+                    "id": "f00a825c-870f-4283-b8be-5ac5a89a24f6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right Arm Skill Use",
+                    "type": "Button",
+                    "id": "c1119d9f-fac0-4427-a6ec-1052e2bd4080",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Left Arm Ultimate Use",
+                    "type": "Button",
+                    "id": "fdac98a6-6c25-4cd3-b858-fbcbb723e6ff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right Arm Ultimate Use",
+                    "type": "Button",
+                    "id": "74fa379e-e007-4bd1-9196-5b39be7c12ed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -128,6 +164,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a83c7f48-4a8d-4ec4-9f5e-d3b81dfc0534",
+                    "path": "<Keyboard>/q",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Arm Skill Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2708c1d7-57c6-4754-9cc3-d5a049a0fd28",
+                    "path": "<Keyboard>/e",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Arm Skill Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a3f7fc8-9697-4a9c-a5ee-2f53280a221f",
+                    "path": "<Keyboard>/1",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Arm Ultimate Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50df4e67-2869-4942-a128-b425f597f99e",
+                    "path": "<Keyboard>/4",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Arm Ultimate Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

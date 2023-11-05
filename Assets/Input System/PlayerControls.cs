@@ -62,6 +62,42 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Left Arm Skill Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""f00a825c-870f-4283-b8be-5ac5a89a24f6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Right Arm Skill Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""c1119d9f-fac0-4427-a6ec-1052e2bd4080"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Left Arm Ultimate Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""fdac98a6-6c25-4cd3-b858-fbcbb723e6ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Right Arm Ultimate Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""74fa379e-e007-4bd1-9196-5b39be7c12ed"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +188,50 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a83c7f48-4a8d-4ec4-9f5e-d3b81dfc0534"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Left Arm Skill Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2708c1d7-57c6-4754-9cc3-d5a049a0fd28"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Right Arm Skill Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a3f7fc8-9697-4a9c-a5ee-2f53280a221f"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Left Arm Ultimate Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""50df4e67-2869-4942-a128-b425f597f99e"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Right Arm Ultimate Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +244,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_LeftArmBasicUse = m_Player.FindAction("Left Arm Basic Use", throwIfNotFound: true);
         m_Player_RightArmBasicUse = m_Player.FindAction("Right Arm Basic Use", throwIfNotFound: true);
+        m_Player_LeftArmSkillUse = m_Player.FindAction("Left Arm Skill Use", throwIfNotFound: true);
+        m_Player_RightArmSkillUse = m_Player.FindAction("Right Arm Skill Use", throwIfNotFound: true);
+        m_Player_LeftArmUltimateUse = m_Player.FindAction("Left Arm Ultimate Use", throwIfNotFound: true);
+        m_Player_RightArmUltimateUse = m_Player.FindAction("Right Arm Ultimate Use", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -229,6 +313,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_LeftArmBasicUse;
     private readonly InputAction m_Player_RightArmBasicUse;
+    private readonly InputAction m_Player_LeftArmSkillUse;
+    private readonly InputAction m_Player_RightArmSkillUse;
+    private readonly InputAction m_Player_LeftArmUltimateUse;
+    private readonly InputAction m_Player_RightArmUltimateUse;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -237,6 +325,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @LeftArmBasicUse => m_Wrapper.m_Player_LeftArmBasicUse;
         public InputAction @RightArmBasicUse => m_Wrapper.m_Player_RightArmBasicUse;
+        public InputAction @LeftArmSkillUse => m_Wrapper.m_Player_LeftArmSkillUse;
+        public InputAction @RightArmSkillUse => m_Wrapper.m_Player_RightArmSkillUse;
+        public InputAction @LeftArmUltimateUse => m_Wrapper.m_Player_LeftArmUltimateUse;
+        public InputAction @RightArmUltimateUse => m_Wrapper.m_Player_RightArmUltimateUse;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -258,6 +350,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightArmBasicUse.started += instance.OnRightArmBasicUse;
             @RightArmBasicUse.performed += instance.OnRightArmBasicUse;
             @RightArmBasicUse.canceled += instance.OnRightArmBasicUse;
+            @LeftArmSkillUse.started += instance.OnLeftArmSkillUse;
+            @LeftArmSkillUse.performed += instance.OnLeftArmSkillUse;
+            @LeftArmSkillUse.canceled += instance.OnLeftArmSkillUse;
+            @RightArmSkillUse.started += instance.OnRightArmSkillUse;
+            @RightArmSkillUse.performed += instance.OnRightArmSkillUse;
+            @RightArmSkillUse.canceled += instance.OnRightArmSkillUse;
+            @LeftArmUltimateUse.started += instance.OnLeftArmUltimateUse;
+            @LeftArmUltimateUse.performed += instance.OnLeftArmUltimateUse;
+            @LeftArmUltimateUse.canceled += instance.OnLeftArmUltimateUse;
+            @RightArmUltimateUse.started += instance.OnRightArmUltimateUse;
+            @RightArmUltimateUse.performed += instance.OnRightArmUltimateUse;
+            @RightArmUltimateUse.canceled += instance.OnRightArmUltimateUse;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -274,6 +378,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightArmBasicUse.started -= instance.OnRightArmBasicUse;
             @RightArmBasicUse.performed -= instance.OnRightArmBasicUse;
             @RightArmBasicUse.canceled -= instance.OnRightArmBasicUse;
+            @LeftArmSkillUse.started -= instance.OnLeftArmSkillUse;
+            @LeftArmSkillUse.performed -= instance.OnLeftArmSkillUse;
+            @LeftArmSkillUse.canceled -= instance.OnLeftArmSkillUse;
+            @RightArmSkillUse.started -= instance.OnRightArmSkillUse;
+            @RightArmSkillUse.performed -= instance.OnRightArmSkillUse;
+            @RightArmSkillUse.canceled -= instance.OnRightArmSkillUse;
+            @LeftArmUltimateUse.started -= instance.OnLeftArmUltimateUse;
+            @LeftArmUltimateUse.performed -= instance.OnLeftArmUltimateUse;
+            @LeftArmUltimateUse.canceled -= instance.OnLeftArmUltimateUse;
+            @RightArmUltimateUse.started -= instance.OnRightArmUltimateUse;
+            @RightArmUltimateUse.performed -= instance.OnRightArmUltimateUse;
+            @RightArmUltimateUse.canceled -= instance.OnRightArmUltimateUse;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -297,5 +413,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnLeftArmBasicUse(InputAction.CallbackContext context);
         void OnRightArmBasicUse(InputAction.CallbackContext context);
+        void OnLeftArmSkillUse(InputAction.CallbackContext context);
+        void OnRightArmSkillUse(InputAction.CallbackContext context);
+        void OnLeftArmUltimateUse(InputAction.CallbackContext context);
+        void OnRightArmUltimateUse(InputAction.CallbackContext context);
     }
 }

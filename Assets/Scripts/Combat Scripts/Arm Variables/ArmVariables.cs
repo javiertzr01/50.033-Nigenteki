@@ -11,8 +11,10 @@ public class ArmVariables : ScriptableObject
     public float baseFireRate;
     public float skillForce;
     public float skillCoolDown;
+    public float skillDuration;
     public float ultimateForce;
     public int ultimateCharge;
+    public float ultimateDuration;
 
     [Space(10f), Header("Shield")]
     public float shieldMaxHealth;

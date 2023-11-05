@@ -44,6 +44,13 @@ public abstract class Projectile : MonoBehaviour
 
     public abstract void CollisionEnter2DLogic(Collision2D collision);
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        TriggerEnter2DLogic(other);
+    }
+
+    public abstract void TriggerEnter2DLogic(Collider2D other);
+
     void Awake()
     {
         startingPosition = transform.position;
