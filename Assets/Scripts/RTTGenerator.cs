@@ -26,14 +26,14 @@ public class RTTGenerator : AbstractProceduralGenerator
     public HashSet<Vector2Int> pathPositions = null;
     public HashSet<Vector2Int> floorPositions = null;
     public List<Vector2Int> endPoints = null;
-    public Dictionary<Vector2Int, HashSet<Vector2Int>> zones = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
+    public Dictionary<Vector2Int, HashSet<Vector2Int>> zones = null;
 
 
 
     protected override void RunProceduralGeneration()
     {
         (nodePositions, pathPositions) = RunRTT();
-        floorPositions = RunRandomWalk(nodePositions);
+        (floorPositions, zones) = RunRandomWalk(nodePositions);
         endPoints = FindEndPoints(nodePositions, pathPositions);
     }
 
@@ -103,9 +103,10 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    protected HashSet<Vector2Int> RunRandomWalk(HashSet<Vector2Int> nodePosition)
+    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, HashSet<Vector2Int>>) RunRandomWalk(HashSet<Vector2Int> nodePosition)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+        Dictionary<Vector2Int, HashSet<Vector2Int>> zones = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
         foreach(Vector2Int startPosition in nodePosition)
         {
             HashSet<Vector2Int> nodeFloorPositions = new HashSet<Vector2Int>();  // To hold the zone around one node
@@ -127,6 +128,6 @@ public class RTTGenerator : AbstractProceduralGenerator
             }
             zones.Add(startPosition, nodeFloorPositions);    // Add to the dictionary, the node and the surrounding zone floorpositions
         }
-        return floorPositions;
+        return (floorPositions, zones);
     }
 }
