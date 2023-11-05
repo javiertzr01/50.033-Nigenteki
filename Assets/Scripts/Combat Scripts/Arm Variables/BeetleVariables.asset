@@ -20,6 +20,6 @@ MonoBehaviour:
   skillDuration: 10
   ultimateForce: 10
   ultimateFireRate: 0.3
-  ultimateCharge: 0
+  ultimateCharge: 100
   ultimateDuration: 20
   shieldMaxHealth: 100

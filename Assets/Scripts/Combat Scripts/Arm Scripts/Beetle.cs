@@ -220,7 +220,7 @@ public class Beetle : Arm
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-            shotSpellProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+            shotSpellProjectile.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
             Destroy(shotSpellProjectile, armVariable.skillDuration);
 
             // Set the skill cooldown to initial value
@@ -264,4 +264,5 @@ public class Beetle : Arm
         ulted = false; // Reset the ulted flag after the ultimate duration
         Debug.Log("BEETLE ULTIMATE: Expired");
     }
+
 }

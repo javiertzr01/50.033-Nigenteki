@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class BasicShieldTrigger : MonoBehaviour
+public class BasicShieldTrigger : ShieldTrigger
 {
-    private void OnTriggerEnter2D(Collider2D other)
+    public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Check if the collision is with a specific object or has specific properties
         if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
@@ -16,7 +16,6 @@ public class BasicShieldTrigger : MonoBehaviour
             // Damage the shield
             shieldArm.ShieldHealth -= projectileDamage;
         }
-
-
     }
+
 }

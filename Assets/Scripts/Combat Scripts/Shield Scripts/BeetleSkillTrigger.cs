@@ -2,12 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BeetleSkillTrigger : MonoBehaviour
+public class BeetleSkillTrigger : ShieldTrigger
 {
+    Beetle arm;
+
     [SerializeField]
     private float shieldHealth;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void Start()
+    {
+        arm = instantiatingArm.GetComponent<Beetle>();
+    }
+
+    private void DestroyShield()
+    {
+        Destroy(gameObject);
+    }
+
+    public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Check if the collision is with a specific object or has specific properties
         if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
@@ -16,6 +28,7 @@ public class BeetleSkillTrigger : MonoBehaviour
 
             // Damage the shield
             shieldHealth -= projectileDamage;
+            ChargeUltimate(projectileDamage, 15);
 
             if (shieldHealth <= 0)
             {
@@ -23,9 +36,14 @@ public class BeetleSkillTrigger : MonoBehaviour
             }
         }
     }
-
-    private void DestroyShield()
+    // Higher the Divisor, the slower the charging rate
+    void ChargeUltimate(float charge, float divisor)
     {
-        Destroy(gameObject);
+        if (divisor < 1)
+        {
+            divisor = 1;
+        }
+        arm.UltimateCharge += (charge / divisor);
+        Debug.Log(arm.name + " Ultiamte Charge: " + arm.UltimateCharge);
     }
 }
