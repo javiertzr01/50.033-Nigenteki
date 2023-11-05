@@ -28,7 +28,9 @@ public static class ProceduralGenerationAlgorithms
     {
         public Vector2Int pos;
         public List<RTTNode> children;
-        public HashSet<Vector2Int> pathToChildren = new HashSet<Vector2Int>();
+        public HashSet<Vector2Int> pathsToChildren = new HashSet<Vector2Int>();
+        public Dictionary<RTTNode, int> pathWeight = new Dictionary<RTTNode, int>();
+        private int pathCount;
 
         public RTTNode(Vector2Int position)
         {
@@ -64,6 +66,7 @@ public static class ProceduralGenerationAlgorithms
 
         public void Grow(Vector2Int sample, int max_length)
         {
+            pathCount = 0;
             int d = (int)Mathf.Sqrt(Dist(sample));          // Distance between this node and sample
             int length = Mathf.Min(d, max_length);          // Length to move before placing child node
             float diffX = (sample.x - pos.x) / (float)d;    
@@ -73,6 +76,7 @@ public static class ProceduralGenerationAlgorithms
             Vector2Int step = new Vector2Int(stepX, stepY);
             RTTNode child = new RTTNode(step);
             this.GeneratePath(this.pos, child.pos);
+            pathWeight.Add(child, pathCount);
             children.Add(child);
         }
 
@@ -84,7 +88,7 @@ public static class ProceduralGenerationAlgorithms
             Vector2Int newPos = Vector2Int.zero;
             bool moveX = true;
             bool moveY = true;
-            pathToChildren.Add(current);
+            pathsToChildren.Add(current);
 
             if (current != sample)
             {
@@ -132,6 +136,7 @@ public static class ProceduralGenerationAlgorithms
                         newPos = current + Ydirection;
                 }
                 GeneratePath(newPos, sample);
+                pathCount++;
             }
             else
             {
@@ -165,7 +170,7 @@ public static class ProceduralGenerationAlgorithms
 
         private static void GetAllPathPositionsRecursive(RTTNode node, HashSet<Vector2Int> positions)
         {
-            positions.UnionWith(node.pathToChildren);
+            positions.UnionWith(node.pathsToChildren);
 
             foreach (RTTNode child in node.children)
             {
