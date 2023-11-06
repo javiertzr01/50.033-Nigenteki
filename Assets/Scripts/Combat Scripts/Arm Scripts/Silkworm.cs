@@ -10,19 +10,47 @@ public class Silkworm : Arm
     private float nextBasicFireTime = 0f;
     private int skillCharges;
     private int maxSkillCharges;
+    private float skillChargeTimer;
     private int maxSkillInstantiations;
-    private float skillCooldownTimer = 0f;
 
     public override void Initialize()
     {
         base.Initialize();
         maxSkillCharges = armVariable.skillMaxCharges;
+        skillChargeTimer = armVariable.skillCoolDown;
         maxSkillInstantiations = armVariable.skillMaxInstants;
 
         skillCharges = maxSkillCharges; // Initialize Arm with the maximum skill Charges first
 
-        StartCoroutine(SkillChargeCooldown());
+        // StartCoroutine(SkillChargeCooldown());
 
+        if (projectiles[1] != null)
+        {
+            spellProjectile = projectiles[1];
+        }
+
+        if (projectiles[2] != null)
+        {
+            ultimateProjectile = projectiles[2];
+        }
+
+    }
+
+    private void Update()
+    {
+        // Update the skill charge timer
+        if (skillCharges < maxSkillCharges)
+        {
+            skillChargeTimer -= Time.deltaTime;
+            if (skillChargeTimer <= 0)
+            {
+                // Increment skillCharges when the timer reaches 0
+                skillCharges++;
+                Debug.Log("Increment Silkworm Skill Charge: " + skillCharges);
+                // Reset the skill charge timer
+                skillChargeTimer = armVariable.skillCoolDown;
+            }
+        }
     }
 
     public override void CastBasicAttack()
@@ -42,35 +70,17 @@ public class Silkworm : Arm
         }
     }
 
-    // This coroutine increments skill charges over time, respecting a maximum limit.
-    private IEnumerator SkillChargeCooldown()
-    {
-        while (true)
-        {
-            // Wait for the skill cooldown duration
-            yield return new WaitForSeconds(armVariable.skillCoolDown);
-
-            // Increment skillCharges if it's not at the maximum limit
-            if (skillCharges < maxSkillCharges)
-            {
-                skillCharges++;
-                Debug.Log("Increment Silkworm Skill Charge: " + skillCharges);
-
-            }
-        }
-    }
-
     public override void CastSkill()
     {
-        if (skillCharges > 0 && skillCooldownTimer <= 0f)
+        if (skillCharges > 0)
         {
             // Instantiate the skill projectile (stun effect)
-            GameObject skillProjectile = Instantiate(spellProjectile, ultShootPoint.transform.position, transform.rotation);
-            skillProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+            GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            // skillProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
 
-            // Decrease the number of available skill charges and start the cooldown timer
+            // Decrease the number of available skill charges
             skillCharges--;
-            skillCooldownTimer = armVariable.skillCoolDown;
+            Debug.Log("Decrease Silkworm Skill Charge: " + skillCharges);
         }
     }
 

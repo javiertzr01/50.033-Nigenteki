@@ -234,6 +234,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Stunned"",
+            ""id"": ""2e260a36-18c2-498c-bc10-14ba6fdea6eb"",
+            ""actions"": [
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""33b9326e-ca90-43bf-9625-01ae7981e14c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""753e4180-092f-4d8c-b91c-cade8fedd8d3"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -248,6 +276,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_RightArmSkillUse = m_Player.FindAction("Right Arm Skill Use", throwIfNotFound: true);
         m_Player_LeftArmUltimateUse = m_Player.FindAction("Left Arm Ultimate Use", throwIfNotFound: true);
         m_Player_RightArmUltimateUse = m_Player.FindAction("Right Arm Ultimate Use", throwIfNotFound: true);
+        // Stunned
+        m_Stunned = asset.FindActionMap("Stunned", throwIfNotFound: true);
+        m_Stunned_Newaction = m_Stunned.FindAction("New action", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -407,6 +438,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Stunned
+    private readonly InputActionMap m_Stunned;
+    private List<IStunnedActions> m_StunnedActionsCallbackInterfaces = new List<IStunnedActions>();
+    private readonly InputAction m_Stunned_Newaction;
+    public struct StunnedActions
+    {
+        private @PlayerControls m_Wrapper;
+        public StunnedActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Newaction => m_Wrapper.m_Stunned_Newaction;
+        public InputActionMap Get() { return m_Wrapper.m_Stunned; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(StunnedActions set) { return set.Get(); }
+        public void AddCallbacks(IStunnedActions instance)
+        {
+            if (instance == null || m_Wrapper.m_StunnedActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_StunnedActionsCallbackInterfaces.Add(instance);
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
+        }
+
+        private void UnregisterCallbacks(IStunnedActions instance)
+        {
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
+        }
+
+        public void RemoveCallbacks(IStunnedActions instance)
+        {
+            if (m_Wrapper.m_StunnedActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IStunnedActions instance)
+        {
+            foreach (var item in m_Wrapper.m_StunnedActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_StunnedActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public StunnedActions @Stunned => new StunnedActions(this);
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -417,5 +494,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRightArmSkillUse(InputAction.CallbackContext context);
         void OnLeftArmUltimateUse(InputAction.CallbackContext context);
         void OnRightArmUltimateUse(InputAction.CallbackContext context);
+    }
+    public interface IStunnedActions
+    {
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }

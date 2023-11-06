@@ -249,7 +249,7 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: 293deccd5b73cb7498129b1edfd3cb33, type: 2}
   projectiles:
   - {fileID: 8325093185264832265, guid: df01831e0060d464498f23ff03c90c9d, type: 3}
-  - {fileID: 6660459748630045391, guid: 282c100d356988441864a0fdcbeb51ff, type: 3}
+  - {fileID: 6075488854381465895, guid: 0c6266a99a71ca94b91d2a102c7c5083, type: 3}
   - {fileID: 4697647102691926273, guid: cf2b3ab694978164d936870f150324b4, type: 3}
   shootPoint: {fileID: 5917749454591906957}
   ultShootPoint: {fileID: 5917749454591906957}
