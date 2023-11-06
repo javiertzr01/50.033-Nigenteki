@@ -1,24 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
 
 public abstract class Projectile : NetworkBehaviour
 {
-    private float _maxDistance = 20f;
+    public ProjectileVariables projectileVariable;
+    private float _maxDistance;
+    private float _damage;
 
     protected Vector3 startingPosition;
 
     public float maxDistance
     {
-        get 
-        { 
-            return _maxDistance; 
+        get
+        {
+            return _maxDistance;
         }
 
-        set 
-        { 
-            _maxDistance = value; 
+        set
+        {
+            _maxDistance = value;
+        }
+    }
+
+    public float Damage
+    {
+        get
+        {
+            return _damage;
+        }
+
+        set
+        {
+            _damage = value;
         }
     }
 

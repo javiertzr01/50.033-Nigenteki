@@ -81,7 +81,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -228,7 +229,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: f90b421907b5d45408579dd8a9588674, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: f90b421907b5d45408579dd8a9588674,
+    type: 3}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -410,6 +412,11 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
-  leftArmHolderPrefab: {fileID: 2967011719965532442, guid: 3d10e4d4b3e2b8f4cb9791501cee1ba3, type: 3}
-  rightArmHolderPrefab: {fileID: 1210991556933272544, guid: 8607eb4bd2ce7ce48bba3298c851eb82, type: 3}
-  baseArmPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f, type: 3}
+  leftArmHolderPrefab: {fileID: 2967011719965532442, guid: 3d10e4d4b3e2b8f4cb9791501cee1ba3,
+    type: 3}
+  rightArmHolderPrefab: {fileID: 1210991556933272544, guid: 8607eb4bd2ce7ce48bba3298c851eb82,
+    type: 3}
+  leftArmPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f,
+    type: 3}
+  rightArmPrefab: {fileID: 3455972538730231271, guid: 3e9c9a26e7b4caf4da1e8fca23f55a07,
+    type: 3}

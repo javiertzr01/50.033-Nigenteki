@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     float maxHealth;
     float moveSpeed;
-    NetworkVariable<float> currentHealth;
+    NetworkVariable<float> _currentHealth;
 
     private Rigidbody2D rb;
     private Vector2 moveDir;
@@ -25,7 +25,9 @@ public class PlayerController : NetworkBehaviour
     private GameObject rightArmHolderPrefab;
 
     [SerializeField]
-    private GameObject baseArmPrefab;
+    private GameObject leftArmPrefab;
+    [SerializeField]
+    private GameObject rightArmPrefab;
 
     private GameObject player;
     private GameObject leftArmHolder;
@@ -42,7 +44,7 @@ public class PlayerController : NetworkBehaviour
     {
         maxHealth = playerVariables.maxHealth;
         moveSpeed = playerVariables.moveSpeed;
-        currentHealth = playerVariables.currentHealth;
+        _currentHealth = playerVariables.currentHealth;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -66,13 +68,13 @@ public class PlayerController : NetworkBehaviour
         rightArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
         rightArmHolder = rightArmHolderClone;
 
-        GameObject leftArmClone = Instantiate(baseArmPrefab, leftArmHolderClone.transform);
+        GameObject leftArmClone = Instantiate(leftArmPrefab, leftArmHolderClone.transform);
         //leftArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
         leftArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmClone.transform.GetComponent<NetworkObject>().TrySetParent(leftArmHolderClone.transform);
 
 
-        GameObject rightArmClone = Instantiate(baseArmPrefab, rightArmHolderClone.transform);
+        GameObject rightArmClone = Instantiate(rightArmPrefab, rightArmHolderClone.transform);
         //rightArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
         rightArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         rightArmClone.transform.GetComponent<NetworkObject>().TrySetParent(rightArmHolderClone.transform);
@@ -95,6 +97,18 @@ public class PlayerController : NetworkBehaviour
     public void SpawnArmsClientRpc(ClientRpcParams clientRpcParams = default)
     {
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
+    }
+
+    public NetworkVariable<float> currentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+        set
+        {
+            _currentHealth = value;
+        }
     }
 
     private void DestroyAllChildObjects(GameObject parentGameObject)
