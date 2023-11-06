@@ -167,7 +167,7 @@ public class PlayerController : NetworkBehaviour
     void LeftArmBasicAttack()
     {
         if (!leftArmBasicUse) return;
-
+        Debug.Log("LeftArmBasicAttackHasValue: " + leftArmHolder.transform.GetChild(0).GetComponent<Arm>().name);
         //leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
         transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
