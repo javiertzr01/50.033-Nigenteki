@@ -70,13 +70,25 @@ public class Silkworm : Arm
         }
     }
 
+    // Declare a Queue to track active spellProjectiles
+    private Queue<GameObject> activeSpellProjectiles = new Queue<GameObject>();
+
     public override void CastSkill()
     {
         if (skillCharges > 0)
         {
-            // Instantiate the skill projectile (stun effect)
+            // Check if the number of skill instantiations exceeds the maximum
+            if (activeSpellProjectiles.Count >= maxSkillInstantiations)
+            {
+                // Remove the oldest skillProjectile
+                GameObject oldestProjectile = activeSpellProjectiles.Dequeue();
+                Destroy(oldestProjectile);
+                Debug.Log("Removed oldest Silkworm skillProjectile");
+            }
+
+            // Instantiate the skill projectile and add it to the active projectiles queue
             GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-            // skillProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+            activeSpellProjectiles.Enqueue(skillProjectile);
 
             // Decrease the number of available skill charges
             skillCharges--;
