@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -29,23 +30,33 @@ public class RTTGenerator : AbstractProceduralGenerator
     public HashSet<Vector2Int> pathPositions = null;
     public HashSet<Vector2Int> floorPositions = null;
     public List<Vector2Int> endPoints = null;
+    public Dictionary<Vector2Int, HashSet<Vector2Int>> zone = null;
     private Dictionary<Vector2Int, Sprites> spriteMap = null;
+    private Dictionary<Vector2Int, string> prefabMap = null; 
 
     // Information to be passed to Network
     public Vector2Int[] floorPositionsArray = null;
     public Sprites[] spritesArray = null;
 
+    // Testing
+    [SerializeField]
+    GameObject obstacle;
 
 
     protected override void RunProceduralGeneration()
     {
         (nodePositions, nodeDictionary, pathPositions) = RunRTT();
-        (floorPositions, spriteMap) = RunRandomWalk(nodePositions);
+        (floorPositions, zone) = RunRandomWalk(nodePositions);
         floorPositions.UnionWith(pathPositions);                // Make sure that there is a walkable path to all places
-        foreach (Vector2Int position in pathPositions)
-            spriteMap[position] = Sprites.Path;                  // Set the sprite for path
+        spriteMap = GenerateSpriteMap();
         (floorPositionsArray, spritesArray) = MapDictToArray(spriteMap);
         endPoints = FindEndPoints(nodePositions, pathPositions);
+        prefabMap = PlaceItems();
+        foreach (var kvp in prefabMap)
+        {
+            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(kvp.Key.x, kvp.Key.y, 0), Quaternion.identity);
+            Debug.Log(kvp.Key + ":" + kvp.Value);
+        }
     }
 
 
@@ -116,13 +127,12 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, Sprites>) RunRandomWalk(HashSet<Vector2Int> nodePositions)
+    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, HashSet<Vector2Int>>) RunRandomWalk(HashSet<Vector2Int> nodePositions)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
-        Dictionary<Vector2Int, Sprites> map = new Dictionary<Vector2Int, Sprites>();
+        Dictionary<Vector2Int, HashSet<Vector2Int>> zone = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
         foreach(Vector2Int startPosition in nodePositions)
         {
-            Sprites biome = GetBiome(startPosition);                              // Get Biome
             HashSet<Vector2Int> nodeFloorPositions = new HashSet<Vector2Int>();  // To hold the zone around one node
             for (int i = 0; i < iterations; i++)
             {
@@ -140,12 +150,54 @@ public class RTTGenerator : AbstractProceduralGenerator
                 //     currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
                 // }
             }
-            foreach (Vector2Int position in nodeFloorPositions)
+            zone.Add(startPosition, nodeFloorPositions);
+        }
+        return (floorPositions, zone);
+    }
+
+
+
+    protected Dictionary<Vector2Int, Sprites> GenerateSpriteMap()
+    {
+        Dictionary<Vector2Int, Sprites> map = new Dictionary<Vector2Int, Sprites>();
+        foreach (Vector2Int position in pathPositions)
+            map[position] = Sprites.Path;                  // Set the sprite for path
+        foreach (var kvp in zone)
+        {
+            Sprites biome = GetBiome(kvp.Key);                              // Get Biome
+            foreach (Vector2Int position in kvp.Value)
             {
                 map[position] = biome;
             }
         }
-        return (floorPositions, map);
+        
+        return map;
+    }
+
+
+
+    protected Dictionary<Vector2Int, string> PlaceItems()
+    {
+        Vector2Int size = new Vector2Int(2,2);
+        PlacementType placementType = PlacementType.ColliderActive;   
+        int minCount = 3;
+        int maxCount = 8;
+        string name = "tree";
+
+        Dictionary<Vector2Int, string> PrefabMap = new Dictionary<Vector2Int, string>();
+        foreach(var kvp in zone)
+        {
+            HashSet<Vector2Int> nodeFloorPositions = kvp.Value;
+            ItemPlacementHelper itemPlacementHelper = new ItemPlacementHelper(nodeFloorPositions, pathPositions);
+            int itemCount = Random.Range(minCount, maxCount + 1);
+            for (int i = 0; i < itemCount; i++)
+            {
+                Vector2Int? position = itemPlacementHelper.GetItemPlacementPosition(placementType, 5, size, true);
+                if (position != null)
+                    PrefabMap[(Vector2Int)position] = name;
+            }
+        }
+        return PrefabMap;
     }
 
     private Sprites GetBiome(Vector2Int nodePosition)

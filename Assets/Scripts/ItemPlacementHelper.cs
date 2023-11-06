@@ -17,42 +17,57 @@ public class ItemPlacementHelper
                                 HashSet<Vector2Int> pathPositions)
     {
         validNodeFloorPositions = GetPositionsWithoutPath(nodeFloorPositions, pathPositions);
-        tileByType = UpdateDictionary();
+        tileByType = SetupDictionary();
     }
 
 
 
-    public Vector2Int? GetItemPlacementPosition(PlacementType placementType, int maxIterations, Vector2Int size)
+    public Vector2Int? GetItemPlacementPosition(PlacementType placementType, int maxIterations, Vector2Int size, bool addOffset)
     {
         int itemArea = size.x * size.y;
-        if (placementType == PlacementType.SurroundingWalkable && tileByType[placementType].Count < itemArea)
+
+        /// Checking if there are possible tiles ///
+        if (placementType == PlacementType.ColliderActive && tileByType[placementType].Count < itemArea)
             return null;
         else if (placementType == PlacementType.Anywhere)
         {   // if placementType is anywhere, we check all spots to see if there is space
-            int totalCount = 0;
-            foreach(var kvp in tileByType)
-            {
-                totalCount += kvp.Value.Count;
-            }
-            if (totalCount < itemArea)
+            if (validNodeFloorPositions.Count < itemArea)
                 return null;
         }
         
+        /// Attemping to place the objects ///
         int iteration = 0;
         while (iteration < maxIterations)   // This is just if the random position found is invalid
         {
             iteration++;
-            int index = UnityEngine.Random.Range(0, tileByType[placementType].Count);
-            Vector2Int position = tileByType[placementType].ElementAt(index);
+            int index;
+            Vector2Int position;
+
+            if (placementType != PlacementType.Anywhere)
+            {
+                index = UnityEngine.Random.Range(0, tileByType[placementType].Count);
+                position = tileByType[placementType].ElementAt(index);
+            }
+            else
+            {
+                index = UnityEngine.Random.Range(0, validNodeFloorPositions.Count);
+                position = validNodeFloorPositions.ElementAt(index);
+            }
 
             if (itemArea > 1)
             {
+                var (result, placementPositions) = PlaceBigItem(position, size, addOffset);
+
+                if (result == false)
+                    continue;
                 
+                validNodeFloorPositions.ExceptWith(placementPositions);
+                tileByType[placementType].ExceptWith(placementPositions);
             }
             else
             {
                 validNodeFloorPositions.Remove(position);
-                tileByType = UpdateDictionary();
+                tileByType[placementType].Remove(position);
             }
 
             return position;
@@ -62,7 +77,35 @@ public class ItemPlacementHelper
 
 
 
-    private Dictionary<PlacementType, HashSet<Vector2Int>> UpdateDictionary()
+    private (bool, List<Vector2Int>) PlaceBigItem(          // Placed with originPosition as bottom left tile
+        Vector2Int originPosition,
+        Vector2Int size,
+        bool addOffset)
+    {
+        List<Vector2Int> positions = new List<Vector2Int>() { originPosition };
+        int maxX = addOffset ? size.x + 1 : size.x;
+        int maxY = addOffset ? size.y + 1 : size.y;
+        int minX = addOffset ? -1 : 0;
+        int minY = addOffset ? -1 : 0;
+
+        for (int row = minX; row <= maxX; row++)
+        {
+            for (int col = minY; col <= maxY; col++)
+            {
+                if (col == 0 && row == 0)
+                    continue;
+                Vector2Int newPosToCheck = new Vector2Int(originPosition.x + row, originPosition.y + col);
+                if (!validNodeFloorPositions.Contains(newPosToCheck))
+                    return (false, positions);
+                positions.Add(newPosToCheck);
+            }
+        }
+        return (true, positions);
+    }
+
+
+
+    private Dictionary<PlacementType, HashSet<Vector2Int>> SetupDictionary()
     {
         NeighbourPositions neighbourPositions = new NeighbourPositions(validNodeFloorPositions);
         Dictionary<PlacementType, HashSet<Vector2Int>> dictionary = new Dictionary<PlacementType, HashSet<Vector2Int>>();
@@ -71,7 +114,11 @@ public class ItemPlacementHelper
             int neighboursCount8Dir = neighbourPositions.Get8DirectionNeighbours(position).Count;
 
             // Determining the type of item that can be placed on that tile
-            PlacementType type = neighboursCount8Dir < 8 ? PlacementType.Anywhere : PlacementType.SurroundingWalkable;
+            PlacementType type;
+            if (neighboursCount8Dir == 8)
+                type = PlacementType.ColliderActive;
+            else
+                continue;
             
             if (!dictionary.ContainsKey(type))
                 dictionary[type] = new HashSet<Vector2Int>();
@@ -94,5 +141,5 @@ public class ItemPlacementHelper
 public enum PlacementType
 {
     Anywhere,
-    SurroundingWalkable
+    ColliderActive      // Requires surrounding areas to be traversable
 }

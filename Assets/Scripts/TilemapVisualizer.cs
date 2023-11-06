@@ -69,6 +69,11 @@ public class TilemapVisualizer : MonoBehaviour
     {
         floorTilemap.ClearAllTiles();
         wallTilemap.ClearAllTiles();
+        // GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+        // foreach (GameObject obj in obstacles)
+        // {
+        //     DestroyImmediate(obj);
+        // }
     }
 
     internal void PaintSingleBasicWall(Vector2Int position)
