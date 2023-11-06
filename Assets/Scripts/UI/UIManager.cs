@@ -82,8 +82,8 @@ public class UIManager : NetworkBehaviour
             Logger.Instance.LogInfo("Random map instance saved");
 
             //StartGameManager
-            gameStart.Invoke();
-            Logger.Instance.LogInfo("Game Started");
+            //gameStart.Invoke();
+            //Logger.Instance.LogInfo("Game Started");
 
         });
 
