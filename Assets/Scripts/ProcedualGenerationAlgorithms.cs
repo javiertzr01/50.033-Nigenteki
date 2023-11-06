@@ -35,7 +35,7 @@ public static class ProceduralGenerationAlgorithms
         [SerializeField]
         private int consecutiveBiomeDistance = 12;
         private int maxConsecutiveBiomeCount = 5;
-        public Biomes biome = Biomes.None;
+        public Sprites biome = Sprites.None;
 
         public RTTNode(Vector2Int position)
         {
@@ -83,7 +83,7 @@ public static class ProceduralGenerationAlgorithms
             RTTNode child = new RTTNode(step);
             this.GeneratePath(this.pos, child.pos);
             pathWeight.Add(child, pathCount);
-            if (this.biome == Biomes.None)
+            if (this.biome == Sprites.None)
             {
                 Debug.Log("Empty Biome at" + this.pos);
             }
@@ -94,7 +94,7 @@ public static class ProceduralGenerationAlgorithms
             }
             else
             {
-                child.biome = (Biomes)Random.Range(3, Enum.GetValues(typeof(Biomes)).Length);
+                child.biome = Biome.GetRandomBiome();
                 biomeCount = 0;
             }
             children.Add(child);
@@ -239,9 +239,10 @@ public static class Direction2D
 
 
 
-public enum Biomes
+public enum Sprites
 {
     None,
+    Path,
     RedSpawn,
     BlueSpawn,
     One,
@@ -249,4 +250,12 @@ public enum Biomes
     Three,
     Four,
     Five
+}
+
+public static class Biome
+{
+    public static Sprites GetRandomBiome()
+    {
+        return (Sprites)Random.Range((int)Sprites.BlueSpawn + 1, Enum.GetValues(typeof(Sprites)).Length);
+    }
 }

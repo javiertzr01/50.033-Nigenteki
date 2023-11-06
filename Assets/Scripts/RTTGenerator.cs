@@ -29,15 +29,22 @@ public class RTTGenerator : AbstractProceduralGenerator
     public HashSet<Vector2Int> pathPositions = null;
     public HashSet<Vector2Int> floorPositions = null;
     public List<Vector2Int> endPoints = null;
-    public Dictionary<Vector2Int, HashSet<Vector2Int>> zones = null;
+    private Dictionary<Vector2Int, Sprites> spriteMap = null;
+
+    // Information to be passed to Network
+    public Vector2Int[] floorPositionsArray = null;
+    public Sprites[] spritesArray = null;
 
 
 
     protected override void RunProceduralGeneration()
     {
         (nodePositions, nodeDictionary, pathPositions) = RunRTT();
-        (floorPositions, zones) = RunRandomWalk(nodePositions);
+        (floorPositions, spriteMap) = RunRandomWalk(nodePositions);
         floorPositions.UnionWith(pathPositions);                // Make sure that there is a walkable path to all places
+        foreach (Vector2Int position in pathPositions)
+            spriteMap[position] = Sprites.Path;                  // Set the sprite for path
+        (floorPositionsArray, spritesArray) = MapDictToArray(spriteMap);
         endPoints = FindEndPoints(nodePositions, pathPositions);
     }
 
@@ -56,7 +63,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         else if (floorPositions != null)
         {
             // tilemapVisualizer.PaintFloorTiles(floorPositions);
-            tilemapVisualizer.PaintBiomeTiles(zones, nodeDictionary);
+            tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
             WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
         }
     }
@@ -67,7 +74,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     {
         // root = new ProceduralGenerationAlgorithms.RTTNode(RandomSample());
         root = new ProceduralGenerationAlgorithms.RTTNode(Vector2Int.zero);
-        root.biome = (Biomes)Random.Range(3, Enum.GetValues(typeof(Biomes)).Length);
+        root.biome = Biome.GetRandomBiome();
         // startPosition = root.pos;
 
         for (int i = 0; i < numNodes; i++)
@@ -109,12 +116,13 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, HashSet<Vector2Int>>) RunRandomWalk(HashSet<Vector2Int> nodePosition)
+    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, Sprites>) RunRandomWalk(HashSet<Vector2Int> nodePositions)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
-        Dictionary<Vector2Int, HashSet<Vector2Int>> zones = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
-        foreach(Vector2Int startPosition in nodePosition)
+        Dictionary<Vector2Int, Sprites> map = new Dictionary<Vector2Int, Sprites>();
+        foreach(Vector2Int startPosition in nodePositions)
         {
+            Sprites biome = GetBiome(startPosition);                              // Get Biome
             HashSet<Vector2Int> nodeFloorPositions = new HashSet<Vector2Int>();  // To hold the zone around one node
             for (int i = 0; i < iterations; i++)
             {
@@ -124,7 +132,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
                 // Add to the hashset containing the floorpositions specific to the node
                 // Each iteration hold 1 path around zone, we want all iterations but don't want overlapping tiles
-                nodeFloorPositions.UnionWith(path);      
+                nodeFloorPositions.UnionWith(path);
 
                 // Uncomment the code below if "more spread out" RandomWalk is desired                        
                 // if(startRandomlyEachIteration)
@@ -132,8 +140,24 @@ public class RTTGenerator : AbstractProceduralGenerator
                 //     currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
                 // }
             }
-            zones.Add(startPosition, nodeFloorPositions);    // Add to the dictionary, the node and the surrounding zone floorpositions
+            foreach (Vector2Int position in nodeFloorPositions)
+            {
+                map[position] = biome;
+            }
         }
-        return (floorPositions, zones);
+        return (floorPositions, map);
+    }
+
+    private Sprites GetBiome(Vector2Int nodePosition)
+    {
+        return nodeDictionary[nodePosition].biome;
+    }
+
+    private (Vector2Int[], Sprites[]) MapDictToArray(Dictionary<Vector2Int, Sprites> map)
+    {
+        Vector2Int[] keys = (new List<Vector2Int>(map.Keys)).ToArray();
+        Sprites[] values = (new List<Sprites>(map.Values)).ToArray();
+
+        return (keys, values);
     }
 }

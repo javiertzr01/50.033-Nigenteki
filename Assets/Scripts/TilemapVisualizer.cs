@@ -9,45 +9,45 @@ public class TilemapVisualizer : MonoBehaviour
     [SerializeField]
     private Tilemap floorTilemap, wallTilemap;
     [SerializeField]
-    private TileBase floorTile, wallTop, biomeOne, biomeTwo, biomeThree, biomeFour, biomeFive;
+    private TileBase floorTile, wallTop, biomeOne, biomeTwo, biomeThree, biomeFour, biomeFive, path;
 
     public void PaintFloorTiles(IEnumerable<Vector2Int> floorPositions)
     {
         PaintTiles(floorPositions, floorTilemap, floorTile);
     }
 
-    // Take in floorposition and biomes array
-    public void PaintBiomeTiles(Dictionary<Vector2Int, HashSet<Vector2Int>> zones, Dictionary<Vector2Int, ProceduralGenerationAlgorithms.RTTNode> nodeDictionary)
+    // Take in floorposition and biomes array for Client side
+    public void PaintBiomeTiles(Vector2Int[] floorPositions, Sprites[] biomes)
     {
         TileBase tile;
-        foreach (var kvp in zones)
+        for (int i = 0; i < floorPositions.Length; i++)
         {
-            ProceduralGenerationAlgorithms.RTTNode node = nodeDictionary[kvp.Key];
-            switch(node.biome)
+            switch(biomes[i])
             {
-                case Biomes.One:
+                case Sprites.One:
                     tile = biomeOne;
                     break;
-                case Biomes.Two:
+                case Sprites.Two:
                     tile = biomeTwo;
                     break;
-                case Biomes.Three:
+                case Sprites.Three:
                     tile = biomeThree;
                     break;
-                case Biomes.Four:
+                case Sprites.Four:
                     tile = biomeFour;
                     break;
-                case Biomes.Five:
+                case Sprites.Five:
                     tile = biomeFive;
+                    break;
+                case Sprites.Path:
+                    tile = path;
                     break;
                 default:
                     tile = floorTile;
                     break;
             }
-            foreach(var position in kvp.Value)
-            {
-                PaintSingleTile(floorTilemap, tile, position);
-            }
+
+            PaintSingleTile(floorTilemap, tile, floorPositions[i]);
         }
     }
 
