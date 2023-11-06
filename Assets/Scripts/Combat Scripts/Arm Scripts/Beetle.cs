@@ -30,6 +30,7 @@ public class Beetle : Arm
 
         // Instantiate the shield but hide it and its collider first
         currentShield = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation, transform);
+        currentShield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
 
         ShieldHealth = armVariable.shieldMaxHealth; // Shield Variable
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
