@@ -16,6 +16,7 @@ public class TilemapVisualizer : MonoBehaviour
         PaintTiles(floorPositions, floorTilemap, floorTile);
     }
 
+    // Take in floorposition and biomes array
     public void PaintBiomeTiles(Dictionary<Vector2Int, HashSet<Vector2Int>> zones, Dictionary<Vector2Int, ProceduralGenerationAlgorithms.RTTNode> nodeDictionary)
     {
         TileBase tile;
