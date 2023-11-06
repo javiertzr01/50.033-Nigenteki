@@ -123,7 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
-<<<<<<< Updated upstream
 --- !u!1 &337035101
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,8 +377,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
-=======
->>>>>>> Stashed changes
 --- !u!1001 &789497687
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -533,7 +530,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
-<<<<<<< Updated upstream
 --- !u!95 &1080796878
 Animator:
   serializedVersion: 5
@@ -555,14 +551,12 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
-=======
 --- !u!1 &1274736895 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2621137710199268616, guid: 7f7a312c64a8a584eb29d5e9e5501c86,
     type: 3}
   m_PrefabInstance: {fileID: 7523929124349836104}
   m_PrefabAsset: {fileID: 0}
->>>>>>> Stashed changes
 --- !u!1 &1487800929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,9 +1082,6 @@ SceneRoots:
   - {fileID: 8132381348432473293}
   - {fileID: 1986186229}
   - {fileID: 789497687}
-<<<<<<< Updated upstream
   - {fileID: 337035103}
   - {fileID: 658750736}
-=======
   - {fileID: 7523929124349836104}
->>>>>>> Stashed changes
