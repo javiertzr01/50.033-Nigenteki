@@ -16,12 +16,12 @@ MonoBehaviour:
   baseForce: 10
   baseFireRate: 0.2
   skillForce: 0
-  skillCoolDown: 0
+  skillCoolDown: 7
   skillDuration: 0
   skillMaxCharges: 2
   skillMaxInstants: 4
   ultimateForce: 0
   ultimateFireRate: 0
-  ultimateCharge: 0
+  ultimateCharge: 100
   ultimateDuration: 0
   shieldMaxHealth: 0

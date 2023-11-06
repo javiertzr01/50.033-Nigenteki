@@ -23,4 +23,9 @@ public class SilkWeb : SkillObject
         // Destroy the SilkWeb object
         Destroy(gameObject);
     }
+
+    public override void TriggerExit2DLogic(Collider2D other)
+    {
+        // throw new System.NotImplementedException();
+    }
 }

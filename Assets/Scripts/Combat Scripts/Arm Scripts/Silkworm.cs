@@ -22,7 +22,7 @@ public class Silkworm : Arm
 
         skillCharges = maxSkillCharges; // Initialize Arm with the maximum skill Charges first
 
-        // StartCoroutine(SkillChargeCooldown());
+        UltimateCharge = armVariable.ultimateCharge;
 
         if (projectiles[1] != null)
         {
@@ -98,14 +98,17 @@ public class Silkworm : Arm
 
     public override void CastUltimate()
     {
-        // Instantiate the ultimate area effect
-        GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+        if (UltimateCharge >= 100f)
+        {
+            Debug.Log("SILKWORM ULTIMATE: Casting");
+            UltimateCharge = 0f; // Reset Ultimate Charge
+                                 // Instantiate the ultimate area effect
+            GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
 
-        // You'll need to implement the logic for the ultimate's behavior
-        // This might involve modifying PlayerController scripts as described
 
-        // Start a timer to destroy the ultimate area after 15 seconds
-        StartCoroutine(DestroyUltimateArea(ultimateArea, 15f));
+            // Start a timer to destroy the ultimate area after 15 seconds
+            StartCoroutine(DestroyUltimateArea(ultimateArea, 15f));
+        }
     }
 
     private IEnumerator DestroyUltimateArea(GameObject area, float duration)

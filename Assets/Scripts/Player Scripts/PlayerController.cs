@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
-    float moveSpeed;
+    private float moveSpeed;
     NetworkVariable<float> _currentHealth;
 
     private Rigidbody2D rb;
@@ -34,7 +34,7 @@ public class PlayerController : NetworkBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
-        moveSpeed = playerVariables.moveSpeed;
+        MoveSpeed = playerVariables.moveSpeed;
         _currentHealth = playerVariables.currentHealth;
 
 
@@ -44,6 +44,18 @@ public class PlayerController : NetworkBehaviour
         Instantiate(leftArmPrefab, leftArmHolder.transform);
         Instantiate(rightArmPrefab, rightArmHolder.transform);
 
+    }
+
+    public float MoveSpeed
+    {
+        get
+        {
+            return moveSpeed;
+        }
+        set
+        {
+            moveSpeed = value;
+        }
     }
 
     public NetworkVariable<float> currentHealth
@@ -92,7 +104,7 @@ public class PlayerController : NetworkBehaviour
 
     void Movement()
     {
-        rb.velocity = moveDir * moveSpeed;
+        rb.velocity = moveDir * MoveSpeed;
     }
 
     void Look()

@@ -343,7 +343,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7707033610063034363}
         m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: OnLeftArmUseAction
+        m_MethodName: OnLeftArmUltAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -371,6 +371,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 74fa379e-e007-4bd1-9196-5b39be7c12ed
     m_ActionName: Player/Right Arm Ultimate Use[/Keyboard/4]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 33b9326e-ca90-43bf-9625-01ae7981e14c
+    m_ActionName: Stunned/New action
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

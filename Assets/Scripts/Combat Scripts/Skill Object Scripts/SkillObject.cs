@@ -15,6 +15,12 @@ public abstract class SkillObject : MonoBehaviour
     {
         TriggerEnter2DLogic(other);
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        TriggerExit2DLogic(other);
+    }
     public abstract void TriggerEnter2DLogic(Collider2D other);
+    public abstract void TriggerExit2DLogic(Collider2D other);
     public abstract void CollisionEnter2DLogic(Collision2D collider);
 }
