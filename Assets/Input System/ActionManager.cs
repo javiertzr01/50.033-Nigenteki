@@ -11,6 +11,10 @@ public class ActionManager : MonoBehaviour
     public UnityEvent<Vector2> look;
     public UnityEvent<bool> rightArmUse;
     public UnityEvent<bool> leftArmUse;
+    public UnityEvent<bool> rightArmSkill;
+    public UnityEvent<bool> leftArmSkill;
+    public UnityEvent<bool> rightArmUlt;
+    public UnityEvent<bool> leftArmUlt;
 
 
     public void OnMovementAction(InputAction.CallbackContext context)
@@ -97,6 +101,87 @@ public class ActionManager : MonoBehaviour
         else if (context.canceled)
         {
             leftArmUse.Invoke(false);
+
+            // Debug.Log("STOP USING LEFT ARM");
+        }
+    }
+
+
+    public void OnRightArmSkillAction(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        }
+        else if (context.performed)
+        {
+            rightArmSkill.Invoke(true);
+
+            // Debug.Log("USING RIGHT ARM");
+        }
+        else if (context.canceled)
+        {
+            rightArmSkill.Invoke(false);
+
+            // Debug.Log("STOP USING RIGHT ARM");
+        }
+    }
+
+    public void OnLeftArmSkillAction(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        }
+        else if (context.performed)
+        {
+            leftArmSkill.Invoke(true);
+
+            // Debug.Log("USING LEFT ARM");
+        }
+        else if (context.canceled)
+        {
+            leftArmSkill.Invoke(false);
+
+            // Debug.Log("STOP USING LEFT ARM");
+        }
+    }
+
+    public void OnRightArmUltAction(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        }
+        else if (context.performed)
+        {
+            rightArmUlt.Invoke(true);
+
+            // Debug.Log("USING RIGHT ARM");
+        }
+        else if (context.canceled)
+        {
+            rightArmUlt.Invoke(false);
+
+            // Debug.Log("STOP USING RIGHT ARM");
+        }
+    }
+
+    public void OnLeftArmUltAction(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        }
+        else if (context.performed)
+        {
+            leftArmUlt.Invoke(true);
+
+            // Debug.Log("USING LEFT ARM");
+        }
+        else if (context.canceled)
+        {
+            leftArmUlt.Invoke(false);
 
             // Debug.Log("STOP USING LEFT ARM");
         }

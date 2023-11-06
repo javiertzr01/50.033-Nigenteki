@@ -68,7 +68,7 @@ public class BasicShooter : Arm
     public override void CastSkill()
     {
         // Implement the BasicArm's skill
-        // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + armVariable.skillDamage);
+        // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + spellProjectile.GetComponent<Projectile>().Damage);
         GameObject shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
     }
 

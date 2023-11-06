@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
 {
 
     public UnityEvent cameraFollow;
-
+    private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
-    float moveSpeed;
+    private float moveSpeed;
     NetworkVariable<float> _currentHealth;
 
     private Rigidbody2D rb;
@@ -42,8 +43,9 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
+        playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
-        moveSpeed = playerVariables.moveSpeed;
+        MoveSpeed = playerVariables.moveSpeed;
         _currentHealth = playerVariables.currentHealth;
     }
 
@@ -99,6 +101,18 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
+    public float MoveSpeed
+    {
+        get
+        {
+            return moveSpeed;
+        }
+        set
+        {
+            moveSpeed = value;
+        }
+    }
+
     public NetworkVariable<float> currentHealth
     {
         get
@@ -147,7 +161,7 @@ public class PlayerController : NetworkBehaviour
 
     void Movement()
     {
-        rb.velocity = moveDir * moveSpeed;
+        rb.velocity = moveDir * MoveSpeed;
     }
 
     void Look()
@@ -228,4 +242,26 @@ public class PlayerController : NetworkBehaviour
             rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
         }
     }
+
+    public void ApplyStun(float duration)
+    {
+        // Disable the player's input actions
+        playerInput.SwitchCurrentActionMap("Stunned");
+        Debug.Log("Stunned Player");
+
+        // Start a coroutine to re-enable input after a duration
+        StartCoroutine(ReenableInputAfterStun(duration));
+    }
+
+    private IEnumerator ReenableInputAfterStun(float duration)
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
+
+        // Re-enable the default action map
+        playerInput.SwitchCurrentActionMap("Player");
+        Debug.Log("Unstunned Player");
+    }
+
+
 }

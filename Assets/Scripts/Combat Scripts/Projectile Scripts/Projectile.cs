@@ -10,6 +10,9 @@ public abstract class Projectile : NetworkBehaviour
     private float _maxDistance;
     private float _damage;
 
+    [System.NonSerialized]
+    public GameObject instantiatingArm; // References the Arm that instantiated this projectile
+
     protected Vector3 startingPosition;
 
     public float maxDistance
@@ -44,6 +47,13 @@ public abstract class Projectile : NetworkBehaviour
     }
 
     public abstract void CollisionEnter2DLogic(Collision2D collision);
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        TriggerEnter2DLogic(other);
+    }
+
+    public abstract void TriggerEnter2DLogic(Collider2D other);
 
     void Awake()
     {

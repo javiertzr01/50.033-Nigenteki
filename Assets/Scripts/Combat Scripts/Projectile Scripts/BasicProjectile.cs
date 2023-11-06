@@ -9,5 +9,14 @@ public class BasicProjectile : Projectile
         Destroy(gameObject);
     }
 
+    public override void TriggerEnter2DLogic(Collider2D other)
+    {
+        if (other.gameObject.tag == "Shield")
+        {
+            Destroy(gameObject);
+        }
+    }
+
+
 
 }
