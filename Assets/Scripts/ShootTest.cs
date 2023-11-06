@@ -10,7 +10,8 @@ public class ShootTest : MonoBehaviour
     [SerializeField] public Transform shootPoint;
 
     Vector2 direction;
-    Vector2 mousePos;
+    // Vector2 mousePos;
+    Vector3 mousePos;
     GameObject bulletInstance;
 
     // Start is called before the first frame update
@@ -22,8 +23,12 @@ public class ShootTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        direction = mousePos - (Vector2)gun.position;
+        // mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // direction = mousePos - (Vector2)gun.position;
+
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+        direction = (Vector2)mousePos - (Vector2)gun.position;
+
         FaceMouse();
 
         if (Input.GetMouseButtonDown(0))
@@ -34,12 +39,12 @@ public class ShootTest : MonoBehaviour
 
     void FaceMouse()
     {
-        gun.transform.right = direction;
+        gun.transform.right = -direction;
     }
 
     void Shoot()
     {
         bulletInstance = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        bulletInstance.GetComponent<Rigidbody2D>().AddForce(bulletInstance.transform.right * bulletSpeed);
+        bulletInstance.GetComponent<Rigidbody2D>().AddForce(-bulletInstance.transform.right * bulletSpeed);
     }
 }
