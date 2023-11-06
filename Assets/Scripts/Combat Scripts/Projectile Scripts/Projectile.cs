@@ -1,23 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour
 {
-    private float _maxDistance = 20f;
+    public ProjectileVariables projectileVariable;
+    private float _maxDistance;
+    private float _damage;
 
     protected Vector3 startingPosition;
 
     public float maxDistance
     {
-        get 
-        { 
-            return _maxDistance; 
+        get
+        {
+            return _maxDistance;
         }
 
-        set 
-        { 
-            _maxDistance = value; 
+        set
+        {
+            _maxDistance = value;
+        }
+    }
+
+    public float Damage
+    {
+        get
+        {
+            return _damage;
+        }
+
+        set
+        {
+            _damage = value;
         }
     }
 
@@ -31,6 +47,15 @@ public abstract class Projectile : MonoBehaviour
     void Awake()
     {
         startingPosition = transform.position;
+        Initialize();
+
+    }
+
+    public virtual void Initialize()
+    {
+        // Initialize Projectiles with the variables from projectileVariable.
+        maxDistance = projectileVariable.maxDistance;
+        _damage = projectileVariable.damage;
     }
 
     void Update()

@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     float maxHealth;
     float moveSpeed;
-    NetworkVariable<float> currentHealth;
+    NetworkVariable<float> _currentHealth;
 
     private Rigidbody2D rb;
     private Vector2 moveDir;
@@ -25,21 +25,35 @@ public class PlayerController : NetworkBehaviour
     private GameObject rightArmHolder;
 
     [SerializeField]
-    private GameObject baseArmPrefab;
+    private GameObject leftArmPrefab;
+    [SerializeField]
+    private GameObject rightArmPrefab;
 
     private void Awake()
     {
         maxHealth = playerVariables.maxHealth;
         moveSpeed = playerVariables.moveSpeed;
-        currentHealth = playerVariables.currentHealth;
+        _currentHealth = playerVariables.currentHealth;
 
 
         // Instantiate and Initialize Basic Arm as the child to the Arm Holder
         DestroyAllChildObjects(leftArmHolder);
         DestroyAllChildObjects(rightArmHolder);
-        Instantiate(baseArmPrefab, leftArmHolder.transform);
-        Instantiate(baseArmPrefab, rightArmHolder.transform);
+        Instantiate(leftArmPrefab, leftArmHolder.transform);
+        Instantiate(rightArmPrefab, rightArmHolder.transform);
 
+    }
+
+    public NetworkVariable<float> currentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+        set
+        {
+            _currentHealth = value;
+        }
     }
 
     private void DestroyAllChildObjects(GameObject parentGameObject)
@@ -71,7 +85,7 @@ public class PlayerController : NetworkBehaviour
 
         Movement();
         Look();
-        
+
     }
 
     void Movement()
@@ -104,9 +118,9 @@ public class PlayerController : NetworkBehaviour
 
     public void LeftArmBasicAttackCheck(bool value)
     {
-    	if (value)
+        if (value)
         {
-        	leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
         }
     }
 
@@ -128,9 +142,9 @@ public class PlayerController : NetworkBehaviour
 
     public void RightArmBasicAttackCheck(bool value)
     {
-    	if (value)
+        if (value)
         {
-        	rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
+            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
         }
     }
 
