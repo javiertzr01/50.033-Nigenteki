@@ -28,7 +28,7 @@ public class BeetleSkillTrigger : ShieldTrigger
 
             // Damage the shield
             shieldHealth -= projectileDamage;
-            ChargeUltimate(projectileDamage, 15);
+            arm.ChargeUltimate(projectileDamage, 15);
 
             if (shieldHealth <= 0)
             {
@@ -36,14 +36,5 @@ public class BeetleSkillTrigger : ShieldTrigger
             }
         }
     }
-    // Higher the Divisor, the slower the charging rate
-    void ChargeUltimate(float charge, float divisor)
-    {
-        if (divisor < 1)
-        {
-            divisor = 1;
-        }
-        arm.UltimateCharge += (charge / divisor);
-        Debug.Log(arm.name + " Ultiamte Charge: " + arm.UltimateCharge);
-    }
+
 }

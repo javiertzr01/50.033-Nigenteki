@@ -30,23 +30,12 @@ public class BeetleLaser : Projectile
         {
             // Damage the player
             Debug.Log("BeetleLaser: HIT " + other.gameObject.name);
-            ChargeUltimate(Damage, 1);
+            arm.ChargeUltimate(Damage, 1);
             // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
 
             // Add the GameObject to the set of damaged objects to track it
             damagedObjects.Add(other.gameObject);
         }
-    }
-
-    // Higher the Divisor, the slower the charging rate
-    void ChargeUltimate(float charge, float divisor)
-    {
-        if (divisor < 1)
-        {
-            divisor = 1;
-        }
-        arm.UltimateCharge += (charge / divisor);
-        Debug.Log(arm.name + " Ultiamte Charge: " + arm.UltimateCharge);
     }
 
     public override void Initialize()

@@ -12,7 +12,6 @@ public class Beetle : Arm
     protected GameObject altProjectile;
     private float _shieldCurrentHealth;
     private float _skillCoolDown;
-    private float _ultimateCharge;
     private float shieldRegenTimer;
     protected bool activated;
     protected bool destroyed;
@@ -86,25 +85,7 @@ public class Beetle : Arm
         }
     }
 
-    public float UltimateCharge
-    {
-        get
-        {
-            return _ultimateCharge;
-        }
-        set
-        {
-            if (value >= 100)
-            {
-                _ultimateCharge = 100;
-            }
-            else
-            {
-                _ultimateCharge = value;
-            }
 
-        }
-    }
 
     public void Update()
     {

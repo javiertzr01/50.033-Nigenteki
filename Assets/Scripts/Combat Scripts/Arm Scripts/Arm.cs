@@ -14,6 +14,8 @@ public abstract class Arm : MonoBehaviour
     protected GameObject shootPoint;
 
     protected GameObject basicProjectile;
+    private float _ultimateCharge;
+
 
 
     void Awake()
@@ -37,4 +39,35 @@ public abstract class Arm : MonoBehaviour
 
     // The ultimate skill method
     public abstract void CastUltimate();
+
+    // Higher the Divisor, the slower the charging rate
+    public void ChargeUltimate(float charge, float divisor)
+    {
+        if (divisor < 1)
+        {
+            divisor = 1;
+        }
+        UltimateCharge += (charge / divisor);
+        Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
+    }
+
+    public float UltimateCharge
+    {
+        get
+        {
+            return _ultimateCharge;
+        }
+        set
+        {
+            if (value >= 100)
+            {
+                _ultimateCharge = 100;
+            }
+            else
+            {
+                _ultimateCharge = value;
+            }
+
+        }
+    }
 }
