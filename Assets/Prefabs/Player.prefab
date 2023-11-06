@@ -538,7 +538,7 @@ MonoBehaviour:
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
   leftArmHolder: {fileID: 5009592939077670947}
   rightArmHolder: {fileID: 5009592937786224158}
-  leftArmPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f, type: 3}
+  leftArmPrefab: {fileID: 7798768644038380875, guid: dc5c1816bf16b4f4ab074dd190acf255, type: 3}
   rightArmPrefab: {fileID: 5483374576736135213, guid: 13da1f1bb2d3bd6498e83fcf29fcf19c, type: 3}
 --- !u!1 &5009592937786224158
 GameObject:

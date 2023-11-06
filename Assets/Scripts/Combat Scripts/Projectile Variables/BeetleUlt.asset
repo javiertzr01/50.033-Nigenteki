@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileName: Beetle Ult
   damage: 30
-  maxDistance: 40
+  maxDistance: 25

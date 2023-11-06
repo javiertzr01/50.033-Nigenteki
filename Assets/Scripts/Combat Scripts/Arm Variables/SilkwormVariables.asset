@@ -10,16 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 371915ed5e35a6a4fa025f598048d0a5, type: 3}
-  m_Name: BeetleVariables
+  m_Name: SilkwormVariables
   m_EditorClassIdentifier: 
-  armName: Beetle
-  baseForce: 5
-  baseFireRate: 0.5
+  armName: Silkworm
+  baseForce: 10
+  baseFireRate: 0.2
   skillForce: 0
-  skillCoolDown: 13
-  skillDuration: 10
-  ultimateForce: 10
-  ultimateFireRate: 0.3
+  skillCoolDown: 0
+  skillDuration: 0
+  skillMaxCharges: 2
+  skillMaxInstants: 4
+  ultimateForce: 0
+  ultimateFireRate: 0
   ultimateCharge: 0
-  ultimateDuration: 20
-  shieldMaxHealth: 100
+  ultimateDuration: 0
+  shieldMaxHealth: 0

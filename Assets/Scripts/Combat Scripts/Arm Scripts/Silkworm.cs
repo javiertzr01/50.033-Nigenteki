@@ -8,16 +8,21 @@ public class Silkworm : Arm
     private GameObject spellProjectile;
     private GameObject ultimateProjectile;
     private float nextBasicFireTime = 0f;
-    private int skillCharges = 0;
+    private int skillCharges;
     private int maxSkillCharges;
+    private int maxSkillInstantiations;
     private float skillCooldownTimer = 0f;
 
     public override void Initialize()
     {
         base.Initialize();
-        maxSkillCharges = 2;
+        maxSkillCharges = armVariable.skillMaxCharges;
+        maxSkillInstantiations = armVariable.skillMaxInstants;
 
-        // Initialize any Silkworm-specific variables here, if needed.
+        skillCharges = maxSkillCharges; // Initialize Arm with the maximum skill Charges first
+
+        StartCoroutine(SkillChargeCooldown());
+
     }
 
     public override void CastBasicAttack()
@@ -25,13 +30,33 @@ public class Silkworm : Arm
         if (Time.time >= nextBasicFireTime)
         {
             // Instantiate the basic attack projectile and apply force
-            GameObject basicProjectile = Instantiate(projectiles[1], ultShootPoint.transform.position, transform.rotation);
-            basicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
-            Rigidbody2D rb = basicProjectile.GetComponent<Rigidbody2D>();
-            rb.AddForce(ultShootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+            GameObject shotBasicProjectile = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+            Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
+            rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+            Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + shotBasicProjectile.GetComponent<Projectile>().Damage);
+
 
             // Set the cooldown timer for the next basic attack
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
+        }
+    }
+
+    // This coroutine increments skill charges over time, respecting a maximum limit.
+    private IEnumerator SkillChargeCooldown()
+    {
+        while (true)
+        {
+            // Wait for the skill cooldown duration
+            yield return new WaitForSeconds(armVariable.skillCoolDown);
+
+            // Increment skillCharges if it's not at the maximum limit
+            if (skillCharges < maxSkillCharges)
+            {
+                skillCharges++;
+                Debug.Log("Increment Silkworm Skill Charge: " + skillCharges);
+
+            }
         }
     }
 

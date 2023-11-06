@@ -30,7 +30,7 @@ public class BeetleLaser : Projectile
         {
             // Damage the player
             Debug.Log("BeetleLaser: HIT " + other.gameObject.name);
-            arm.ChargeUltimate(Damage, 1);
+            arm.ChargeUltimate(Damage, 15);
             // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
 
             // Add the GameObject to the set of damaged objects to track it

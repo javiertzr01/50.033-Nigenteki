@@ -5,13 +5,10 @@ public class BeetleShieldTrigger : ShieldTrigger
 {
     Beetle arm;
 
-    void Start()
-    {
-        arm = instantiatingArm.GetComponent<Beetle>();
-    }
-
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        arm = instantiatingArm.GetComponent<Beetle>();
+
         // Check if the collision is with a specific object or has specific properties
         if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
         {
@@ -22,21 +19,9 @@ public class BeetleShieldTrigger : ShieldTrigger
 
             // Damage the shield
             shieldArm.ShieldHealth -= projectileDamage;
-            ChargeUltimate(projectileDamage, 15);
+            arm.ChargeUltimate(projectileDamage, 15);
 
 
         }
-    }
-
-
-    // Higher the Divisor, the slower the charging rate
-    void ChargeUltimate(float charge, float divisor)
-    {
-        if (divisor < 1)
-        {
-            divisor = 1;
-        }
-        arm.UltimateCharge += (charge / divisor);
-        Debug.Log(arm.name + " Ultiamte Charge: " + arm.UltimateCharge);
     }
 }
