@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShootTest : MonoBehaviour
 {
     [SerializeField] public Transform gun;
+    [SerializeField] public GameObject gunObject;
     [SerializeField] public GameObject bullet;
     [SerializeField] public float bulletSpeed;
     [SerializeField] public Transform shootPoint;
@@ -39,12 +40,28 @@ public class ShootTest : MonoBehaviour
 
     void FaceMouse()
     {
-        gun.transform.right = -direction;
+        if (gunObject.name == "Bayonet (Left)")
+        {
+            gun.transform.right = -direction;
+        }
+        else if (gunObject.name == "Bayonet (Right)")
+        {
+            gun.transform.right = direction;
+        }
     }
 
     void Shoot()
     {
         bulletInstance = Instantiate(bullet, shootPoint.position, shootPoint.rotation);
-        bulletInstance.GetComponent<Rigidbody2D>().AddForce(-bulletInstance.transform.right * bulletSpeed);
+
+        if (gunObject.name == "Bayonet (Left)")
+        {
+            bulletInstance.GetComponent<Rigidbody2D>().AddForce(-bulletInstance.transform.right * bulletSpeed);
+        }
+        else if (gunObject.name == "Bayonet (Right)")
+        {
+            bulletInstance.GetComponent<Rigidbody2D>().AddForce(bulletInstance.transform.right * bulletSpeed);
+        }
+
     }
 }
