@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c26dfbc7cdc5be14297149d81e6cdd25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileVariable: {fileID: 0}
+  projectileVariable: {fileID: 11400000, guid: 65690966b75dcb74d8b7ec3d2b447119, type: 2}
 --- !u!114 &-7953641116228133292
 MonoBehaviour:
   m_ObjectHideFlags: 0

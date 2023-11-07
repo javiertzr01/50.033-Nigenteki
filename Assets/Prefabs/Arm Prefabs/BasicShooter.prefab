@@ -210,8 +210,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1294338583857297939}
-  - component: {fileID: 5686819030250630901}
   - component: {fileID: 7311356241214326498}
+  - component: {fileID: 5686819030250630901}
   m_Layer: 0
   m_Name: BasicShooter
   m_TagString: Untagged
@@ -237,6 +237,24 @@ Transform:
   - {fileID: 9132043661660035293}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7311356241214326498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7756204089957409917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6dca277467dd754f96bbd82dc6ac956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  armVariable: {fileID: 11400000, guid: 6d21bcca78ba07a4f851d794e3b07726, type: 2}
+  projectiles:
+  - {fileID: 1925523533900438677, guid: 83b9f20461c259a40954dfbe07905cae, type: 3}
+  - {fileID: 6660459748630045391, guid: 282c100d356988441864a0fdcbeb51ff, type: 3}
+  - {fileID: 4697647102691926273, guid: cf2b3ab694978164d936870f150324b4, type: 3}
+  shootPoint: {fileID: 4124140871522216207}
 --- !u!114 &5686819030250630901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,21 +275,3 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &7311356241214326498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7756204089957409917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6dca277467dd754f96bbd82dc6ac956, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  armVariable: {fileID: 11400000, guid: 6d21bcca78ba07a4f851d794e3b07726, type: 2}
-  projectiles:
-  - {fileID: 1925523533900438677, guid: 83b9f20461c259a40954dfbe07905cae, type: 3}
-  - {fileID: 6660459748630045391, guid: 282c100d356988441864a0fdcbeb51ff, type: 3}
-  - {fileID: 4697647102691926273, guid: cf2b3ab694978164d936870f150324b4, type: 3}
-  shootPoint: {fileID: 4124140871522216207}

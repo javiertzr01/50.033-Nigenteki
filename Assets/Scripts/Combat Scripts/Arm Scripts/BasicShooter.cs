@@ -32,18 +32,17 @@ public class BasicShooter : Arm
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;
+        if (OwnerClientId != clientId) return;    
 
         if (Time.time >= nextBasicFireTime)
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectileClone.transform.GetComponent<NetworkObject>().Spawn(true);
+            firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-            //Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
 
             CastBasicAttackClientRpc(new ClientRpcParams
             {
@@ -62,8 +61,10 @@ public class BasicShooter : Arm
     public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
+
 
     public override void CastSkill()
     {
