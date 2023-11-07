@@ -6,15 +6,17 @@ public class BasicProjectile : Projectile
 {
     public override void CollisionEnter2DLogic(Collision2D collision)
     {
-        Destroy(gameObject);
+        DestroyServerRpc();
     }
+
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        if (other.gameObject.tag == "Shield")
+        /*if (other.gameObject.tag == "shield")
         {
-            Destroy(gameObject);
-        }
+            DestroyServerRpc();
+        }*/
+        DestroyServerRpc();
     }
 
 

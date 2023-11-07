@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 4013963837437227788}
   - component: {fileID: 69508453811803725}
   - component: {fileID: 453786425201190582}
+  - component: {fileID: -8565426371842229966}
+  - component: {fileID: 8409379381123244934}
+  - component: {fileID: -6728110245605722714}
   - component: {fileID: 2124277600200226018}
-  - component: {fileID: -8141846016044658841}
-  - component: {fileID: 3029220024703605750}
-  - component: {fileID: 769766606066241265}
   m_Layer: 0
   m_Name: TriangleProjectile
   m_TagString: Projectile
@@ -191,20 +191,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &2124277600200226018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1925523533900438677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c26dfbc7cdc5be14297149d81e6cdd25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  projectileVariable: {fileID: 0}
---- !u!114 &-8141846016044658841
+--- !u!114 &-8565426371842229966
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,7 +211,7 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &3029220024703605750
+--- !u!114 &8409379381123244934
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -254,7 +241,7 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &769766606066241265
+--- !u!114 &-6728110245605722714
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -266,6 +253,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2124277600200226018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925523533900438677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c26dfbc7cdc5be14297149d81e6cdd25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectileVariable: {fileID: 11400000, guid: 65690966b75dcb74d8b7ec3d2b447119, type: 2}
 --- !u!1 &8926034196072178191
 GameObject:
   m_ObjectHideFlags: 0

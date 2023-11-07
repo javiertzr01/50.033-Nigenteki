@@ -13,7 +13,7 @@ public abstract class Projectile : NetworkBehaviour
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this projectile
 
-    protected Vector3 startingPosition;
+    public Vector2 startingPosition;
 
     public float maxDistance
     {
@@ -55,16 +55,40 @@ public abstract class Projectile : NetworkBehaviour
 
     public abstract void TriggerEnter2DLogic(Collider2D other);
 
-    void Awake()
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyAfterDistanceServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        if (Vector2.Distance(startingPosition, transform.position) > maxDistance)
+        {
+            transform.GetComponent<NetworkObject>().Despawn(true);
+            Destroy(gameObject); // Destroy the projectile
+        }   
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        transform.GetComponent<NetworkObject>().Despawn(true);
+        Destroy(gameObject); // Destroy the projectile
+
+    }
+
+    void Start()
     {
         startingPosition = transform.position;
     }
 
     void Update()
     {
-        if (Vector3.Distance(startingPosition, transform.position) > maxDistance)
-        {
-            Destroy(gameObject); // Destroy the projectile
-        }
+        DestroyAfterDistanceServerRpc();
     }
 }
