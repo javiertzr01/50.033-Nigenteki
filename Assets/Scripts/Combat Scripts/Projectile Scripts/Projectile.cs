@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public abstract class Projectile : MonoBehaviour
+public abstract class Projectile : NetworkBehaviour
 {
     public ProjectileVariables projectileVariable;
     private float _maxDistance;
     private float _damage;
 
-    protected Vector3 startingPosition;
+    [System.NonSerialized]
+    public GameObject instantiatingArm; // References the Arm that instantiated this projectile
+
+    public Vector2 startingPosition;
 
     public float maxDistance
     {
@@ -44,25 +48,47 @@ public abstract class Projectile : MonoBehaviour
 
     public abstract void CollisionEnter2DLogic(Collision2D collision);
 
-    void Awake()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        startingPosition = transform.position;
-        Initialize();
+        TriggerEnter2DLogic(other);
+    }
+
+    public abstract void TriggerEnter2DLogic(Collider2D other);
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyAfterDistanceServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        if (Vector2.Distance(startingPosition, transform.position) > maxDistance)
+        {
+            transform.GetComponent<NetworkObject>().Despawn(true);
+            Destroy(gameObject); // Destroy the projectile
+        }   
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        transform.GetComponent<NetworkObject>().Despawn(true);
+        Destroy(gameObject); // Destroy the projectile
 
     }
 
-    public virtual void Initialize()
+    void Start()
     {
-        // Initialize Projectiles with the variables from projectileVariable.
-        maxDistance = projectileVariable.maxDistance;
-        _damage = projectileVariable.damage;
+        startingPosition = transform.position;
     }
 
     void Update()
     {
-        if (Vector3.Distance(startingPosition, transform.position) > maxDistance)
-        {
-            Destroy(gameObject); // Destroy the projectile
-        }
+        DestroyAfterDistanceServerRpc();
     }
 }

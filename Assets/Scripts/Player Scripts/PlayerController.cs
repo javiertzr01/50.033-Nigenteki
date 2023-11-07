@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
 {
 
     public UnityEvent cameraFollow;
-
+    private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
-    float moveSpeed;
+    private float moveSpeed;
     NetworkVariable<float> _currentHealth;
 
     private Rigidbody2D rb;
@@ -19,29 +20,97 @@ public class PlayerController : NetworkBehaviour
     private Vector2 mousePos;
 
     [SerializeField]
-    private GameObject leftArmHolder;
+    private GameObject leftArmHolderPrefab;
 
     [SerializeField]
-    private GameObject rightArmHolder;
+    private GameObject rightArmHolderPrefab;
 
     [SerializeField]
     private GameObject leftArmPrefab;
     [SerializeField]
     private GameObject rightArmPrefab;
 
+    private GameObject player;
+    private GameObject leftArmHolder;
+    private GameObject rightArmHolder;
+    private GameObject leftArm;
+    private GameObject rightArm;
+
+    private bool armsInitialized = false;
+
+    private bool rightArmBasicUse = false;
+    private bool leftArmBasicUse = false;
+
     private void Awake()
     {
+        playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
-        moveSpeed = playerVariables.moveSpeed;
+        MoveSpeed = playerVariables.moveSpeed;
         _currentHealth = playerVariables.currentHealth;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnArmsServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (armsInitialized) return;
+
+        Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
+
+        player = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
+        
+        GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
+        //leftArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        leftArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
+        leftArmHolder = leftArmHolderClone;
+
+        GameObject rightArmHolderClone = Instantiate(rightArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + rightArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
+        //rightArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        rightArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        rightArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
+        rightArmHolder = rightArmHolderClone;
+
+        GameObject leftArmClone = Instantiate(leftArmPrefab, leftArmHolderClone.transform);
+        //leftArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        leftArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        leftArmClone.transform.GetComponent<NetworkObject>().TrySetParent(leftArmHolderClone.transform);
 
 
-        // Instantiate and Initialize Basic Arm as the child to the Arm Holder
-        DestroyAllChildObjects(leftArmHolder);
-        DestroyAllChildObjects(rightArmHolder);
-        Instantiate(leftArmPrefab, leftArmHolder.transform);
-        Instantiate(rightArmPrefab, rightArmHolder.transform);
+        GameObject rightArmClone = Instantiate(rightArmPrefab, rightArmHolderClone.transform);
+        //rightArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        rightArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        rightArmClone.transform.GetComponent<NetworkObject>().TrySetParent(rightArmHolderClone.transform);
 
+
+        armsInitialized = true;
+        
+        SpawnArmsClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+
+
+    }
+
+    [ClientRpc]
+    public void SpawnArmsClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
+    }
+
+    public float MoveSpeed
+    {
+        get
+        {
+            return moveSpeed;
+        }
+        set
+        {
+            moveSpeed = value;
+        }
     }
 
     public NetworkVariable<float> currentHealth
@@ -75,6 +144,7 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         if (!IsOwner && !IsClient) return;
+        SpawnArmsServerRpc();
         GetCameraFollow();
     }
 
@@ -85,12 +155,13 @@ public class PlayerController : NetworkBehaviour
 
         Movement();
         Look();
-
+        LeftArmBasicAttack();
+        RightArmBasicAttack();
     }
 
     void Movement()
     {
-        rb.velocity = moveDir * moveSpeed;
+        rb.velocity = moveDir * MoveSpeed;
     }
 
     void Look()
@@ -118,10 +189,14 @@ public class PlayerController : NetworkBehaviour
 
     public void LeftArmBasicAttackCheck(bool value)
     {
-        if (value)
-        {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
-        }
+        leftArmBasicUse = value;
+    }
+
+    void LeftArmBasicAttack()
+    {
+        if (!leftArmBasicUse) return;
+        //leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void LeftArmSkillCheck(bool value)
@@ -142,10 +217,14 @@ public class PlayerController : NetworkBehaviour
 
     public void RightArmBasicAttackCheck(bool value)
     {
-        if (value)
-        {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttack();
-        }
+        rightArmBasicUse = value;
+    }
+    void RightArmBasicAttack()
+    {
+        if (!rightArmBasicUse) return;
+
+        //rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void RightArmSkillCheck(bool value)
@@ -163,4 +242,26 @@ public class PlayerController : NetworkBehaviour
             rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
         }
     }
+
+    public void ApplyStun(float duration)
+    {
+        // Disable the player's input actions
+        playerInput.SwitchCurrentActionMap("Stunned");
+        Debug.Log("Stunned Player");
+
+        // Start a coroutine to re-enable input after a duration
+        StartCoroutine(ReenableInputAfterStun(duration));
+    }
+
+    private IEnumerator ReenableInputAfterStun(float duration)
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
+
+        // Re-enable the default action map
+        playerInput.SwitchCurrentActionMap("Player");
+        Debug.Log("Unstunned Player");
+    }
+
+
 }

@@ -4,13 +4,17 @@
 ## How to use RTT Map Generator
 
 0. Ignore if everything is already set up
-1. Create a Tilemap gameobject (Right-Click > 2D Object > Tilemap > Isometric) -> Name it **floor**
-2. Create a new gameobject called **TilemapVisualizer**, drag *TilemapVisualizer* script as component
+1. Create a Tilemap gameobject (Right-Click > 2D Object > Tilemap > Isometric) -> Name it **Floor**
+2. Create a Tilemap gameobject (Right-Click > 2D Object > Tilemap > Isometric) -> Name it **Walls**
+3. In the **Walls** gameobject, create a *TilemapCollider2D* Component and a *Rigidbody2D(Static)* component 
+3. Create a new gameobject called **TilemapVisualizer**, drag *TilemapVisualizer* script as component
 	1. Set Floor Tilemap as The **floor** Tilemap gameobject
-	2. Set Floor Tile to be the sprite
-3. Create a new gameobject called **RTTGenerator**, drag *RTTGenerator* script as component
+	2. Set Walls Tilemap as the **Walls** Tilemap gameobject
+	3. Set Floor Tile to be the sprite
+	4. Set Walls Tile to be the sprite
+4. Create a new gameobject called **RTTGenerator**, drag *RTTGenerator* script as component
 	1. Set Tilemap Visualizer as **TilemapVisualizer** gameobject
-4. Click on **Generate Map**
+5. Click on **Generate Map**
 
 ### Options
 

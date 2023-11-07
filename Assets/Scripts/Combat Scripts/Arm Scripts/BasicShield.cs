@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class BasicShield : Arm
 {
@@ -93,10 +94,26 @@ public class BasicShield : Arm
 
 
 
-
-    public override void CastBasicAttack()
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
         ToggleShield();
+
+        //Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
+
+
+    }
+
+    [ClientRpc]
+    public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
     public override void CastSkill()

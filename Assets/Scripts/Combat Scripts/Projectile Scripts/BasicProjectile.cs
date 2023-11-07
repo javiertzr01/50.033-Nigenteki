@@ -6,16 +6,19 @@ public class BasicProjectile : Projectile
 {
     public override void CollisionEnter2DLogic(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player")
-        {
-            // Damage the player
-            // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
-        }
-        Destroy(gameObject);
+        DestroyServerRpc();
     }
 
-    public override void Initialize()
+
+    public override void TriggerEnter2DLogic(Collider2D other)
     {
-        base.Initialize();
+        /*if (other.gameObject.tag == "shield")
+        {
+            DestroyServerRpc();
+        }*/
+        DestroyServerRpc();
     }
+
+
+
 }

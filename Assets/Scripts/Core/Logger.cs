@@ -12,7 +12,7 @@ public class Logger : Singleton<Logger>
     private bool enableDebug = false;
 
     [SerializeField]
-    private int maxLines = 15;
+    private int maxLines = 20;
 
     void Awake()
     {
