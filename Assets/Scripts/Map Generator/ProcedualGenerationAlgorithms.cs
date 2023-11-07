@@ -116,3 +116,15 @@ public static class Direction2D
         return cardinalDirectionsList[Random.Range(0, cardinalDirectionsList.Count)];
     }
 }
+
+public enum Biomes
+{
+    None,
+    RedSpawn,
+    BlueSpawn,
+    One,
+    Two,
+    Three,
+    Four,
+    Five
+}
