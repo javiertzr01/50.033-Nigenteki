@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Shield
   - Projectile
+  - Obstacle
   layers:
   - Default
   - TransparentFX

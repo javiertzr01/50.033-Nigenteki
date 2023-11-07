@@ -13,6 +13,7 @@ public abstract class AbstractProceduralGenerator : NetworkBehaviour
     protected Vector2Int startPosition = Vector2Int.zero;
     [SerializeField]
     public bool viewNodes = false;
+    public bool viewPaths = false;
 
     public void GenerateMap()
     {

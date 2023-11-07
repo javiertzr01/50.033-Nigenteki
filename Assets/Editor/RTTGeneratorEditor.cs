@@ -21,14 +21,22 @@ public class RTTGeneratorEditor : Editor
         {
             generator.GenerateMap();
         }
-        if(GUILayout.Toggle(generator.viewNodes, "Nodes Only"))
+        if (GUILayout.Toggle(generator.viewPaths, "Paths"))
+        {
+            generator.viewPaths = true;
+            generator.viewNodes = false;
+            generator.VisualizeMap();
+        }
+        else if(GUILayout.Toggle(generator.viewNodes, "Nodes Only"))
         {
             generator.viewNodes = true;
+            generator.viewPaths =false;
             generator.VisualizeMap();
         }
         else
         {
             generator.viewNodes = false;
+            generator.viewPaths =false;
             generator.VisualizeMap();
         }
     }
