@@ -36,28 +36,28 @@ public class Logger : Singleton<Logger>
 
     public void LogInfo(string message)
     {
-        ClearLines();
+        //ClearLines();
 
         debugAreaText.text += $"<color=\"green\">{DateTime.Now.ToString("HH:mm:ss.fff")} {message}</color>\n";
     }
 
     public void LogError(string message)
     {
-        ClearLines();
+        //ClearLines();
         debugAreaText.text += $"<color=\"red\">{DateTime.Now.ToString("HH:mm:ss.fff")} {message}</color>\n";
     }
 
     public void LogWarning(string message)
     {
-        ClearLines();
+        //ClearLines();
         debugAreaText.text += $"<color=\"yellow\">{DateTime.Now.ToString("HH:mm:ss.fff")} {message}</color>\n";
     }
 
-    private void ClearLines()
+   /* private void ClearLines()
     {
         if (debugAreaText.text.Split('\n').Count() >= maxLines)
         {
             debugAreaText.text = string.Empty;
         }
-    }
+    }*/
 }
