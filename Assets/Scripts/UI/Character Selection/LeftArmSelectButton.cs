@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LeftArmSelectButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Image iconImage;
+
+    private CharacterSelectDisplay characterSelect;
+
+    private BuildArmVariables leftArm;
+
+    public void SetLeftArm(CharacterSelectDisplay characterSelect, BuildArmVariables leftArm)
     {
-        
+        iconImage.sprite = leftArm.Icon;
+
+        this.characterSelect = characterSelect;
+        this.leftArm = leftArm;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SelectLeftArm()
     {
-        
+        characterSelect.SelectLeftArmDisplay(leftArm);
     }
 }

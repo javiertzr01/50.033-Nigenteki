@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RightArmSelectButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Image iconImage;
+
+    private CharacterSelectDisplay characterSelect;
+
+    private BuildArmVariables rightArm;
+
+    public void SetRightArm(CharacterSelectDisplay characterSelect, BuildArmVariables rightArm)
     {
-        
+        iconImage.sprite = rightArm.Icon;
+
+        this.characterSelect = characterSelect;
+        this.rightArm = rightArm;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SelectRightArm()
     {
-        
+        characterSelect.SelectRightArmDisplay(rightArm);
     }
 }

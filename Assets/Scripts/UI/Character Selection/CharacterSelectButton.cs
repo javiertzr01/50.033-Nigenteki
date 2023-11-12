@@ -9,18 +9,19 @@ public class CharacterSelectButton : MonoBehaviour
 
     private CharacterSelectDisplay characterSelect;
 
-    private BuildPlayerVariables player;
+    private BuildCharacterVariables character;
 
-    public void SetCharacter(CharacterSelectDisplay characterSelect, BuildPlayerVariables player)
+    public void SetCharacter(CharacterSelectDisplay characterSelect, BuildCharacterVariables character)
     {
+        iconImage.sprite = character.Icon;
+
         this.characterSelect = characterSelect;
-        this.player = player;
+        this.character = character;
     }
 
     public void SelectCharacter()
     {
-        characterSelect.Select(player);
+        characterSelect.SelectCharacterDisplay(character);
     }
-
 
 }

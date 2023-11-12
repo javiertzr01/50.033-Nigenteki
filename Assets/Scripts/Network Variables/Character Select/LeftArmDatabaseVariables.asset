@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 070640390523326428bc2883adab0f07, type: 3}
-  m_Name: BuildPlayerVariables
+  m_Script: {fileID: 11500000, guid: 7532e16864fad5242a2b424b006d4263, type: 3}
+  m_Name: LeftArmDatabaseVariables
   m_EditorClassIdentifier: 
-  id: -1
-  displayName: New Display Name
-  icon: {fileID: 0}
-  leftArmIcon: {fileID: 0}
-  rightArmIcon: {fileID: 0}
+  arms:
+  - {fileID: 11400000, guid: e871649eb5f0eca4db273cbc7fba9eba, type: 2}
+  - {fileID: 11400000, guid: fe58f79939f7f2a4a9880ddd4408a4d2, type: 2}

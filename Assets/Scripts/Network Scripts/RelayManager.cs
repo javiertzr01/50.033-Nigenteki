@@ -19,6 +19,8 @@ public class RelayManager : Singleton<RelayManager>
     [SerializeField]
     private int maxConnections = 10;
 
+    public string joinCode;
+
     public bool IsRelayEnabled => Transport != null && 
         Transport.Protocol == UnityTransport.ProtocolType.RelayUnityTransport;
 
@@ -55,6 +57,8 @@ public class RelayManager : Singleton<RelayManager>
         Transport.SetRelayServerData(relayHostData.IPv4Address, relayHostData.Port, relayHostData.AllocationIDBytes,
             relayHostData.Key, relayHostData.ConnectionData);
 
+        joinCode = relayHostData.JoinCode;
+
         Logger.Instance.LogInfo($"Relay Server generated a join code {relayHostData.JoinCode}");
 
         return relayHostData;
@@ -88,6 +92,8 @@ public class RelayManager : Singleton<RelayManager>
 
         Transport.SetRelayServerData(relayJoinData.IPv4Address, relayJoinData.Port, relayJoinData.AllocationIDBytes,
             relayJoinData.Key, relayJoinData.ConnectionData, relayJoinData.HostConnectionData);
+
+        joinCode = relayJoinData.JoinCode;
 
         Logger.Instance.LogInfo($"Client joined game with join code {joinCode}");
 
