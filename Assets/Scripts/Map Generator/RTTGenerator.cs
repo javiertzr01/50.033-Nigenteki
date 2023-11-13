@@ -184,7 +184,8 @@ public class RTTGenerator : AbstractProceduralGenerator
             Sprites biome = GetBiome(kvp.Key);                              // Get Biome
             foreach (Vector2Int position in kvp.Value)
             {
-                map[position] = biome;
+                if (!map.ContainsKey(position))
+                    map[position] = biome;
             }
         }
         
