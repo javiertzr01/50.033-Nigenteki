@@ -32,7 +32,7 @@ public class PlayerCard : MonoBehaviour
             characterIconImage.enabled = false;
         }
 
-        playerNameText.text = $"Player {characterState.ClientId}";
+        playerNameText.text = characterState.IsLockedIn ? $"Player {characterState.ClientId}" : $"Player {characterState.ClientId} Picking...";
 
         playerInfo.SetActive(true);
     }

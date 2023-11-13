@@ -11,6 +11,7 @@ public class CharacterSelectButton : MonoBehaviour
 
     private BuildCharacterVariables character;
 
+
     public void SetCharacter(CharacterSelectDisplay characterSelect, BuildCharacterVariables character)
     {
         iconImage.sprite = character.Icon;

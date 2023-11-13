@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class CharacterSelectDisplay : NetworkBehaviour
 {
@@ -32,15 +32,19 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     [SerializeField] private TMP_Text hostJoinCodeText;
 
+    [SerializeField] private Button readyButton;
+
     private NetworkList<CharacterSelectState> players;
     private NetworkList<ArmSelectState> leftArms;
     private NetworkList<ArmSelectState> rightArms;
+    private NetworkList<bool> playersReadyState;
 
     public void Awake()
     {
         players = new NetworkList<CharacterSelectState>();
         leftArms = new NetworkList<ArmSelectState>();
         rightArms = new NetworkList<ArmSelectState>();
+        playersReadyState = new NetworkList<bool>();
     }
     public override void OnNetworkSpawn()
     {
@@ -71,6 +75,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
             players.OnListChanged += HandlePlayersStateChanged;
             leftArms.OnListChanged += HandleLeftArmStateChanged;
             rightArms.OnListChanged += HandleRightArmStateChanged;
+            playersReadyState.OnListChanged += HandlePlayersReadyStateChanged;
 
             hostJoinCodeText.text = RelayManager.Instance.joinCode;
         }
@@ -87,8 +92,6 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
             hostJoinCodeText.text = RelayManager.Instance.joinCode;
         }
-
-        
     }
 
     public override void OnNetworkDespawn()
@@ -170,6 +173,11 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
     }
 
+    private void HandlePlayersReadyStateChanged(NetworkListEvent<bool> changeEvent)
+    {
+        
+    }
+
     public void SelectCharacterDisplay(BuildCharacterVariables character)
     {
         characterNameText.text = character.DisplayName;
@@ -238,6 +246,23 @@ public class CharacterSelectDisplay : NetworkBehaviour
                     rightArms[i].ClientId,
                     rightArmId
                 );
+            }
+        }
+    }
+
+    public void LockIn()
+    {
+        LockInServerRpc();
+    }
+
+    [ServerRpc]
+    public void LockInServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (rightArms[i].ClientId == serverRpcParams.Receive.SenderClientId)
+            {
+                
             }
         }
     }
