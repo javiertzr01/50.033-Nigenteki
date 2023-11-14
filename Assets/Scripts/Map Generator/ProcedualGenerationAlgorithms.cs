@@ -31,7 +31,9 @@ public static class ProceduralGenerationAlgorithms
         public HashSet<Vector2Int> pathsToChildren = new HashSet<Vector2Int>();
         public Dictionary<RTTNode, int> pathWeight = new Dictionary<RTTNode, int>();
         private int pathCount;
-        private int biomeCount;
+        private static int biomeCount;
+        public RTTNode biomeRoot;
+        public bool isBiomeRoot;
         [SerializeField]
         private int consecutiveBiomeDistance = 12;
         private int maxConsecutiveBiomeCount = 5;
@@ -40,6 +42,8 @@ public static class ProceduralGenerationAlgorithms
         public RTTNode(Vector2Int position)
         {
             pos = position;
+            biomeRoot = this;
+            isBiomeRoot = true;
             children = new List<RTTNode>();
         }
 
@@ -87,14 +91,19 @@ public static class ProceduralGenerationAlgorithms
             {
                 Debug.Log("Empty Biome at" + this.pos);
             }
+            child.biome = this.biome;
             if(pathCount <= consecutiveBiomeDistance && biomeCount < maxConsecutiveBiomeCount)
             {
-                child.biome = this.biome;
+                child.isBiomeRoot = false;
+                child.biomeRoot = this.biomeRoot;
                 biomeCount++;
             }
             else
             {
-                child.biome = Biome.GetRandomBiome();
+                while (child.biome == this.biome)
+                {
+                    child.biome = Biome.GetRandomBiome();
+                }
                 biomeCount = 0;
             }
             children.Add(child);
@@ -245,11 +254,11 @@ public enum Sprites
     Path,
     RedSpawn,
     BlueSpawn,
-    One,
-    Two,
-    Three,
-    Four,
-    Five
+    Green1,
+    Green2,
+    Green3,
+    Autumn,
+    Sakura
 }
 
 public static class Biome

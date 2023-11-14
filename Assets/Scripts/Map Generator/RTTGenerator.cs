@@ -30,32 +30,49 @@ public class RTTGenerator : AbstractProceduralGenerator
     public HashSet<Vector2Int> pathPositions = null;
     public HashSet<Vector2Int> floorPositions = null;
     public List<Vector2Int> endPoints = null;
-    public Dictionary<Vector2Int, HashSet<Vector2Int>> zone = null;
+    public Dictionary<Vector2Int, HashSet<Vector2Int>> nodePositionZone = null;
+    public Dictionary<Vector2Int, HashSet<Vector2Int>> biomeZone = null;
     private Dictionary<Vector2Int, Sprites> spriteMap = null;
     private Dictionary<Vector2Int, string> prefabMap = null; 
+
+    public BiomeInfo green1;
+    public BiomeInfo green2;
+    public BiomeInfo green3;
+    public BiomeInfo autumn;
+    public BiomeInfo sakura;
 
     // Information to be passed to Network
     public Vector2Int[] floorPositionsArray = null;
     public Sprites[] spritesArray = null;
+    public Vector2Int[] obstaclePositionsArray = null;
+    public string[] obstacleNamesArray = null;
 
     // Testing
-    [SerializeField]
     GameObject obstacle;
+    [SerializeField]
+    public GameObject AutumnTree2x2;
+    public GameObject Green1Tree2x2;
+    public GameObject Green2Tree2x2;
+    public GameObject Green3Tree2x2;
+    public GameObject SakuraTree2x2;
+    public GameObject AutumnTree5x5;
+    public GameObject Green1Tree5x5;
+    public GameObject Green2Tree5x5;
+    public GameObject Green3Tree5x5;
+    public GameObject SakuraTree5x5;
+    
 
     public override void RunProceduralGeneration()
     {
         (nodePositions, nodeDictionary, pathPositions) = RunRTT();
-        (floorPositions, zone) = RunRandomWalk(nodePositions);
+        (floorPositions, nodePositionZone, biomeZone) = RunRandomWalk(nodePositions);
         floorPositions.UnionWith(pathPositions);                // Make sure that there is a walkable path to all places
         spriteMap = GenerateSpriteMap();
         (floorPositionsArray, spritesArray) = MapDictToArray(spriteMap);
         endPoints = FindEndPoints(nodePositions, pathPositions);
         prefabMap = PlaceItems();
-        foreach (var kvp in prefabMap)
-        {
-            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(kvp.Key.x, kvp.Key.y, 0), Quaternion.identity);
-            Debug.Log(kvp.Key + ":" + kvp.Value);
-        }
+        (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
+        SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
 
@@ -144,16 +161,21 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, HashSet<Vector2Int>>) RunRandomWalk(HashSet<Vector2Int> nodePositions)
+    protected (HashSet<Vector2Int>, Dictionary<Vector2Int, HashSet<Vector2Int>>, Dictionary<Vector2Int, HashSet<Vector2Int>>) RunRandomWalk(HashSet<Vector2Int> nodePositions)
     {
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
-        Dictionary<Vector2Int, HashSet<Vector2Int>> zone = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
+        Dictionary<Vector2Int, HashSet<Vector2Int>> nodePositionZone = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
+        Dictionary<Vector2Int, HashSet<Vector2Int>> biomeZone = new Dictionary<Vector2Int, HashSet<Vector2Int>>();
         foreach(Vector2Int startPosition in nodePositions)
         {
             HashSet<Vector2Int> nodeFloorPositions = new HashSet<Vector2Int>();  // To hold the zone around one node
             for (int i = 0; i < iterations; i++)
             {
                 var path = ProceduralGenerationAlgorithms.SimpleRandomWalk(startPosition, walkLength);
+
+                // Make sure no overlaps
+                path.ExceptWith(floorPositions);
+
                 // Add to the hashset containing all the floorpositions
                 floorPositions.UnionWith(path);
 
@@ -167,9 +189,18 @@ public class RTTGenerator : AbstractProceduralGenerator
                 //     currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
                 // }
             }
-            zone.Add(startPosition, nodeFloorPositions);
+            ProceduralGenerationAlgorithms.RTTNode node = nodeDictionary[startPosition];
+            if (biomeZone.ContainsKey(node.biomeRoot.pos))
+            {
+                biomeZone[node.biomeRoot.pos].UnionWith(nodeFloorPositions);
+            }
+            else
+            {
+                biomeZone.Add(node.biomeRoot.pos, nodeFloorPositions);
+            }
+            nodePositionZone.Add(startPosition, nodeFloorPositions);
         }
-        return (floorPositions, zone);
+        return (floorPositions, nodePositionZone, biomeZone);
     }
 
 
@@ -179,7 +210,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         Dictionary<Vector2Int, Sprites> map = new Dictionary<Vector2Int, Sprites>();
         foreach (Vector2Int position in pathPositions)
             map[position] = Sprites.Path;                  // Set the sprite for path
-        foreach (var kvp in zone)
+        foreach (var kvp in nodePositionZone)
         {
             Sprites biome = GetBiome(kvp.Key);                              // Get Biome
             foreach (Vector2Int position in kvp.Value)
@@ -196,37 +227,110 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     protected Dictionary<Vector2Int, string> PlaceItems()
     {
-        Vector2Int size = new Vector2Int(2,2);
-        PlacementType placementType = PlacementType.ColliderActive;   
-        int minCount = 3;
-        int maxCount = 8;
-        string name = "tree";
-
+        // Object placement
         Dictionary<Vector2Int, string> PrefabMap = new Dictionary<Vector2Int, string>();
-        foreach(var kvp in zone)
+        foreach(var kvp in biomeZone)
         {
-            HashSet<Vector2Int> nodeFloorPositions = kvp.Value;
-            ItemPlacementHelper itemPlacementHelper = new ItemPlacementHelper(nodeFloorPositions, pathPositions);
-            int itemCount = Random.Range(minCount, maxCount + 1);
-            for (int i = 0; i < itemCount; i++)
+            HashSet<Vector2Int> floorPositions = kvp.Value;
+            floorPositions.ExceptWith(pathPositions);
+            Sprites biome = spriteMap[floorPositions.First()];
+            BiomeInfo biomeInfo;
+            switch (biome)
             {
-                Vector2Int? position = itemPlacementHelper.GetItemPlacementPosition(placementType, 5, size, true);
-                if (position != null)
-                    PrefabMap[(Vector2Int)position] = name;
+                case Sprites.Green1:
+                    biomeInfo = green1;
+                    break;
+                case Sprites.Green2:
+                    biomeInfo = green2;
+                    break;
+                case Sprites.Green3:
+                    biomeInfo = green3;
+                    break;
+                case Sprites.Autumn:
+                    biomeInfo = autumn;
+                    break;
+                case Sprites.Sakura:
+                    biomeInfo = sakura;
+                    break;
+                default:
+                    biomeInfo = null;
+                    break;
+            }
+            if (biomeInfo == null)
+            {
+                Debug.Log("Error: Null Biome Info");
+            }
+            ItemPlacementHelper itemPlacementHelper = new ItemPlacementHelper(floorPositions, pathPositions);
+            foreach(var item in biomeInfo.items)
+            {
+                int itemCount = Random.Range(item.minCount, item.maxCount + 1);
+                for (int i = 0; i < itemCount; i++)
+                {
+                    Vector2Int? position = itemPlacementHelper.GetItemPlacementPosition(item.itemData.placementType, 500, item.itemData.size, true);
+                    if (position != null)
+                        PrefabMap[(Vector2Int)position] = biome.ToString()+item.itemData.name;
+                }
             }
         }
         return PrefabMap;
     }
+
+
+    public void SpawnItems(Vector2Int[] obstaclePositionsArray, string[] obstacleNamesArray)
+    {
+        for(int i = 0; i < obstaclePositionsArray.Count(); i++)
+        {
+            switch(obstacleNamesArray[i])
+            {
+                case "Autumntree2x2":
+                    obstacle = AutumnTree2x2;
+                    break;
+                case "Green1tree2x2":
+                    obstacle = Green1Tree2x2;
+                    break;
+                case "Green2tree2x2":
+                    obstacle = Green2Tree2x2;
+                    break;
+                case "Green3tree2x2":
+                    obstacle = Green3Tree2x2;
+                    break;
+                case "Sakuratree2x2":
+                    obstacle = SakuraTree2x2;
+                    break;
+                case "Autumntree5x5":
+                    obstacle = AutumnTree5x5;
+                    break;
+                case "Green1tree5x5":
+                    obstacle = Green1Tree5x5;
+                    break;
+                case "Green2tree5x5":
+                    obstacle = Green2Tree5x5;
+                    break;
+                case "Green3tree5x5":
+                    obstacle = Green3Tree5x5;
+                    break;
+                case "Sakuratree5x5":
+                    obstacle = SakuraTree5x5;
+                    break;
+                default:
+                    Debug.Log("No Prefab");
+                    break;
+            }
+            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(obstaclePositionsArray[i].x, obstaclePositionsArray[i].y, 0), Quaternion.identity);
+        }
+            // Debug.Log(kvp.Key + ":" + kvp.Value);
+    }
+
 
     private Sprites GetBiome(Vector2Int nodePosition)
     {
         return nodeDictionary[nodePosition].biome;
     }
 
-    private (Vector2Int[], Sprites[]) MapDictToArray(Dictionary<Vector2Int, Sprites> map)
+    private (TKey[], TValue[]) MapDictToArray<TKey, TValue>(Dictionary<TKey, TValue> map)
     {
-        Vector2Int[] keys = (new List<Vector2Int>(map.Keys)).ToArray();
-        Sprites[] values = (new List<Sprites>(map.Values)).ToArray();
+        TKey[] keys = (new List<TKey>(map.Keys)).ToArray();
+        TValue[] values = (new List<TValue>(map.Values)).ToArray();
 
         return (keys, values);
     }
