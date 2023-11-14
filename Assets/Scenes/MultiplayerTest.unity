@@ -1068,13 +1068,93 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31e339d66be133743a8034a3346acb0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTimer:
+  mainTimer:
+    m_InternalValue: 0
+  team1Timer:
+    m_InternalValue: 0
+  team2Timer:
+    m_InternalValue: 0
+  phase:
+    m_InternalValue: 0
+  gameWinner:
     m_InternalValue: 0
   isControlPointActive:
     m_InternalValue: 0
-  updateMainTimerUI:
+  mainTimerUpdateEventInvoker:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 8ebeeeea5d1842e4e9b65471295e36c5, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  team1TimerUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: af1cca20e13cef941a69020a2db54012, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  team2TimerUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 91fba1cc4cc232945bb2f0cc5e9aebab, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  phaseUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 8d5c0ea524905774f84aa3e4145c13b9, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  gameWinnerUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 91c1ff9f4d922174e9f5084e9f2f61c4, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &294737228
 GameObject:
   m_ObjectHideFlags: 0
@@ -2169,6 +2249,7 @@ GameObject:
   - component: {fileID: 736876421}
   - component: {fileID: 736876420}
   - component: {fileID: 736876422}
+  - component: {fileID: 736876423}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2188,111 +2269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ced3badb0a8f249a2e6a3ab2211c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimerUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 8ebeeeea5d1842e4e9b65471295e36c5, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  PhaseUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 8d5c0ea524905774f84aa3e4145c13b9, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Team1TimerUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: af1cca20e13cef941a69020a2db54012, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Team1PercentUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 40bc0faaf8ef08a4897db373bac7c3d5, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Team2TimerUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 91fba1cc4cc232945bb2f0cc5e9aebab, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Team2PercentUpdateEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: f6f88395b6aae234da1038086ee30f72, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  GameWinLossEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 91c1ff9f4d922174e9f5084e9f2f61c4, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   GameEndEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2308,6 +2284,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  gameStateStore: {fileID: 288351242}
   _gameInProgress: 0
 --- !u!4 &736876421
 Transform:
@@ -2352,6 +2329,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &736876423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736876419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 703895574
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &776109828
 GameObject:
   m_ObjectHideFlags: 0
@@ -5618,6 +5615,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
       propertyPath: updatePlayersInLobbyUI.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -5628,13 +5630,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
       propertyPath: visualizeMap.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 8ebeeeea5d1842e4e9b65471295e36c5,
+        type: 2}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}
       propertyPath: updatePlayersInLobbyUI.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Raise
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}
@@ -5654,8 +5677,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameEvent`1[[System.Single, mscorlib
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
       propertyPath: updatePlayersInLobbyUI.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameEvent`1[[UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
+        type: 3}
+      propertyPath: updateMainTimerUI.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3274510630383653285, guid: 4e92703befc0d4f43aceb0d3b3272291,
         type: 3}

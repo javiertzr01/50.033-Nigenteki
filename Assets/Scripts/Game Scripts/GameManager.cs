@@ -2,83 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
+using Unity.Netcode;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
-    public UnityEvent<float> TimerUpdateEvent;
-    public UnityEvent<int> PhaseUpdateEvent;
-    public UnityEvent<float> Team1TimerUpdateEvent;
-    public UnityEvent<float> Team1PercentUpdateEvent;
-    public UnityEvent<float> Team2TimerUpdateEvent;
-    public UnityEvent<float> Team2PercentUpdateEvent;
-    public UnityEvent<int> GameWinLossEvent;
     public UnityEvent GameEndEvent;
 
-    private float phaseOneDuration = 10.5f; //780.5f // 13mins
-    private float phaseTwoDuration = 5.5f; //420.5f // 7mins
-    private static float winCondition = 0f; // Points needed for a team to win
-    private static float teamInitialTimer = 12f; // 180f; 
+    [HideInInspector]
+    private static float phaseOneDuration = 10.5f; //780.5f // 13mins
+    
+    [HideInInspector]
+    private static float phaseTwoDuration = 5.5f; //420.5f // 7mins
+
+    [HideInInspector]
+    public static float winCondition = 0f; // Points needed for a team to win
+    [HideInInspector]
+    public static float teamInitialTimer = 15f; // 180f; 
+
+    public GameStateStore gameStateStore;
 
     [SerializeField]
-    private bool _gameInProgress = false;
+    private bool _gameInProgress = true;
 
-    private float currentTimer;
-    private int currentPhase = 1;
     private int team1Kills = 0;
     private int team1Deaths = 0;
     private int team2Kills = 0;
     private int team2Deaths = 0;
 
-    private float team1PercentLeft;
-    private float team2PercentLeft;
-
-    private float _team1Timer;
-    private float _team2Timer;
-    public float Team1Timer
-    {
-        get { return _team1Timer; }
-        set { _team1Timer = Mathf.Max(value, 0); } // Ensures that _team1Timer never goes below 0
-    }
-
-    public float Team2Timer
-    {
-        get { return _team2Timer; }
-        set { _team2Timer = Mathf.Max(value, 0); } // Ensures that _team2Timer never goes below 0
-    }
-
-
     private void Start()
     {
     }
-
 
     private void Update()
     {
         if (GameInProgress)
         {
             // Assuming you call a method to update the timer
-            UpdateTimer();
+            UpdateMainTimer();
         }
-        
     }
 
     public void StartGame()
     {
         GameInProgress = true;
-        Time.timeScale = 1;
+        SetTimeScaleClientRpc(1); // Call the RPC method
         StartPhaseOne();
     }
 
     public void EndGame()
     {
         GameInProgress = false;
-        Time.timeScale = 0;
-        currentPhase = 0;
-        PhaseUpdateEvent.Invoke(currentPhase);
-
+        SetTimeScaleClientRpc(0); // Call the RPC method
+        gameStateStore.phase.Value = 0;
         GameEndEvent.Invoke();
-
         // Clean up the game, disable components, etc.
+    }
+
+    [ClientRpc]
+    private void SetTimeScaleClientRpc(float timeScale)
+    {
+        Time.timeScale = timeScale;
     }
 
     public bool GameInProgress
@@ -93,80 +76,65 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateTimer()
+    private void UpdateMainTimer()
     {
-        currentTimer -= Time.deltaTime;
         ReduceTeamTimer(1, Time.deltaTime);
 
-        if (currentTimer <= 0f)
+        if (gameStateStore.mainTimer.Value <= 0f)
         {
-            if (currentPhase == 1)
+            if (gameStateStore.phase.Value == 1)
             {
-                TimerUpdateEvent.Invoke(currentTimer);
+                gameStateStore.mainTimer.Value -= Time.deltaTime;
+
                 StartPhaseTwo();
             }
-            else if (currentPhase == 2)
+            else if (gameStateStore.phase.Value == 2)
             {
                 CheckForKDRWinner();
             }
         }
         else
         {
-            TimerUpdateEvent.Invoke(currentTimer);
+            gameStateStore.mainTimer.Value -= Time.deltaTime;
         }
     }
 
     private void StartPhaseOne()
     {
-        currentTimer = phaseOneDuration;
-        Team1Timer = teamInitialTimer;
-        Team2Timer = teamInitialTimer;
-        team1PercentLeft = 100f;
-        team2PercentLeft = 100f;
-
-        Team1TimerUpdateEvent.Invoke(Team1Timer);
-        Team1PercentUpdateEvent.Invoke(team1PercentLeft);
-
-        Team2TimerUpdateEvent.Invoke(Team2Timer);
-        Team2PercentUpdateEvent.Invoke(team2PercentLeft);
-
-        currentPhase = 1;
-        PhaseUpdateEvent.Invoke(currentPhase);
-        GameWinLossEvent.Invoke(-1);
+        gameStateStore.mainTimer.Value = phaseOneDuration;
+        gameStateStore.team1Timer.Value = teamInitialTimer;
+        gameStateStore.team2Timer.Value = teamInitialTimer;
+        gameStateStore.phase.Value = 1;
+        gameStateStore.gameWinner.Value = -1;
     }
 
     private void StartPhaseTwo()
     {
         // Transition to phase two
-        currentPhase = 2;
-        currentTimer = phaseTwoDuration;
+        gameStateStore.mainTimer.Value = phaseTwoDuration;
 
         // Raise the phase change event
-        PhaseUpdateEvent.Invoke(currentPhase);
+        gameStateStore.phase.Value = 2;
     }
 
 
     public void ReduceTeamTimer(int team, float clockedTime)
     {
-        if (Team1Timer > winCondition && Team2Timer > winCondition)
+        if (gameStateStore.team1Timer.Value > winCondition && gameStateStore.team2Timer.Value > winCondition)
         {
             if (team == 1)
             {
-                Team1Timer -= clockedTime;
-                Team1TimerUpdateEvent.Invoke(Team1Timer);
-                Team1PercentUpdateEvent.Invoke((Team1Timer / teamInitialTimer) * 100f);
+                gameStateStore.team1Timer.Value -= clockedTime;
             }
             else if (team == 2)
             {
-                Team2Timer -= clockedTime;
-                Team2TimerUpdateEvent.Invoke(Team2Timer);
-                Team2PercentUpdateEvent.Invoke((Team2Timer / teamInitialTimer) * 100f);
+                gameStateStore.team2Timer.Value -= clockedTime;
             }
 
             // Check for win condition
-            if (Team1Timer <= winCondition || Team2Timer <= winCondition)
+            if (gameStateStore.team1Timer.Value <= winCondition || gameStateStore.team2Timer.Value <= winCondition)
             {
-                DeclareWinner(Team1Timer < Team2Timer ? 1 : 2);
+                DeclareWinner(gameStateStore.team1Timer.Value < gameStateStore.team2Timer.Value ? 1 : 2);
             }
         }
 
@@ -176,7 +144,7 @@ public class GameManager : MonoBehaviour
     private void DeclareWinner(int winningTeam)
     {
         // Raise the game win event with winning team info
-        GameWinLossEvent.Invoke(winningTeam); // 0 - Tie; 1 - Team 1; 2 - Team 2;
+        gameStateStore.gameWinner.Value = winningTeam; // 0 - Tie; 1 - Team 1; 2 - Team 2;
 
         // End the game
         EndGame();
@@ -205,9 +173,9 @@ public class GameManager : MonoBehaviour
 
 
     // Call this method to get the remaining time for UI display or other logic
-    public float GetCurrentTimer()
+    public float GetmainTimer()
     {
-        return currentTimer;
+        return gameStateStore.mainTimer.Value;
     }
 }
 

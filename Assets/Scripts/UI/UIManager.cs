@@ -28,6 +28,7 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField]
     private Button startGameButton;
+    private GameObject startGameButtonGameObject;
 
     [SerializeField]
     private TextMeshProUGUI playersInGameText;
@@ -56,6 +57,9 @@ public class UIManager : NetworkBehaviour
     private void Awake()
     {
         Cursor.visible = true;
+
+        startGameButtonGameObject = startGameButton.gameObject;
+        startGameButtonGameObject.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -78,11 +82,16 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartHost())
                 Logger.Instance.LogInfo("Host Started");
 
+            //ShowStartGameButton
+            startGameButtonGameObject.SetActive(true);
+
             // Generate random map
             generateMap.Invoke();
             Logger.Instance.LogInfo("Random map generated");
             saveMap.Invoke();
             Logger.Instance.LogInfo("Random map instance saved");
+
+            
 
         });
 
@@ -169,6 +178,7 @@ public class UIManager : NetworkBehaviour
         //team1TimerText.text = $"Team1: {percent.ToString("00.00")}%";
         TimeSpan timeSpan = TimeSpan.FromSeconds(secondsLeft);
         team1TimerText.text = $"Team 1: {timeSpan.ToString(@"m\:ss")}";
+        Team1Percentage((secondsLeft / GameManager.teamInitialTimer)*100);
     }
 
     public void Team1Percentage(float percent)
@@ -190,6 +200,7 @@ public class UIManager : NetworkBehaviour
         //team2TimerText.text = $"Team 2: {percent.ToString("00.00")}";
         TimeSpan timeSpan = TimeSpan.FromSeconds(secondsLeft);
         team2TimerText.text = $"Team 2: {timeSpan.ToString(@"m\:ss")}";
+        Team2Percentage((secondsLeft / GameManager.teamInitialTimer) * 100);
     }
 
 
