@@ -170,7 +170,19 @@ public class PlayerController : NetworkBehaviour
     {
         Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
-        transform.up = lookDir;
+        //transform.up = lookDir;
+        leftArmHolder.transform.up = lookDir;
+        rightArmHolder.transform.up = lookDir;
+
+        float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+        if (rotZ < 89 && rotZ > -89)
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = false;
+        }
 
     }
 
