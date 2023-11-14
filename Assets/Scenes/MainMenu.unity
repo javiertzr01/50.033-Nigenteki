@@ -256,6 +256,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4397848}
   m_CullTransparentMesh: 1
+--- !u!1 &10983126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 10983128}
+  - component: {fileID: 10983127}
+  m_Layer: 0
+  m_Name: ServerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &10983127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10983126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad5dba70500872447ad71421c8b99abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterSelectScreenSceneName: CharacterSelect
+  gameplaySceneName: MultiplayerTest
+--- !u!4 &10983128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10983126}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &115873999
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,7 +533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38e4ecb8c07bee54197ff4ab63abc878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterSelectScreenSceneName: CharacterSelect
   joinCodeInputField: {fileID: 1255940872}
 --- !u!4 &483709768
 Transform:
@@ -1112,7 +1157,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: e50074b1536a7cf4ea11fa452d9b90bf, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
+    ConnectionApproval: 1
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30
@@ -2160,3 +2205,4 @@ SceneRoots:
   - {fileID: 912346258}
   - {fileID: 483709768}
   - {fileID: 115874002}
+  - {fileID: 10983128}

@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class PlayerCard : MonoBehaviour
 {
     [SerializeField] private CharacterDatabaseVariables characterDatabase;
-    [SerializeField] private ArmDatabaseVariables leftArmDatabase;
-    [SerializeField] private ArmDatabaseVariables rightArmDatabase;
+    [SerializeField] private ArmDatabaseVariables armDatabase;
 
     [SerializeField] private GameObject playerInfo;
     [SerializeField] private Image characterIconImage;
@@ -17,6 +16,7 @@ public class PlayerCard : MonoBehaviour
 
     [SerializeField] private TMP_Text playerNameText;
     [SerializeField] private TMP_Text characterNameText;
+    [SerializeField] private TMP_Text playerReadyText;
 
     public void UpdateCharacterDisplay(CharacterSelectState characterState)
     {
@@ -32,7 +32,7 @@ public class PlayerCard : MonoBehaviour
             characterIconImage.enabled = false;
         }
 
-        playerNameText.text = characterState.IsLockedIn ? $"Player {characterState.ClientId}" : $"Player {characterState.ClientId} Picking...";
+        playerNameText.text = $"Player {characterState.ClientId}";
 
         playerInfo.SetActive(true);
     }
@@ -41,7 +41,7 @@ public class PlayerCard : MonoBehaviour
     {
         if (leftArmState.ArmId != -1)
         {
-            var leftArm = leftArmDatabase.GetArmById(leftArmState.ArmId);
+            var leftArm = armDatabase.GetArmById(leftArmState.ArmId);
             leftArmIconImage.sprite = leftArm.Icon;
             leftArmIconImage.enabled = true;
         }
@@ -55,13 +55,25 @@ public class PlayerCard : MonoBehaviour
     {
         if (rightArmState.ArmId != -1)
         {
-            var rightArm = rightArmDatabase.GetArmById(rightArmState.ArmId);
+            var rightArm = armDatabase.GetArmById(rightArmState.ArmId);
             rightArmIconImage.sprite = rightArm.Icon;
             rightArmIconImage.enabled = true;
         }
         else
         {
             rightArmIconImage.enabled = false;
+        }
+    }
+
+    public void UpdatePlayerReadyDisplay(PlayerReadyState playerReadyState)
+    {
+        if (playerReadyState.IsReady)
+        {
+            playerReadyText.text = "Ready!";
+        }
+        else
+        {
+            playerReadyText.text = "Not Ready";
         }
     }
 

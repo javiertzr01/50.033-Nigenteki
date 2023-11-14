@@ -12,5 +12,6 @@ public class ClientData : MonoBehaviour
     public ClientData(ulong clientId)
     {
         this.clientId = clientId;
+
     }
 }

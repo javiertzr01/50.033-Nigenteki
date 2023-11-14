@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
 
 public class ServerManager : Singleton<ServerManager>
 {
@@ -75,12 +74,16 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
 
-    public void SetCharacter(ulong clientID, int characterId)
+    public void SetPlayer(ulong clientID, int characterId, int leftArmId, int rightArmId)
     {
         if (ClientData.TryGetValue(clientID, out ClientData data))
         {
             data.characterId = characterId;
+            data.leftArmId = leftArmId;
+            data.rightArmId = rightArmId;
         }
+
+        Logger.Instance.LogInfo($"Set Player {clientID}'s character as {characterId}, left arm as {leftArmId}, right arm as {rightArmId}");
     }
 
     public void StartGame()

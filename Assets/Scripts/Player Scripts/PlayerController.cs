@@ -9,6 +9,7 @@ public class PlayerController : NetworkBehaviour
 {
 
     public UnityEvent cameraFollow;
+    private CameraController cameraController;
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
@@ -26,9 +27,9 @@ public class PlayerController : NetworkBehaviour
     private GameObject rightArmHolderPrefab;
 
     [SerializeField]
-    private GameObject leftArmPrefab;
+    public GameObject leftArmPrefab;
     [SerializeField]
-    private GameObject rightArmPrefab;
+    public GameObject rightArmPrefab;
 
     private GameObject player;
     private GameObject leftArmHolder;
@@ -142,6 +143,7 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
 
         if (!IsOwner && !IsClient) return;
         SpawnArmsServerRpc();
@@ -184,7 +186,8 @@ public class PlayerController : NetworkBehaviour
 
     public void GetCameraFollow()
     {
-        cameraFollow.Invoke();
+        //cameraFollow.Invoke();
+        cameraController.FollowPlayer(player.transform);
     }
 
     public void LeftArmBasicAttackCheck(bool value)
@@ -195,7 +198,7 @@ public class PlayerController : NetworkBehaviour
     void LeftArmBasicAttack()
     {
         if (!leftArmBasicUse) return;
-        //leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+
         transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
@@ -223,7 +226,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (!rightArmBasicUse) return;
 
-        //rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
         transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
