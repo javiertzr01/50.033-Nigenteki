@@ -27,6 +27,9 @@ public class UIManager : NetworkBehaviour
     private Button startClientButton;
 
     [SerializeField]
+    private Button startGameButton;
+
+    [SerializeField]
     private TextMeshProUGUI playersInGameText;
 
     [SerializeField]
@@ -81,10 +84,6 @@ public class UIManager : NetworkBehaviour
             saveMap.Invoke();
             Logger.Instance.LogInfo("Random map instance saved");
 
-            //StartGameManager
-            //gameStart.Invoke();
-            //Logger.Instance.LogInfo("Game Started");
-
         });
 
         startClientButton?.onClick.AddListener(async () =>
@@ -95,6 +94,12 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartClient())
                 Logger.Instance.LogInfo("Client Started");
 
+        });
+
+        startGameButton?.onClick.AddListener(async () =>
+        {
+            gameStart.Invoke();
+            Logger.Instance.LogInfo("Game Started");
         });
     }
 
