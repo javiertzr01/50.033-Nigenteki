@@ -33,7 +33,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     public Dictionary<Vector2Int, HashSet<Vector2Int>> nodePositionZone = null;
     public Dictionary<Vector2Int, HashSet<Vector2Int>> biomeZone = null;
     private Dictionary<Vector2Int, Sprites> spriteMap = null;
-    private Dictionary<Vector2Int, string> prefabMap = null; 
+    private Dictionary<Vector2Int, string> prefabMap = null;
 
     public BiomeInfo green1;
     public BiomeInfo green2;
@@ -41,13 +41,20 @@ public class RTTGenerator : AbstractProceduralGenerator
     public BiomeInfo autumn;
     public BiomeInfo sakura;
 
+    public ObstacleInfo redSpawnInfo;
+    public ObstacleInfo blueSpawnInfo;
+    public ObstacleInfo capturePointInfo;
+
     // Information to be passed to Network
     public Vector2Int[] floorPositionsArray = null;
     public Sprites[] spritesArray = null;
     public Vector2Int[] obstaclePositionsArray = null;
     public string[] obstacleNamesArray = null;
+    public Vector2Int redSpawnPosition;
+    public Vector2Int blueSpawnPosition;
+    public Vector2Int capturePointPosition;
 
-    // Testing
+    // Prefabs
     GameObject obstacle;
     [SerializeField]
     public GameObject AutumnTree2x2;
@@ -60,6 +67,12 @@ public class RTTGenerator : AbstractProceduralGenerator
     public GameObject Green2Tree5x5;
     public GameObject Green3Tree5x5;
     public GameObject SakuraTree5x5;
+    public GameObject RedFlower;
+    public GameObject BlueFlower;
+    public GameObject GreenFlower;
+    public GameObject RedSpawn;
+    public GameObject BlueSpawn;
+    public GameObject CapturePoint;
     
 
     public override void RunProceduralGeneration()
@@ -70,8 +83,13 @@ public class RTTGenerator : AbstractProceduralGenerator
         spriteMap = GenerateSpriteMap();
         (floorPositionsArray, spritesArray) = MapDictToArray(spriteMap);
         endPoints = FindEndPoints(nodePositions, pathPositions);
+        (redSpawnPosition, blueSpawnPosition, capturePointPosition) = DeterminePOI();
+        ProcessPOI(redSpawnPosition, redSpawnInfo);
+        ProcessPOI(blueSpawnPosition, blueSpawnInfo);
+        ProcessPOI(capturePointPosition, capturePointInfo);
         prefabMap = PlaceItems();
         (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
+        SpawnPOI();
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
@@ -150,6 +168,66 @@ public class RTTGenerator : AbstractProceduralGenerator
             }
         }
         return endPoints;
+    }
+
+
+
+    private (Vector2Int, Vector2Int, Vector2Int) DeterminePOI()
+    {
+        Dijkstra dijkstra = new Dijkstra();
+        foreach(var kvp in nodeDictionary)
+        {
+            ProceduralGenerationAlgorithms.RTTNode node = kvp.Value;
+            dijkstra.AddToGraph(node, node.pathWeight);
+        }
+        int endPointsCount = endPoints.Count;
+        Vector2Int redSpawnPosition = endPoints[Random.Range(0, endPointsCount-1)];
+        ProceduralGenerationAlgorithms.RTTNode redSpawnNode = nodeDictionary[redSpawnPosition];
+        ProceduralGenerationAlgorithms.RTTNode blueSpawnNode = dijkstra.FindFurthestNode(redSpawnNode);
+        ProceduralGenerationAlgorithms.RTTNode capturePointNode = dijkstra.FindCommonFurthestNode(redSpawnNode, blueSpawnNode);
+
+        return (redSpawnNode.pos, blueSpawnNode.pos, capturePointNode.pos);
+    }
+
+
+
+    private void ProcessPOI(Vector2Int position, ObstacleInfo info)
+    {
+        HashSet<Vector2Int> zonePositions = biomeZone[nodeDictionary[position].biomeRoot.pos];
+
+        List<Vector2Int> positions = new List<Vector2Int>() { position };
+        Vector2Int size = info.size;
+        int maxX = (size.x - 1)/2;
+        int maxY = (size.y - 1)/2;
+        int minX = -(size.x - 1)/2;
+        int minY = -(size.y - 1)/2;
+
+        for (int row = minX; row <= maxX; row++)
+        {
+            for (int col = minY; col <= maxY; col++)
+            {
+                if (col == 0 && row == 0)
+                    continue;
+                Vector2Int newPosToCheck = new Vector2Int(position.x + row, position.y + col);
+                if (!floorPositions.Contains(newPosToCheck))
+                {
+                    Debug.Log("Error: Hole present, Map Regeneration Required");
+                    // regenerate = true;
+                }
+                positions.Add(newPosToCheck);
+            }
+        }
+        zonePositions.ExceptWith(positions);
+        biomeZone[nodeDictionary[position].biomeRoot.pos] = zonePositions;
+    }
+
+
+
+    public void SpawnPOI()
+    {
+        GameObject redSpawnGO = GameObject.Instantiate(RedSpawn, new Vector3(redSpawnPosition.x, redSpawnPosition.y, 0), Quaternion.identity);
+        GameObject blueSpawnGO = GameObject.Instantiate(BlueSpawn, new Vector3(blueSpawnPosition.x, blueSpawnPosition.y, 0), Quaternion.identity);
+        GameObject capturePointGO = GameObject.Instantiate(CapturePoint, new Vector3(capturePointPosition.x, capturePointPosition.y, 0), Quaternion.identity);
     }
 
 
@@ -280,41 +358,60 @@ public class RTTGenerator : AbstractProceduralGenerator
     {
         for(int i = 0; i < obstaclePositionsArray.Count(); i++)
         {
-            switch(obstacleNamesArray[i])
+            string biome = obstacleNamesArray[i].Substring(0,6);
+            string item = obstacleNamesArray[i].Substring(6);
+            if (item == "tree2x2")
             {
-                case "Autumntree2x2":
-                    obstacle = AutumnTree2x2;
-                    break;
-                case "Green1tree2x2":
-                    obstacle = Green1Tree2x2;
-                    break;
-                case "Green2tree2x2":
-                    obstacle = Green2Tree2x2;
-                    break;
-                case "Green3tree2x2":
-                    obstacle = Green3Tree2x2;
-                    break;
-                case "Sakuratree2x2":
-                    obstacle = SakuraTree2x2;
-                    break;
-                case "Autumntree5x5":
-                    obstacle = AutumnTree5x5;
-                    break;
-                case "Green1tree5x5":
-                    obstacle = Green1Tree5x5;
-                    break;
-                case "Green2tree5x5":
-                    obstacle = Green2Tree5x5;
-                    break;
-                case "Green3tree5x5":
-                    obstacle = Green3Tree5x5;
-                    break;
-                case "Sakuratree5x5":
-                    obstacle = SakuraTree5x5;
-                    break;
-                default:
-                    Debug.Log("No Prefab");
-                    break;
+                switch(biome)
+                {
+                    case "Autumn":
+                        obstacle = AutumnTree2x2;
+                        break;
+                    case "Green1":
+                        obstacle = Green1Tree2x2;
+                        break;
+                    case "Green2":
+                        obstacle = Green2Tree2x2;
+                        break;
+                    case "Green3":
+                        obstacle = Green3Tree2x2;
+                        break;
+                    case "Sakura":
+                        obstacle = SakuraTree2x2;
+                        break;
+                    default:
+                        Debug.Log("No Prefab");
+                        break;
+                }
+            }
+            if (item == "tree5x5")
+            {
+                switch(biome)
+                {
+                    case "Autumn":
+                        obstacle = AutumnTree5x5;
+                        break;
+                    case "Green1":
+                        obstacle = Green1Tree5x5;
+                        break;
+                    case "Green2":
+                        obstacle = Green2Tree5x5;
+                        break;
+                    case "Green3":
+                        obstacle = Green3Tree5x5;
+                        break;
+                    case "Sakura":
+                        obstacle = SakuraTree5x5;
+                        break;
+                    default:
+                        Debug.Log("No Prefab");
+                        break;
+                }
+            }
+            if (item == "flower1x1")
+            {
+                GameObject[] flowers = {RedFlower, BlueFlower, GreenFlower};
+                obstacle = flowers[Random.Range(0,flowers.Count())];
             }
             GameObject obs = GameObject.Instantiate(obstacle, new Vector3(obstaclePositionsArray[i].x, obstaclePositionsArray[i].y, 0), Quaternion.identity);
         }

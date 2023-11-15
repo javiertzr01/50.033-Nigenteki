@@ -107,6 +107,7 @@ public static class ProceduralGenerationAlgorithms
                 biomeCount = 0;
             }
             children.Add(child);
+            child.pathWeight.Add(this, pathCount);
         }
 
         // Recursive Algorithm that generates a path between current node and sample node
@@ -252,8 +253,6 @@ public enum Sprites
 {
     None,
     Path,
-    RedSpawn,
-    BlueSpawn,
     Green1,
     Green2,
     Green3,
@@ -265,6 +264,6 @@ public static class Biome
 {
     public static Sprites GetRandomBiome()
     {
-        return (Sprites)Random.Range((int)Sprites.BlueSpawn + 1, Enum.GetValues(typeof(Sprites)).Length);
+        return (Sprites)Random.Range((int)Sprites.Path + 1, Enum.GetValues(typeof(Sprites)).Length);
     }
 }
