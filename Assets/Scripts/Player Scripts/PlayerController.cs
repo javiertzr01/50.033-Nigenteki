@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class PlayerController : NetworkBehaviour
 {
 
     public UnityEvent cameraFollow;
-    private CameraController cameraController;
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
@@ -30,6 +30,16 @@ public class PlayerController : NetworkBehaviour
     public GameObject leftArmPrefab;
     [SerializeField]
     public GameObject rightArmPrefab;
+
+    [SerializeField]
+    private CinemachineVirtualCamera vc;
+
+    [SerializeField]
+    private Camera cam;
+
+    [SerializeField]
+    private AudioListener listener;
+
 
     private GameObject player;
     private GameObject leftArmHolder;
@@ -56,8 +66,6 @@ public class PlayerController : NetworkBehaviour
         if (armsInitialized) return;
 
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
-
-        player = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
         
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         //leftArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
@@ -143,11 +151,25 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
+        //cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
 
         if (!IsOwner && !IsClient) return;
+        player = transform.gameObject;
         SpawnArmsServerRpc();
-        GetCameraFollow();
+        //GetCameraFollow();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            listener.enabled = true;
+            vc.Priority = 1;
+        }
+        else
+        {
+            vc.Priority = 0;
+        }
     }
 
     // Update is called once per frame
@@ -168,11 +190,11 @@ public class PlayerController : NetworkBehaviour
 
     void Look()
     {
-        Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector2 worldMousePos = cam.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
         //transform.up = lookDir;
-        leftArmHolder.transform.up = lookDir;
-        rightArmHolder.transform.up = lookDir;
+        transform.GetChild(1).transform.up = lookDir;
+        transform.GetChild(2).transform.up = lookDir;
 
         float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
         if (rotZ < 89 && rotZ > -89)
@@ -198,8 +220,8 @@ public class PlayerController : NetworkBehaviour
 
     public void GetCameraFollow()
     {
-        //cameraFollow.Invoke();
-        cameraController.FollowPlayer(player.transform);
+        cameraFollow.Invoke();
+        //cameraController.FollowPlayer(player.transform);
     }
 
     public void LeftArmBasicAttackCheck(bool value)
@@ -211,7 +233,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (!leftArmBasicUse) return;
 
-        transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        //transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void LeftArmSkillCheck(bool value)
@@ -238,7 +261,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!rightArmBasicUse) return;
 
-        transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void RightArmSkillCheck(bool value)
@@ -277,5 +300,9 @@ public class PlayerController : NetworkBehaviour
         Debug.Log("Unstunned Player");
     }
 
-
+    public enum PlayerState
+    {
+        Idle,
+        Walking
+    }
 }

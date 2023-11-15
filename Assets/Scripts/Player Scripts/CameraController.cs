@@ -23,10 +23,10 @@ public class CameraController : MonoBehaviour
 
 
     }
-    public void FollowPlayer(Transform transform)
+    public void FollowPlayer()
     {
 
-        /*foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
+        foreach (GameObject p in GameObject.FindGameObjectsWithTag("Player"))
         {
             Logger.Instance.LogInfo($"Player {p.GetComponent<NetworkObject>().OwnerClientId} found");
             Logger.Instance.LogInfo($"Player {p.GetComponent<NetworkObject>().OwnerClientId} is owner = {p.GetComponent<PlayerController>().IsOwner}");
@@ -38,9 +38,9 @@ public class CameraController : MonoBehaviour
 
         cinemachineVirtualCamera.Follow = player.transform;
 
-        Logger.Instance.LogInfo($"Following Player {player.GetComponent<NetworkObject>().OwnerClientId}");*/
+        Logger.Instance.LogInfo($"Following Player {player.GetComponent<NetworkObject>().OwnerClientId}");
 
-        cinemachineVirtualCamera.Follow = transform;
+        //cinemachineVirtualCamera.Follow = transform;
     }
 
 }
