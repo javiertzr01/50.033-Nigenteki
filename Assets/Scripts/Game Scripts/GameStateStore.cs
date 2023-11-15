@@ -13,7 +13,10 @@ public class GameStateStore : NetworkBehaviour
     public NetworkVariable<int> gameWinner = new NetworkVariable<int>();
 
     public NetworkVariable<bool> isControlPointActive = new NetworkVariable<bool>();
-    
+    public NetworkVariable<int> numberOfTeam1PlayersOnControlPoint = new NetworkVariable<int>();
+    public NetworkVariable<int> numberOfTeam2PlayersOnControlPoint = new NetworkVariable<int>();
+    public NetworkVariable<int> currentTeamOnControlPoint = new NetworkVariable<int>();
+
 
     public UnityEvent<float> mainTimerUpdateEventInvoker;
     public UnityEvent<float> team1TimerUpdateEventInvoker;
@@ -29,7 +32,20 @@ public class GameStateStore : NetworkBehaviour
         team2Timer.OnValueChanged += OnTeam2TimerChanged;
         phase.OnValueChanged += OnPhaseChanged;
         gameWinner.OnValueChanged += OnGameWinnerChanged;
+
+        //isControlPointActive.OnValueChanged += OnTeam1TimerChanged;
+        //numberOfTeam1PlayersOnControlPoint.OnValueChanged += OnTeam2TimerChanged;
+        //numberOfTeam2PlayersOnControlPoint.OnValueChanged += OnPhaseChanged;
+        //currentTeamOnControlPoint.OnValueChanged += OnGameWinnerChanged;
+
+
     }
+
+    //public void OnGameWinnerChanged(int previous, int current)
+    //{
+    //    Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
+    //    gameWinnerUpdateEventInvoker.Invoke(current);
+    //}
 
     public void OnGameWinnerChanged(int previous, int current)
     {
