@@ -16,6 +16,8 @@ public class PlayerController : NetworkBehaviour
     private float moveSpeed;
     NetworkVariable<float> _currentHealth;
 
+    private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
+
     private Rigidbody2D rb;
     private Vector2 moveDir;
     private Vector2 mousePos;
@@ -40,6 +42,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private AudioListener listener;
 
+    private Animator animator;
 
     private GameObject player;
     private GameObject leftArmHolder;
@@ -55,6 +58,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
         maxHealth = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
         _currentHealth = playerVariables.currentHealth;
@@ -110,6 +114,13 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerStateServerRpc(PlayerState newState)
+    {
+        networkPlayerState.Value = newState;
+    }
+
     public float MoveSpeed
     {
         get
@@ -134,29 +145,14 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void DestroyAllChildObjects(GameObject parentGameObject)
-    {
-        // Check if the parent GameObject has any children
-        if (parentGameObject.transform.childCount > 0)
-        {
-            // Loop through all child objects and destroy them
-            foreach (Transform child in parentGameObject.transform)
-            {
-                Destroy(child.gameObject);
-            }
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        //cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
 
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
-        //GetCameraFollow();
     }
 
     public override void OnNetworkSpawn()
@@ -181,11 +177,22 @@ public class PlayerController : NetworkBehaviour
         Look();
         LeftArmBasicAttack();
         RightArmBasicAttack();
+
+        UpdateAnimator();
     }
 
     void Movement()
     {
         rb.velocity = moveDir * MoveSpeed;
+
+        if (rb.velocity.magnitude > 0f)
+        {
+            UpdatePlayerStateServerRpc(PlayerState.Walking);
+        }
+        else
+        {
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
+        }
     }
 
     void Look()
@@ -298,6 +305,18 @@ public class PlayerController : NetworkBehaviour
         // Re-enable the default action map
         playerInput.SwitchCurrentActionMap("Player");
         Debug.Log("Unstunned Player");
+    }
+
+    private void UpdateAnimator()
+    {
+        if (networkPlayerState.Value == PlayerState.Walking)
+        {
+            animator.SetBool("isMoving", true);
+        }
+        else if (networkPlayerState.Value == PlayerState.Idle)
+        {
+            animator.SetBool("isMoving", false);
+        }
     }
 
     public enum PlayerState
