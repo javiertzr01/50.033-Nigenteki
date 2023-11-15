@@ -89,7 +89,6 @@ public class RTTGenerator : AbstractProceduralGenerator
         ProcessPOI(capturePointPosition, capturePointInfo);
         prefabMap = PlaceItems();
         (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
-        SpawnPOI();
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
@@ -356,6 +355,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public void SpawnItems(Vector2Int[] obstaclePositionsArray, string[] obstacleNamesArray)
     {
+        SpawnPOI();
         for(int i = 0; i < obstaclePositionsArray.Count(); i++)
         {
             string biome = obstacleNamesArray[i].Substring(0,6);
