@@ -27,7 +27,7 @@ public class ItemPlacementHelper
         int itemArea = size.x * size.y;
 
         /// Checking if there are possible tiles ///
-        if (placementType == PlacementType.ColliderActive && tileByType[placementType].Count < itemArea)
+        if (placementType == PlacementType.ColliderActive && (!tileByType.ContainsKey(PlacementType.ColliderActive) || tileByType[placementType].Count < itemArea))
             return null;
         else if (placementType == PlacementType.Anywhere)
         {   // if placementType is anywhere, we check all spots to see if there is space
@@ -118,7 +118,7 @@ public class ItemPlacementHelper
             if (neighboursCount8Dir == 8)
                 type = PlacementType.ColliderActive;
             else
-                continue;
+                type = PlacementType.Anywhere;
             
             if (!dictionary.ContainsKey(type))
                 dictionary[type] = new HashSet<Vector2Int>();

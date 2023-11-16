@@ -10,7 +10,7 @@ public class TilemapVisualizer : NetworkBehaviour
     [SerializeField]
     private Tilemap floorTilemap, wallTilemap;
     [SerializeField]
-    private TileBase floorTile, wallTop, biomeOne, biomeTwo, biomeThree, biomeFour, biomeFive, path;
+    private TileBase floorTile, wallTop, Green1, Green2, Green3, Autumn, Sakura, path;
 
     public void PaintFloorTiles(IEnumerable<Vector2Int> floorPositions)
     {
@@ -25,20 +25,20 @@ public class TilemapVisualizer : NetworkBehaviour
         {
             switch(biomes[i])
             {
-                case Sprites.One:
-                    tile = biomeOne;
+                case Sprites.Green1:
+                    tile = Green1;
                     break;
-                case Sprites.Two:
-                    tile = biomeTwo;
+                case Sprites.Green2:
+                    tile = Green2;
                     break;
-                case Sprites.Three:
-                    tile = biomeThree;
+                case Sprites.Green3:
+                    tile = Green3;
                     break;
-                case Sprites.Four:
-                    tile = biomeFour;
+                case Sprites.Autumn:
+                    tile = Autumn;
                     break;
-                case Sprites.Five:
-                    tile = biomeFive;
+                case Sprites.Sakura:
+                    tile = Sakura;
                     break;
                 case Sprites.Path:
                     tile = path;
