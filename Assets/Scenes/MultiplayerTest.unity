@@ -1185,11 +1185,16 @@ MonoBehaviour:
   tilemapVisualizer: {fileID: 1749435363}
   startPosition: {x: 0, y: 0}
   viewNodes: 0
+  viewPaths: 0
   worldSize: {x: 512, y: 512}
   numNodes: 20
   maxLength: 10
   iterations: 10
   walkLength: 200
+  endPoints: []
+  floorPositionsArray: []
+  spritesArray: 
+  obstacle: {fileID: 0}
 --- !u!114 &309026503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2726,7 +2731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &865984571
 Transform:
   m_ObjectHideFlags: 0
@@ -3555,7 +3560,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floorTilemap: {fileID: 708006137}
+  wallTilemap: {fileID: 0}
   floorTile: {fileID: 11400000, guid: 471853985ed4b5242ad12af71ace0cf6, type: 2}
+  wallTop: {fileID: 0}
+  biomeOne: {fileID: 0}
+  biomeTwo: {fileID: 0}
+  biomeThree: {fileID: 0}
+  biomeFour: {fileID: 0}
+  biomeFive: {fileID: 0}
+  path: {fileID: 0}
 --- !u!4 &1749435364
 Transform:
   m_ObjectHideFlags: 0

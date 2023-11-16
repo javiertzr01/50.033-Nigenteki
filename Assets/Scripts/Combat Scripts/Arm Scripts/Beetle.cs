@@ -174,7 +174,7 @@ public class Beetle : Arm
             if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
             {
                 GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
-                shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+                shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 shotUltimateProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
                 Rigidbody2D rb = shotUltimateProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(ultShootPoint.transform.up * armVariable.ultimateForce, ForceMode2D.Impulse);
@@ -196,12 +196,12 @@ public class Beetle : Arm
             if (altProjectile != null && Time.time >= nextBasicFireTime)
             {
                 GameObject shotBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
-                shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
+                shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 shotBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
                 Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
                 Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + shotBasicProjectile.GetComponent<Projectile>().Damage);
-                
+
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
@@ -217,7 +217,7 @@ public class Beetle : Arm
         {
             ToggleShield();
         }
-        
+
 
     }
 
@@ -228,7 +228,7 @@ public class Beetle : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    public override void CastSkill()
+    public void CastSkill()
     {
         if (shotSpellProjectile == null && SkillCoolDown <= 0.0f)
         {

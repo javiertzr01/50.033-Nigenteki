@@ -32,7 +32,7 @@ public class BasicShooter : Arm
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;    
+        if (OwnerClientId != clientId) return;
 
         if (Time.time >= nextBasicFireTime)
         {
@@ -66,7 +66,7 @@ public class BasicShooter : Arm
     }
 
 
-    public override void CastSkill()
+    public void CastSkill()
     {
         // Implement the BasicArm's skill
         // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + spellProjectile.GetComponent<Projectile>().Damage);

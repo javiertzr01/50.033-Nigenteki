@@ -57,7 +57,7 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
 
         player = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
-        
+
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         //leftArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
         leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
@@ -83,7 +83,7 @@ public class PlayerController : NetworkBehaviour
 
 
         armsInitialized = true;
-        
+
         SpawnArmsClientRpc(new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -203,7 +203,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkill();
+            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -211,7 +211,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
+            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastUltimate();
         }
     }
 
@@ -231,7 +231,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkill();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -239,7 +239,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimate();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimate();
         }
     }
 

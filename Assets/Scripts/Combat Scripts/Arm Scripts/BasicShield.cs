@@ -116,7 +116,7 @@ public class BasicShield : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    public override void CastSkill()
+    public void CastSkill()
     {
         // Implement the BasicArm's skill
         // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + armVariable.skillDamage);

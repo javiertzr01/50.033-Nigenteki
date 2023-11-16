@@ -38,7 +38,10 @@ public abstract class Arm : NetworkBehaviour
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
 
     // The skill method
-    public abstract void CastSkill();
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
+    [ClientRpc]
+    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) { }
 
     // The ultimate skill method
     public abstract void CastUltimate();

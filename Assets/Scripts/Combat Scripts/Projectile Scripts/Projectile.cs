@@ -11,8 +11,7 @@ public abstract class Projectile : NetworkBehaviour
     private float _damage;
 
     [System.NonSerialized]
-    public GameObject instantiatingArm; // References the Arm that instantiated this projectile
-
+    public Arm instantiatingArm;
     public Vector2 startingPosition;
 
     public float maxDistance
@@ -67,7 +66,7 @@ public abstract class Projectile : NetworkBehaviour
         {
             transform.GetComponent<NetworkObject>().Despawn(true);
             Destroy(gameObject); // Destroy the projectile
-        }   
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -75,7 +74,7 @@ public abstract class Projectile : NetworkBehaviour
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;
+        // if (OwnerClientId != clientId) return;
 
         transform.GetComponent<NetworkObject>().Despawn(true);
         Destroy(gameObject); // Destroy the projectile

@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-public abstract class ShieldTrigger : MonoBehaviour
+public abstract class ShieldTrigger : NetworkBehaviour
 {
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this shield

@@ -64,14 +64,17 @@ public class Silkworm : Arm
         if (Time.time >= nextBasicFireTime)
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+
+            // Instantiate the Projectile
             GameObject shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject;
-            shotBasicProjectileClone.transform.GetComponent<NetworkObject>().Spawn(true);
+            shotBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            // Set the instantiatingArm
+            shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
+            // Set max distance and apply force
             shotBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = shotBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-            //Debug.Log("Casting " + armVariable.armName + "'s Basic Attack with damage: " + firedBasicProjectile.GetComponent<Projectile>().Damage);
-
+            // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
@@ -79,10 +82,9 @@ public class Silkworm : Arm
                     TargetClientIds = new ulong[] { clientId }
                 }
             });
-
+            // Set the nextBasicFireTime
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
-
     }
 
 
@@ -93,30 +95,70 @@ public class Silkworm : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    // Declare a Queue to track active spellProjectiles
-    private Queue<GameObject> activeSpellProjectiles = new Queue<GameObject>();
 
-    public override void CastSkill()
+    // Declare a Queue to track active spellProjectiles
+    [System.NonSerialized]
+    public List<GameObject> activeSpellProjectiles = new List<GameObject>();
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        Debug.Log($"Attempting to CastSkillServerRpc for client {clientId}");
+
+        if (OwnerClientId != clientId) return;
+
+        Debug.Log($"Executing CastSkillServerRpc for client {clientId}");
+
+
         if (skillCharges > 0)
         {
             // Check if the number of skill instantiations exceeds the maximum
             if (activeSpellProjectiles.Count >= maxSkillInstantiations)
             {
                 // Remove the oldest skillProjectile
-                GameObject oldestProjectile = activeSpellProjectiles.Dequeue();
+                GameObject oldestProjectile = activeSpellProjectiles[0];
+                oldestProjectile.transform.GetComponent<NetworkObject>().Despawn(true);
                 Destroy(oldestProjectile);
+
+                activeSpellProjectiles.RemoveAt(0);
                 Debug.Log("Removed oldest Silkworm skillProjectile");
             }
 
             // Instantiate the skill projectile and add it to the active projectiles queue
             GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-            activeSpellProjectiles.Enqueue(skillProjectile);
+            skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            activeSpellProjectiles.Add(skillProjectile);
+            // Set the instantiatingArm
+            skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
 
             // Decrease the number of available skill charges
             skillCharges--;
             Debug.Log("Decrease Silkworm Skill Charge: " + skillCharges);
         }
+
+        // Cast the Skill ClientRpc
+        CastSkillClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { clientId }
+            }
+        });
+    }
+
+
+    [ClientRpc]
+    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+    }
+
+    public void CastSkill()
+    {
+
     }
 
     public override void CastUltimate()
