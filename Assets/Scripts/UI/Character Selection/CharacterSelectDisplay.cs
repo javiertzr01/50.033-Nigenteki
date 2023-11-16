@@ -8,8 +8,7 @@ using UnityEngine.UI;
 public class CharacterSelectDisplay : NetworkBehaviour
 {
     [SerializeField] private CharacterDatabaseVariables characterDatabase;
-    [SerializeField] private ArmDatabaseVariables leftArmDatabase;
-    [SerializeField] private ArmDatabaseVariables rightArmDatabase;
+    [SerializeField] private ArmDatabaseVariables armDatabase;
 
     [SerializeField] private Transform charactersHolder;
     [SerializeField] private Transform leftArmsHolder;
@@ -37,22 +36,21 @@ public class CharacterSelectDisplay : NetworkBehaviour
     private NetworkList<CharacterSelectState> players;
     private NetworkList<ArmSelectState> leftArms;
     private NetworkList<ArmSelectState> rightArms;
-    private NetworkList<bool> playersReadyState;
+    private NetworkList<PlayerReadyState> playersReady;
 
     public void Awake()
     {
         players = new NetworkList<CharacterSelectState>();
         leftArms = new NetworkList<ArmSelectState>();
         rightArms = new NetworkList<ArmSelectState>();
-        playersReadyState = new NetworkList<bool>();
+        playersReady = new NetworkList<PlayerReadyState>();
     }
     public override void OnNetworkSpawn()
     {
         if (IsClient)
         {
             BuildCharacterVariables[] allCharacters = characterDatabase.GetAllCharacters();
-            BuildArmVariables[] allLeftArms = leftArmDatabase.GetAllArms();
-            BuildArmVariables[] allRightArms = rightArmDatabase.GetAllArms();
+            BuildArmVariables[] allArms = armDatabase.GetAllArms();
 
             foreach (var character in allCharacters)
             {
@@ -60,22 +58,24 @@ public class CharacterSelectDisplay : NetworkBehaviour
                 selectButtonInstance.SetCharacter(this, character);
             }
 
-            foreach (var leftArm in allLeftArms)
+            foreach (var leftArm in allArms)
             {
                 var selectButtonInstance = Instantiate(selectLeftArmButtonPrefab, leftArmsHolder);
                 selectButtonInstance.SetLeftArm(this, leftArm);
             }
 
-            foreach (var rightArm in allRightArms)
+            foreach (var rightArm in allArms)
             {
                 var selectButtonInstance = Instantiate(selectRightArmButtonPrefab, rightArmsHolder);
                 selectButtonInstance.SetRightArm(this, rightArm);
             }
 
+            readyButton.GetComponent<PlayerReadyButton>().SetReadyState(this);
+
             players.OnListChanged += HandlePlayersStateChanged;
             leftArms.OnListChanged += HandleLeftArmStateChanged;
             rightArms.OnListChanged += HandleRightArmStateChanged;
-            playersReadyState.OnListChanged += HandlePlayersReadyStateChanged;
+            playersReady.OnListChanged += HandlePlayersReadyStateChanged;
 
             hostJoinCodeText.text = RelayManager.Instance.joinCode;
         }
@@ -115,6 +115,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
         players.Add(new CharacterSelectState(clientId));
         leftArms.Add(new ArmSelectState(clientId));
         rightArms.Add(new ArmSelectState(clientId));
+        playersReady.Add(new PlayerReadyState(clientId));
     }
 
     private void HandleClientDisconnected(ulong clientId)
@@ -173,9 +174,19 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
     }
 
-    private void HandlePlayersReadyStateChanged(NetworkListEvent<bool> changeEvent)
+    private void HandlePlayersReadyStateChanged(NetworkListEvent<PlayerReadyState> changeEvent)
     {
-        
+        for (int i = 0; i < playerCards.Length; i++)
+        {
+            if (players.Count > i)
+            {
+                playerCards[i].UpdatePlayerReadyDisplay(playersReady[i]);
+            }
+            else
+            {
+                playerCards[i].DisableDisplay();
+            }
+        }
     }
 
     public void SelectCharacterDisplay(BuildCharacterVariables character)
@@ -250,20 +261,35 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
     }
 
-    public void LockIn()
+    public void PlayerReadyDisplay(bool isReady)
     {
-        LockInServerRpc();
+        PlayerReadyServerRpc(isReady);
     }
 
-    [ServerRpc]
-    public void LockInServerRpc(ServerRpcParams serverRpcParams = default)
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerReadyServerRpc(bool isReady, ServerRpcParams serverRpcParams = default)
     {
         for (int i = 0; i < players.Count; i++)
         {
-            if (rightArms[i].ClientId == serverRpcParams.Receive.SenderClientId)
+            if (playersReady[i].ClientId == serverRpcParams.Receive.SenderClientId)
             {
-                
+                playersReady[i] = new PlayerReadyState(
+                        playersReady[i].ClientId,
+                        isReady
+                    );
             }
         }
+
+        foreach (var playerReady in playersReady)
+        {
+            if (!playerReady.IsReady) return;
+        }
+
+        for (int i = 0; i < playersReady.Count; i++)
+        {
+            ServerManager.Instance.SetPlayer(playersReady[i].ClientId, players[i].CharacterId, leftArms[i].ArmId, rightArms[i].ArmId);
+        }
+
+        ServerManager.Instance.StartGame();
     }
 }

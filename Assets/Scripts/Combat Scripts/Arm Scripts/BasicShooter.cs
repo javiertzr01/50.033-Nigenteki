@@ -27,12 +27,17 @@ public class BasicShooter : Arm
         }
     }
 
+    private void Update()
+    {
+        UpdateWeaponAnimator();
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;    
+        if (OwnerClientId != clientId) return;
 
         if (Time.time >= nextBasicFireTime)
         {
@@ -44,6 +49,8 @@ public class BasicShooter : Arm
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 
+            UpdateWeaponAnimatorServerRpc(WeaponState.BasicAttack);
+
             CastBasicAttackClientRpc(new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
@@ -54,6 +61,11 @@ public class BasicShooter : Arm
 
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
+        else
+        {
+            UpdateWeaponAnimatorServerRpc(WeaponState.Idle);
+        }
+        
 
     }
 

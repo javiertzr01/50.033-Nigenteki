@@ -15,3 +15,5 @@ MonoBehaviour:
   id: 2
   displayName: Beetle
   icon: {fileID: 21300000, guid: 9555b3ff33255f1408bd5507b0064543, type: 3}
+  armPrefab: {fileID: 3455972538730231271, guid: 3e9c9a26e7b4caf4da1e8fca23f55a07,
+    type: 3}

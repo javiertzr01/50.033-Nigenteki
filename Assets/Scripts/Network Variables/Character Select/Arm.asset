@@ -15,3 +15,5 @@ MonoBehaviour:
   id: 1
   displayName: Basic Shooter
   icon: {fileID: 21300000, guid: 4fcf290de5f8c7e4fbf015c3c551946d, type: 3}
+  armPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f,
+    type: 3}

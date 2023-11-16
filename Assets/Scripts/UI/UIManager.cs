@@ -28,7 +28,6 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField]
     private Button startGameButton;
-    private GameObject startGameButtonGameObject;
 
     [SerializeField]
     private TextMeshProUGUI playersInGameText;
@@ -57,9 +56,6 @@ public class UIManager : NetworkBehaviour
     private void Awake()
     {
         Cursor.visible = true;
-
-        startGameButtonGameObject = startGameButton.gameObject;
-        startGameButtonGameObject.SetActive(false);
     }
 
     // Start is called before the first frame update
@@ -82,8 +78,6 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartHost())
                 Logger.Instance.LogInfo("Host Started");
 
-            //ShowStartGameButton
-            startGameButtonGameObject.SetActive(true);
 
             // Generate random map
             generateMap.Invoke();
