@@ -15,3 +15,5 @@ MonoBehaviour:
   arms:
   - {fileID: 11400000, guid: e871649eb5f0eca4db273cbc7fba9eba, type: 2}
   - {fileID: 11400000, guid: fe58f79939f7f2a4a9880ddd4408a4d2, type: 2}
+  - {fileID: 11400000, guid: 759bf15dfd9581f45b38039c84eb2593, type: 2}
+  - {fileID: 11400000, guid: da1d2deaf9013cc42babe8c9ad010884, type: 2}

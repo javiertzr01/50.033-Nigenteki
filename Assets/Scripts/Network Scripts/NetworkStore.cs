@@ -16,7 +16,7 @@ public class NetworkStore : NetworkBehaviour
         new GeneratedMapData {
             FloorPositionsArray = new Vector2Int[0],
             SpritesArray = new Sprites[0],
-            ObstaclePositionArray = new Vector2Int[0],
+            ObstaclePositionsArray = new Vector2Int[0],
             ObstacleNamesArray = new string[0],
             RedSpawnPosition = new Vector2Int(),
             BlueSpawnPosition = new Vector2Int(),
