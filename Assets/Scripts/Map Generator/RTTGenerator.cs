@@ -73,7 +73,6 @@ public class RTTGenerator : AbstractProceduralGenerator
     public GameObject RedSpawn;
     public GameObject BlueSpawn;
     public GameObject CapturePoint;
-    
 
     public override void RunProceduralGeneration()
     {
@@ -116,19 +115,33 @@ public class RTTGenerator : AbstractProceduralGenerator
     {
         netStore.generatedMapData.Value = new GeneratedMapData
         {
-            Size = floorPositions.Count(),
-            FloorPositions = floorPositions.ToArray(),
+            FloorPositionsArray = floorPositionsArray,
+            SpritesArray = spritesArray,
+            ObstaclePositionArray = obstaclePositionsArray,
+            ObstacleNamesArray = obstacleNamesArray,
+            RedSpawnPosition = redSpawnPosition,
+            BlueSpawnPosition = blueSpawnPosition,
+            CapturePointPosition = capturePointPosition
         };
 
-        Logger.Instance.LogInfo("Saved map info: " + netStore.generatedMapData.Value.FloorPositions.Count().ToString());
+        Logger.Instance.LogInfo("Saved map info: " + netStore.generatedMapData.Value.ToString());
     }
 
     public override void LoadMap()
     {
-        HashSet<Vector2Int> currentFloorPositions = netStore.generatedMapData.Value.FloorPositions.ToHashSet();
-        Logger.Instance.LogInfo("Loading map info: " + currentFloorPositions.Count().ToString());
+        Vector2Int[] floorPositionsArray = netStore.generatedMapData.Value.FloorPositionsArray;
+        Sprites[] spritesArray = netStore.generatedMapData.Value.SpritesArray;
+        Vector2Int[] obstaclePositionArray = netStore.generatedMapData.Value.ObstaclePositionArray;
+        string[] obstacleNamesArray = netStore.generatedMapData.Value.ObstacleNamesArray;
+        Vector2Int redSpawnPosition = netStore.generatedMapData.Value.RedSpawnPosition;
+        Vector2Int blueSpawnPosition = netStore.generatedMapData.Value.BlueSpawnPosition;
+        Vector2Int capturePointPosition = netStore.generatedMapData.Value.CapturePointPosition;
 
-        tilemapVisualizer.PaintFloorTiles(currentFloorPositions);
+        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {floorPositionsArray.Length}");
+
+        tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
+        WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);
+        SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
 
