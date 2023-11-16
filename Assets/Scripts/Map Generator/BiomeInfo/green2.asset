@@ -20,5 +20,11 @@ MonoBehaviour:
     maxCount: 100
     itemData: {fileID: 11400000, guid: 518653d5c11f7f44cab81933ef9b2787, type: 2}
   - minCount: 5
-    maxCount: 25
+    maxCount: 10
     itemData: {fileID: 11400000, guid: 3ad61d9bc34f4dc4a980b4edeaceade4, type: 2}
+  - minCount: 5
+    maxCount: 10
+    itemData: {fileID: 11400000, guid: c12c6b10c1b8e2745905ac8e0090e467, type: 2}
+  - minCount: 5
+    maxCount: 10
+    itemData: {fileID: 11400000, guid: 2ce754a6f9e0307469a0ed72ec2313b7, type: 2}
