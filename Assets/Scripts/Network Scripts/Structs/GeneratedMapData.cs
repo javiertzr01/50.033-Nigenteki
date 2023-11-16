@@ -7,7 +7,7 @@ public struct GeneratedMapData : INetworkSerializable
 {
     public Vector2Int[] FloorPositionsArray;
     public Sprites[] SpritesArray;
-    public Vector2Int[] ObstaclePositionArray;
+    public Vector2Int[] ObstaclePositionsArray;
     public string[] ObstacleNamesArray;
     public Vector2Int RedSpawnPosition;
     public Vector2Int BlueSpawnPosition;
@@ -18,7 +18,7 @@ public struct GeneratedMapData : INetworkSerializable
     {
         serializer.SerializeValue(ref FloorPositionsArray);
         serializer.SerializeValue(ref SpritesArray);
-        serializer.SerializeValue(ref ObstaclePositionArray);
+        serializer.SerializeValue(ref ObstaclePositionsArray);
 
         //serializer.SerializeValue(ref ObstacleNamesArray);
         var length = 0;

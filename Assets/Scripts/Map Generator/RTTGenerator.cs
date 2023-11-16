@@ -88,6 +88,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         ProcessPOI(capturePointPosition, capturePointInfo);
         prefabMap = PlaceItems();
         (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
+        SpawnPOI(redSpawnPosition, blueSpawnPosition, capturePointPosition);
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
@@ -117,7 +118,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         {
             FloorPositionsArray = floorPositionsArray,
             SpritesArray = spritesArray,
-            ObstaclePositionArray = obstaclePositionsArray,
+            ObstaclePositionsArray = obstaclePositionsArray,
             ObstacleNamesArray = obstacleNamesArray,
             RedSpawnPosition = redSpawnPosition,
             BlueSpawnPosition = blueSpawnPosition,
@@ -131,7 +132,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     {
         Vector2Int[] floorPositionsArray = netStore.generatedMapData.Value.FloorPositionsArray;
         Sprites[] spritesArray = netStore.generatedMapData.Value.SpritesArray;
-        Vector2Int[] obstaclePositionArray = netStore.generatedMapData.Value.ObstaclePositionArray;
+        Vector2Int[] obstaclePositionsArray = netStore.generatedMapData.Value.ObstaclePositionsArray;
         string[] obstacleNamesArray = netStore.generatedMapData.Value.ObstacleNamesArray;
         Vector2Int redSpawnPosition = netStore.generatedMapData.Value.RedSpawnPosition;
         Vector2Int blueSpawnPosition = netStore.generatedMapData.Value.BlueSpawnPosition;
