@@ -9,15 +9,19 @@ public class GameManager : NetworkBehaviour
     public UnityEvent GameEndEvent;
 
     [HideInInspector]
-    private static float phaseOneDuration = 10.5f; //780.5f // 13mins
+    private static float phaseOneDuration = 30.5f; //780.5f // 13mins
     
     [HideInInspector]
-    private static float phaseTwoDuration = 5.5f; //420.5f // 7mins
+    private static float phaseTwoDuration = 25.5f; //420.5f // 7mins
 
     [HideInInspector]
     public static float winCondition = 0f; // Points needed for a team to win
     [HideInInspector]
-    public static float teamInitialTimer = 15f; // 180f; 
+    public static float teamInitialTimer = 20.5f; // 180.5f; 
+    [HideInInspector]
+    public static float phaseOneMaxCaptureDuration = 10.5f; // 60.5f; 
+    [HideInInspector]
+    public static float phaseOneMaxCaptureTimer = teamInitialTimer - phaseOneMaxCaptureDuration; // 60.5f; 
 
     public GameStateStore gameStateStore;
 
@@ -31,6 +35,7 @@ public class GameManager : NetworkBehaviour
 
     private void Start()
     {
+        StartGame();
     }
 
     private void Update()
@@ -39,6 +44,49 @@ public class GameManager : NetworkBehaviour
         {
             // Assuming you call a method to update the timer
             UpdateMainTimer();
+            ControlPointGameLogic();
+
+        }
+    }
+
+    private void ControlPointGameLogic()
+    {
+        if (gameStateStore.isControlPointActive.Value)
+        {
+            if (gameStateStore.currentTeamOnControlPoint.Value == 1)
+            {
+                if ((gameStateStore.phase.Value == 1 && gameStateStore.team1Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
+                {
+                    ReduceTeamTimer(1, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam1PlayersOnControlPoint.Value));
+                }
+            }
+            else if (gameStateStore.currentTeamOnControlPoint.Value == 2)
+            {
+                if ((gameStateStore.phase.Value == 1 && gameStateStore.team2Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
+                {
+                    ReduceTeamTimer(2, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam2PlayersOnControlPoint.Value));
+                }
+            }
+        }
+    }
+
+    private float CaptureTimeMultiplier(float deltaTime, int numberOfPlayers)
+    {
+        if (numberOfPlayers == 1)
+        {
+            return deltaTime;
+        }
+        else if (numberOfPlayers == 2)
+        {
+            return deltaTime * (4 / 3); // for 7.5s of deltaTime, would return 10s
+        }
+        else if (numberOfPlayers == 3)
+        {
+            return deltaTime * 2f; // for 5s of deltaTime, would return 10s
+        }
+        else
+        {
+            return 0;
         }
     }
 
@@ -78,7 +126,7 @@ public class GameManager : NetworkBehaviour
 
     private void UpdateMainTimer()
     {
-        ReduceTeamTimer(1, Time.deltaTime);
+        
 
         if (gameStateStore.mainTimer.Value <= 0f)
         {
@@ -124,11 +172,11 @@ public class GameManager : NetworkBehaviour
         {
             if (team == 1)
             {
-                gameStateStore.team1Timer.Value -= clockedTime;
+                gameStateStore.team1Timer.Value = AdjustTimerValue(gameStateStore.team1Timer.Value, clockedTime);
             }
             else if (team == 2)
             {
-                gameStateStore.team2Timer.Value -= clockedTime;
+                gameStateStore.team2Timer.Value = AdjustTimerValue(gameStateStore.team2Timer.Value, clockedTime);
             }
 
             // Check for win condition
@@ -139,6 +187,24 @@ public class GameManager : NetworkBehaviour
         }
 
         
+    }
+
+    private float AdjustTimerValue(float currentTeamTimer, float clockedTime)
+    {
+        float timer = currentTeamTimer;
+        timer -= clockedTime;
+
+        if (gameStateStore.phase.Value == 1 && timer < phaseOneMaxCaptureTimer)
+        {
+            timer = phaseOneMaxCaptureTimer;
+        }
+        else if (gameStateStore.phase.Value == 1 && timer < winCondition)
+        {
+            timer = winCondition;
+        }
+
+
+        return timer;
     }
 
     private void DeclareWinner(int winningTeam)

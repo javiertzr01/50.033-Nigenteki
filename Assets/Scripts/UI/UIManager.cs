@@ -13,21 +13,6 @@ public class UIManager : NetworkBehaviour
 
     public UnityEvent gameStart;
 
-    public UnityEvent generateMap;
-    public UnityEvent loadMap;
-    public UnityEvent saveMap;
-
-    [SerializeField]
-    private Button startHostButton;
-
-    [SerializeField]
-    private Button startServerButton;
-
-    [SerializeField]
-    private Button startClientButton;
-
-    [SerializeField]
-    private Button startGameButton;
 
     [SerializeField]
     private TextMeshProUGUI playersInGameText;
@@ -62,48 +47,6 @@ public class UIManager : NetworkBehaviour
     private void Start()
     {
 
-        startServerButton?.onClick.AddListener(() =>
-        {
-            if (NetworkManager.Singleton.StartServer())
-            {
-                Logger.Instance.LogInfo("Server Started");
-            }
-        });
-
-        startHostButton?.onClick.AddListener(async () =>
-        {
-            if (RelayManager.Instance.IsRelayEnabled)
-                await RelayManager.Instance.SetupRelay();
-
-            if (NetworkManager.Singleton.StartHost())
-                Logger.Instance.LogInfo("Host Started");
-
-
-            // Generate random map
-            generateMap.Invoke();
-            Logger.Instance.LogInfo("Random map generated");
-            saveMap.Invoke();
-            Logger.Instance.LogInfo("Random map instance saved");
-
-            
-
-        });
-
-        startClientButton?.onClick.AddListener(async () =>
-        {
-            if (RelayManager.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCodeInputField.text))
-                await RelayManager.Instance.JoinRelay(joinCodeInputField.text);
-
-            if (NetworkManager.Singleton.StartClient())
-                Logger.Instance.LogInfo("Client Started");
-
-        });
-
-        startGameButton?.onClick.AddListener(async () =>
-        {
-            gameStart.Invoke();
-            Logger.Instance.LogInfo("Game Started");
-        });
     }
 
     // Update is called once per frame

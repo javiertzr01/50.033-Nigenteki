@@ -30,10 +30,7 @@ public class ControlPointController : NetworkBehaviour
         // todo: If isControlPointActive==true, Check if players are still alive/not-destroyed
         EvaluateControlPointOccupancy();
         UpdateControlPointStatus();
-        if (gameStateStore.phase.Value == 1)
-        {
 
-        }
     }
 
     private void UpdateControlPointStatus()
@@ -43,6 +40,7 @@ public class ControlPointController : NetworkBehaviour
             case ControlPointTeamOccupancyState.OnlyTeam1Present:
                 gameStateStore.isControlPointActive.Value = true;
                 gameStateStore.currentTeamOnControlPoint.Value = 1;
+                // Call Team 1
                 break;
 
             case ControlPointTeamOccupancyState.OnlyTeam2Present:
