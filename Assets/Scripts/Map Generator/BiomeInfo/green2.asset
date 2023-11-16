@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e6473c114063648a0cf7c60d3dddb0, type: 3}
+  m_Name: green2
+  m_EditorClassIdentifier: 
+  items:
+  - minCount: 5
+    maxCount: 30
+    itemData: {fileID: 11400000, guid: a4ecc03f75714564aa93af0ca1eedd36, type: 2}
+  - minCount: 5
+    maxCount: 100
+    itemData: {fileID: 11400000, guid: 518653d5c11f7f44cab81933ef9b2787, type: 2}
+  - minCount: 5
+    maxCount: 25
+    itemData: {fileID: 11400000, guid: 3ad61d9bc34f4dc4a980b4edeaceade4, type: 2}
