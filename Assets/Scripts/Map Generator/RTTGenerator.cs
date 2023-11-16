@@ -141,6 +141,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
         tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
         WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);
+        SpawnPOI(redSpawnPosition, blueSpawnPosition, capturePointPosition);
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
@@ -235,11 +236,11 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    public void SpawnPOI()
+    public void SpawnPOI(Vector2Int red, Vector2Int blue, Vector2Int cp)
     {
-        GameObject redSpawnGO = GameObject.Instantiate(RedSpawn, new Vector3(redSpawnPosition.x, redSpawnPosition.y, 0), Quaternion.identity);
-        GameObject blueSpawnGO = GameObject.Instantiate(BlueSpawn, new Vector3(blueSpawnPosition.x, blueSpawnPosition.y, 0), Quaternion.identity);
-        GameObject capturePointGO = GameObject.Instantiate(CapturePoint, new Vector3(capturePointPosition.x, capturePointPosition.y, 0), Quaternion.identity);
+        GameObject redSpawnGO = GameObject.Instantiate(RedSpawn, new Vector3(red.x, red.y, 0), Quaternion.identity);
+        GameObject blueSpawnGO = GameObject.Instantiate(BlueSpawn, new Vector3(blue.x, blue.y, 0), Quaternion.identity);
+        GameObject capturePointGO = GameObject.Instantiate(CapturePoint, new Vector3(cp.x, cp.y, 0), Quaternion.identity);
     }
 
 
@@ -366,13 +367,12 @@ public class RTTGenerator : AbstractProceduralGenerator
     }
 
 
-    public void SpawnItems(Vector2Int[] obstaclePositionsArray, string[] obstacleNamesArray)
+    public void SpawnItems(Vector2Int[] positionsArray, string[] namesArray)
     {
-        SpawnPOI();
-        for(int i = 0; i < obstaclePositionsArray.Count(); i++)
+        for(int i = 0; i < positionsArray.Count(); i++)
         {
-            string biome = obstacleNamesArray[i].Substring(0,6);
-            string item = obstacleNamesArray[i].Substring(6);
+            string biome = namesArray[i].Substring(0,6);
+            string item = namesArray[i].Substring(6);
             if (item == "tree2x2")
             {
                 switch(biome)
@@ -397,7 +397,7 @@ public class RTTGenerator : AbstractProceduralGenerator
                         break;
                 }
             }
-            if (item == "tree5x5")
+            else if (item == "tree5x5")
             {
                 switch(biome)
                 {
@@ -421,12 +421,22 @@ public class RTTGenerator : AbstractProceduralGenerator
                         break;
                 }
             }
-            if (item == "flower1x1")
+            else
             {
-                GameObject[] flowers = {RedFlower, BlueFlower, GreenFlower};
-                obstacle = flowers[Random.Range(0,flowers.Count())];
+                switch(item)
+                {
+                    case "redFlower1x1":
+                        obstacle = RedFlower;
+                        break;
+                    case "blueFlower1x1":
+                        obstacle = BlueFlower;
+                        break;
+                    case "greenFlower1x1":
+                        obstacle = GreenFlower;
+                        break;
+                }
             }
-            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(obstaclePositionsArray[i].x, obstaclePositionsArray[i].y, 0), Quaternion.identity);
+            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(positionsArray[i].x, positionsArray[i].y, 0), Quaternion.identity);
         }
             // Debug.Log(kvp.Key + ":" + kvp.Value);
     }
