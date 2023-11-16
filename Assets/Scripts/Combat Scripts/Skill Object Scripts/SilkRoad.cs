@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class SilkRoad : SkillObject
 {
     public float stunDuration = 5f; // Duration of stun effect
-    private float countdownTimer = 15f; // Countdown timer
+    private float countdownTimer = 5f; // Countdown timer
 
     private List<PlayerController> playersToStun = new List<PlayerController>();
 
@@ -18,6 +19,7 @@ public class SilkRoad : SkillObject
             if (countdownTimer <= 0f)
             {
                 ApplyStunToPlayers();
+                DestroyServerRpc();
             }
         }
     }

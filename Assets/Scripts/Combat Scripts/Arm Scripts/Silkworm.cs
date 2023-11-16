@@ -105,11 +105,7 @@ public class Silkworm : Arm
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        Debug.Log($"Attempting to CastSkillServerRpc for client {clientId}");
-
         if (OwnerClientId != clientId) return;
-
-        Debug.Log($"Executing CastSkillServerRpc for client {clientId}");
 
 
         if (skillCharges > 0)
@@ -156,12 +152,52 @@ public class Silkworm : Arm
         Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
     }
 
-    public void CastSkill()
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+
+        if (UltimateCharge >= 100f)
+        {
+            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
+
+            Debug.Log("SILKWORM ULTIMATE: Casting");
+            UltimateCharge = 0f; // Reset Ultimate Charge
+                                 // Instantiate the ultimate area effect
+            GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+            ultimateArea.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            ultimateArea.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+
+            // Start a timer to destroy the ultimate area after 15 seconds
+            // StartCoroutine(DestroyUltimateArea(ultimateArea, 15f));
+
+            // Cast the Ultimate ClientRpc
+            CastUltimateClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+        }
+
 
     }
 
-    public override void CastUltimate()
+
+    [ClientRpc]
+    public override void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
+    }
+
+    public void CastUltimate()
     {
         if (UltimateCharge >= 100f)
         {

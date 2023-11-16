@@ -211,7 +211,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastUltimate();
+            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
@@ -239,7 +239,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimate();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 

@@ -44,7 +44,10 @@ public abstract class Arm : NetworkBehaviour
     public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) { }
 
     // The ultimate skill method
-    public abstract void CastUltimate();
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default) { }
+    [ClientRpc]
+    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) { }
 
     // Higher the Divisor, the slower the charging rate
     public void ChargeUltimate(float charge, float divisor)

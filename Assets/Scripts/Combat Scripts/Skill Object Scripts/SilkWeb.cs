@@ -18,14 +18,13 @@ public class SilkWeb : SkillObject
         {
             // Apply the stun effect to the player
             playerController.ApplyStun(3f); // Stun for 3 seconds
+            Silkworm arm = (Silkworm)instantiatingArm;
+            RemoveAndShift(arm.activeSpellProjectiles, gameObject);
+
+
+            // Destroy the SilkWeb object
+            DestroyServerRpc();
         }
-
-        Silkworm arm = (Silkworm)instantiatingArm;
-        RemoveAndShift(arm.activeSpellProjectiles, gameObject);
-
-
-        // Destroy the SilkWeb object
-        DestroyServerRpc();
     }
 
     public override void TriggerExit2DLogic(Collider2D other)

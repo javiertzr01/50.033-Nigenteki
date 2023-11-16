@@ -247,7 +247,7 @@ public class Beetle : Arm
 
     }
 
-    public override void CastUltimate()
+    public void CastUltimate()
     {
         if (UltimateCharge >= 100f)
         {

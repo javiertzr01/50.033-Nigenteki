@@ -73,7 +73,7 @@ public class BasicShooter : Arm
         GameObject shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
     }
 
-    public override void CastUltimate()
+    public void CastUltimate()
     {
         // Implement the BasicArm's ultimate skill
         // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);
