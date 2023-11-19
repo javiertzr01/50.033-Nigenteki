@@ -14,8 +14,13 @@ public class NetworkStore : NetworkBehaviour
 
     public NetworkVariable<GeneratedMapData> generatedMapData = new NetworkVariable<GeneratedMapData>(
         new GeneratedMapData {
-            Size = 0,
-            FloorPositions = new Vector2Int[0]
+            FloorPositionsArray = new Vector2Int[0],
+            SpritesArray = new Sprites[0],
+            ObstaclePositionsArray = new Vector2Int[0],
+            ObstacleNamesArray = new string[0],
+            RedSpawnPosition = new Vector2Int(),
+            BlueSpawnPosition = new Vector2Int(),
+            CapturePointPosition = new Vector2Int()
         }
         );
 

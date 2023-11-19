@@ -7,11 +7,16 @@ public abstract class Arm : NetworkBehaviour
 {
     public ArmVariables armVariable;
 
+    public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
+
     [SerializeField]
     protected List<GameObject> projectiles;
 
     [SerializeField]
     protected GameObject shootPoint;
+
+    [SerializeField]
+    private Animator animator;
 
     protected GameObject basicProjectile;
     private float _ultimateCharge;
@@ -54,6 +59,24 @@ public abstract class Arm : NetworkBehaviour
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateWeaponAnimatorServerRpc(WeaponState newState)
+    {
+        networkWeaponState.Value = newState;
+    }
+
+    public void UpdateWeaponAnimator()
+    {
+        if (networkWeaponState.Value == WeaponState.Idle)
+        {
+            animator.SetBool("isBasicAttack", true);
+        }
+        else if (networkWeaponState.Value == WeaponState.BasicAttack)
+        {
+            animator.SetBool("isBasicAttack", false);
+        }
+    }
+
     public float UltimateCharge
     {
         get
@@ -73,4 +96,12 @@ public abstract class Arm : NetworkBehaviour
 
         }
     }
+
+    public enum WeaponState
+    {
+        Idle,
+        BasicAttack,
+        SkillAttack,
+        UltimateAttack
+    }    
 }
