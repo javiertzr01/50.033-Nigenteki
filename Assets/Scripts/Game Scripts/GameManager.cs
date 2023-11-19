@@ -9,17 +9,18 @@ public class GameManager : NetworkBehaviour
     public UnityEvent GameEndEvent;
 
     [HideInInspector]
-    private static float phaseOneDuration = 30.5f; //780.5f // 13mins
-    
+    private static float phaseOneDuration = 390.5f; //30.5f; //780.5f // 13mins
+
+
     [HideInInspector]
-    private static float phaseTwoDuration = 25.5f; //420.5f // 7mins
+    private static float phaseTwoDuration = 210.5f; //25.5f; //420.5f // 7mins
 
     [HideInInspector]
     public static float winCondition = 0f; // Points needed for a team to win
     [HideInInspector]
-    public static float teamInitialTimer = 20.5f; // 180.5f; 
+    public static float teamInitialTimer = 90.5f; //20.5f; // 180.5f; 
     [HideInInspector]
-    public static float phaseOneMaxCaptureDuration = 10.5f; // 60.5f; 
+    public static float phaseOneMaxCaptureDuration = 30.5f; // 10.5f; // 60.5f; 
     [HideInInspector]
     public static float phaseOneMaxCaptureTimer = teamInitialTimer - phaseOneMaxCaptureDuration; // 60.5f; 
 
