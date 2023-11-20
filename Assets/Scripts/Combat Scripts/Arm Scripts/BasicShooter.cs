@@ -40,7 +40,7 @@ public class BasicShooter : Arm
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
+            firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 

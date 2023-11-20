@@ -87,7 +87,7 @@ public class Beetle : Arm
         }
     }
 
-
+    public float ultimateStartTime { get; private set; }
 
     public void Update()
     {
@@ -143,8 +143,16 @@ public class Beetle : Arm
             }
         }
 
-    }
 
+        // Check if the ultimate ability is active and if the duration has passed
+        if (ulted && (Time.time - ultimateStartTime) >= armVariable.ultimateDuration)
+        {
+            ulted = false; // Reset the ulted flag after the ultimate duration
+            Debug.Log("BEETLE ULTIMATE: Expired");
+            Logger.Instance.LogInfo("BEETLE ULTIMATE: Expired");
+
+        }
+    }
 
     private void ToggleShield()
     {
@@ -160,6 +168,7 @@ public class Beetle : Arm
         }
     }
 
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -173,12 +182,12 @@ public class Beetle : Arm
             // For example, instantiate ultimate projectiles instead of the regular ones
             if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
             {
-                GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
+                GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotUltimateProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
-                shotUltimateProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
                 Rigidbody2D rb = shotUltimateProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(ultShootPoint.transform.up * armVariable.ultimateForce, ForceMode2D.Impulse);
-                Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack with damage: " + shotUltimateProjectile.GetComponent<Projectile>().Damage);
+                Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack: ");
 
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
@@ -195,12 +204,12 @@ public class Beetle : Arm
         {
             if (altProjectile != null && Time.time >= nextBasicFireTime)
             {
-                GameObject shotBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
+                GameObject shotBasicProjectile = Instantiate(altProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotBasicProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
-                shotBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
                 Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
-                rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + shotBasicProjectile.GetComponent<Projectile>().Damage);
+                rb.AddForce(ultShootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack");
 
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
@@ -215,7 +224,11 @@ public class Beetle : Arm
         }
         else
         {
-            ToggleShield();
+            if (Time.time >= nextBasicFireTime)
+            {
+                ToggleShield();
+                nextBasicFireTime = Time.time + armVariable.baseFireRate;
+            }
         }
 
 
@@ -228,27 +241,57 @@ public class Beetle : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    public void CastSkill()
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
         if (shotSpellProjectile == null && SkillCoolDown <= 0.0f)
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
             shotSpellProjectile.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
-            Destroy(shotSpellProjectile, armVariable.skillDuration);
+            shotSpellProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            // Destroy(shotSpellProjectile, armVariable.skillDuration);
 
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
+
+            // Cast the Skill ClientRpc
+            CastSkillClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
         }
         else
         {
             Debug.Log("BEETLE SKILL: Cannot cast yet");
+            Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
         }
 
     }
 
-    public void CastUltimate()
+
+    [ClientRpc]
+    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
     {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+
         if (UltimateCharge >= 100f)
         {
             Debug.Log("BEETLE ULTIMATE: Casting");
@@ -261,22 +304,36 @@ public class Beetle : Arm
                 ToggleShield();
             }
 
-            // Start a timer for the ultimate's duration
-            StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
+            // Set the start time of the ultimate
+            ultimateStartTime = Time.time;
+
+            // Cast the Ultimate ClientRpc
+            CastUltimateClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
+            // // Start a timer for the ultimate's duration
+            // StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
         }
         else
         {
             Debug.Log("BEETLE ULTIMATE: Not enough Ult Charge");
+            Logger.Instance.LogInfo($"Cast Ult ClientRpc called by {OwnerClientId}: FAIL - Charge");
         }
+
 
     }
 
-    // Coroutine to handle the duration of the ultimate
-    private IEnumerator UltimateDurationTimer(float duration)
+
+    [ClientRpc]
+    public override void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        yield return new WaitForSeconds(duration);
-        ulted = false; // Reset the ulted flag after the ultimate duration
-        Debug.Log("BEETLE ULTIMATE: Expired");
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
     }
 
 }

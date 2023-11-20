@@ -17,11 +17,11 @@ public class BeetleUlt : Projectile
     {
         if (other.gameObject.tag == "Projectile")
         {
-            Destroy(other.gameObject);
+            other.gameObject.GetComponent<Projectile>().DestroyServerRpc();
         }
         if (other.gameObject.tag == "Shield")
         {
-            Destroy(gameObject);
+            DestroyServerRpc();
         }
 
         if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))

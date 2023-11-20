@@ -71,7 +71,7 @@ public class Silkworm : Arm
             // Set the instantiatingArm
             shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
             // Set max distance and apply force
-            shotBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
+            // shotBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             Rigidbody2D rb = shotBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
             // Cast the Basic Attack ClientRpc

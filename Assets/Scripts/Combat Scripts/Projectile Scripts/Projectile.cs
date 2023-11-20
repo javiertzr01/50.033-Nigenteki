@@ -14,7 +14,7 @@ public abstract class Projectile : NetworkBehaviour
     public Arm instantiatingArm;
     public Vector2 startingPosition;
 
-    public float maxDistance
+    public float MaxDistance
     {
         get
         {
@@ -62,7 +62,7 @@ public abstract class Projectile : NetworkBehaviour
 
         if (OwnerClientId != clientId) return;
 
-        if (Vector2.Distance(startingPosition, transform.position) > maxDistance)
+        if (Vector2.Distance(startingPosition, transform.position) > MaxDistance)
         {
             transform.GetComponent<NetworkObject>().Despawn(true);
             Destroy(gameObject); // Destroy the projectile
@@ -84,6 +84,8 @@ public abstract class Projectile : NetworkBehaviour
     void Start()
     {
         startingPosition = transform.position;
+        MaxDistance = projectileVariable.maxDistance;
+        Damage = projectileVariable.damage;
     }
 
     void Update()
