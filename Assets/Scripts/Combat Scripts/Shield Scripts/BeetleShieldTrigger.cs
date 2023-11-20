@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 public class BeetleShieldTrigger : ShieldTrigger
 {
@@ -62,19 +63,40 @@ public class BeetleShieldTrigger : ShieldTrigger
         Destroyed = false;
         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
 
-        ToggleShield();
+        ToggleShieldServerRpc();
     }
 
-    public void ToggleShield()
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
         // As long as shield is not destroyed, can keep toggling
         if (!Destroyed)
         {
-            // Toggle the shield's collider and sprite renderer
-            shieldCollider.enabled = !Activated;
-            shieldSprite.enabled = !Activated;
+
             Activated = !Activated;
         }
+
+        ToggleShieldClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { clientId }
+            }
+        });
+    }
+
+    [ClientRpc]
+    void ToggleShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner) return;
+        Debug.Log("Toggle Shield Client");
+        // Toggle the shield's collider and sprite renderer
+        shieldCollider.enabled = !Activated;
+        shieldSprite.enabled = !Activated;
     }
 
 
@@ -112,8 +134,6 @@ public class BeetleShieldTrigger : ShieldTrigger
             Debug.Log("BEETLE SHIELD: destroyed");
             if (Activated)
             {
-                Collider2D shieldCollider = gameObject.GetComponent<BoxCollider2D>();
-                SpriteRenderer shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
                 shieldCollider.enabled = false;
                 shieldSprite.enabled = false;
                 Activated = false;

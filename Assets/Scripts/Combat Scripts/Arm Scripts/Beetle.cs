@@ -94,7 +94,7 @@ public class Beetle : Arm
         // destroyed = false;
         // ToggleShield(); // Switch shield off first
 
-        beetleShieldTrigger.ToggleShield();
+        beetleShieldTrigger.ToggleShieldServerRpc();
 
 
 
@@ -279,7 +279,7 @@ public class Beetle : Arm
         {
             if (Time.time >= nextBasicFireTime)
             {
-                beetleShieldTrigger.ToggleShield();
+                beetleShieldTrigger.ToggleShieldServerRpc();
                 nextBasicFireTime = Time.time + armVariable.baseFireRate;
             }
         }
@@ -355,7 +355,7 @@ public class Beetle : Arm
             // Toggle the shield if it is on
             if (beetleShieldTrigger.Activated)
             {
-                beetleShieldTrigger.ToggleShield();
+                beetleShieldTrigger.ToggleShieldServerRpc();
             }
 
             // Set the start time of the ultimate
