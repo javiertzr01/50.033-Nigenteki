@@ -22,8 +22,7 @@ public class BeetleLaser : Projectile
     {
         if (other.gameObject.tag == "Shield")
         {
-
-            Destroy(gameObject);
+            DestroyServerRpc();
         }
 
         if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))
