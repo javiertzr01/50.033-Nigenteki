@@ -72,7 +72,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;
+        // if (OwnerClientId != clientId) return;
         // As long as shield is not destroyed, can keep toggling
         if (!Destroyed)
         {
@@ -92,7 +92,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     [ClientRpc]
     void ToggleShieldClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        if (!IsOwner) return;
+        // if (!IsOwner) return;
         Debug.Log("Toggle Shield Client");
         // Toggle the shield's collider and sprite renderer
         shieldCollider.enabled = !Activated;
