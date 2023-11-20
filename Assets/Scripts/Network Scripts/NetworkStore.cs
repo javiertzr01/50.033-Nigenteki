@@ -34,8 +34,8 @@ public class NetworkStore : NetworkBehaviour
     {
         //base.OnNetworkSpawn();
 
-        //playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
-        //generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
+        playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
+        generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
     }
 
     public void OnPlayersInLobbyChanged(int previous, int current)
