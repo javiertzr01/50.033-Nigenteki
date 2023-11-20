@@ -18,7 +18,7 @@ public abstract class Arm : NetworkBehaviour
 
 
 
-    void Awake()
+    void Start()
     {
         Initialize();
     }

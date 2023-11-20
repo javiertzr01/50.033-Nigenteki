@@ -289,6 +289,10 @@ MonoBehaviour:
   - {fileID: 3866945137309950759, guid: 2aa06897cf9bf7a409e19479b119e9cb, type: 3}
   shootPoint: {fileID: 2578164899720361747}
   ultShootPoint: {fileID: 1842468663822812149}
+  shieldHolderPrefab: {fileID: 2926113944933858050, guid: d03465e668bc828499c9a0123a939f4d,
+    type: 3}
+  shieldPrefab: {fileID: 6093875963110399478, guid: 305250e271c47004fa8ca6414636edd9,
+    type: 3}
 --- !u!114 &3470576363740146910
 MonoBehaviour:
   m_ObjectHideFlags: 0

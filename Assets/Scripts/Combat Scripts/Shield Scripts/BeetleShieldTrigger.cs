@@ -10,6 +10,12 @@ public class BeetleShieldTrigger : ShieldTrigger
     protected bool _activated;
     protected bool _destroyed;
 
+    [SerializeField]
+    private Collider2D shieldCollider;
+    [SerializeField]
+    private SpriteRenderer shieldSprite;
+
+
     public float ShieldHealth
     {
         get
@@ -46,13 +52,24 @@ public class BeetleShieldTrigger : ShieldTrigger
         }
     }
 
+    void Start()
+    {
+        shieldCollider = gameObject.GetComponent<BoxCollider2D>();
+        shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+
+        shieldRegenTimer = 0f;
+        Activated = true;
+        Destroyed = false;
+        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
+
+        ToggleShield();
+    }
+
     public void ToggleShield()
     {
         // As long as shield is not destroyed, can keep toggling
         if (!Destroyed)
         {
-            Collider2D shieldCollider = gameObject.GetComponent<BoxCollider2D>();
-            SpriteRenderer shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
             // Toggle the shield's collider and sprite renderer
             shieldCollider.enabled = !Activated;
             shieldSprite.enabled = !Activated;
@@ -60,14 +77,6 @@ public class BeetleShieldTrigger : ShieldTrigger
         }
     }
 
-
-    void Start()
-    {
-        shieldRegenTimer = 0f;
-        Activated = true;
-        Destroyed = false;
-        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
-    }
 
     void Update()
     {
