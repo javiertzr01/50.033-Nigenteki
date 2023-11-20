@@ -81,7 +81,7 @@ public abstract class Projectile : NetworkBehaviour
 
     }
 
-    void Start()
+    protected void Start()
     {
         startingPosition = transform.position;
         MaxDistance = projectileVariable.maxDistance;

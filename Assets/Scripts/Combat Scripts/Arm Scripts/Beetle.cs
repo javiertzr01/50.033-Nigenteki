@@ -235,7 +235,6 @@ public class Beetle : Arm
             // For example, instantiate ultimate projectiles instead of the regular ones
             if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
             {
-                Debug.Log("Firing Ulti");
                 GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
                 shotUltimateProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
