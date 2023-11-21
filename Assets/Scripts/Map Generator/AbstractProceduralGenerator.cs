@@ -35,6 +35,7 @@ public abstract class AbstractProceduralGenerator : NetworkBehaviour
 
     public void LoadMapForClient()
     {
+        netStore.generatedMapData.Value = netStore.mapData;
         tilemapVisualizer.Clear();
         LoadMap();
     }
