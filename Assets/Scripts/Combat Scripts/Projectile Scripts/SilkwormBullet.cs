@@ -9,7 +9,7 @@ public class SilkwormBullet : Projectile
     {
         arm = instantiatingArm.GetComponent<Silkworm>();
     }
-    public override void CollisionEnter2DLogic(Collision2D collision)
+    /*public override void CollisionEnter2DLogic(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
@@ -18,14 +18,14 @@ public class SilkwormBullet : Projectile
             arm.ChargeUltimate(Damage, 15);
         }
         Destroy(gameObject);
-    }
+    }*/
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         if (other.gameObject.tag == "Shield")
         {
             arm.ChargeUltimate(Damage, 30);
-            Destroy(gameObject);
+            DestroyServerRpc();
         }
     }
 

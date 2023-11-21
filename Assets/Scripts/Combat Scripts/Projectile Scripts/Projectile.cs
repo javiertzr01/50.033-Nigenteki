@@ -41,13 +41,6 @@ public abstract class Projectile : NetworkBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        CollisionEnter2DLogic(collision);
-    }
-
-    public abstract void CollisionEnter2DLogic(Collision2D collision);
-
     void OnTriggerEnter2D(Collider2D other)
     {
         TriggerEnter2DLogic(other);

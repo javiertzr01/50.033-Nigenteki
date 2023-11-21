@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class BasicProjectile : Projectile
 {
-    public override void CollisionEnter2DLogic(Collision2D collision)
-    {
-        DestroyServerRpc();
-    }
-
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
@@ -16,6 +11,7 @@ public class BasicProjectile : Projectile
         {
             DestroyServerRpc();
         }*/
+
         DestroyServerRpc();
     }
 

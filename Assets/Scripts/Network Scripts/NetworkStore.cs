@@ -24,25 +24,12 @@ public class NetworkStore : NetworkBehaviour
         }
         );
 
-    public GeneratedMapData mapData {
-        get { return generatedMapData.Value; }
-        set { generatedMapData.Value = value; }
-    }
-
-    public void OnEnable()
-    {
-        playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
-        generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
-
-        
-    }
-
     public override void OnNetworkSpawn()
     {
-        //base.OnNetworkSpawn();
+        base.OnNetworkSpawn();
 
-        //playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
-        //generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
+        playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
+        generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
     }
 
     public void OnPlayersInLobbyChanged(int previous, int current)
