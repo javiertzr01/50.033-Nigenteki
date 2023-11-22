@@ -106,8 +106,6 @@ public class CharacterSelectDisplay : NetworkBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
         }
-
-        
     }
 
     private void HandleClientConnected(ulong clientId)

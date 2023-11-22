@@ -52,12 +52,7 @@ public class UIManager : NetworkBehaviour
     // Update is called once per frame
     private void Update()
     {
-        //playersInGameText.text = $"Players in game: {LobbyManager.Instance.playersInGame}";
-    }
 
-    public void UpdatePlayersInLobbyText()
-    {
-        playersInGameText.text = $"Players in game: {netStore.playersInLobby.Value}";
     }
 
     public void UpdateMainTimerText(float timeInSeconds)

@@ -6,12 +6,6 @@ using Unity.Netcode;
 
 public class NetworkStore : NetworkBehaviour
 {
-
-    public UnityEvent updatePlayersInLobbyUI;
-    public UnityEvent loadMap;
-
-    public NetworkVariable<int> playersInLobby = new NetworkVariable<int>();
-
     public NetworkVariable<GeneratedMapData> generatedMapData = new NetworkVariable<GeneratedMapData>(
         new GeneratedMapData {
             FloorPositionsArray = new Vector2Int[0],
@@ -25,16 +19,8 @@ public class NetworkStore : NetworkBehaviour
         );
 
     public override void OnNetworkSpawn()
-    {
-        playersInLobby.OnValueChanged += OnPlayersInLobbyChanged;
+    { 
         generatedMapData.OnValueChanged += OnGeneratedMapDataChanged;
-    }
-
-    public void OnPlayersInLobbyChanged(int previous, int current)
-    {
-        Logger.Instance.LogInfo($"Players in lobby has changed to {current.ToString()}");
-
-        updatePlayersInLobbyUI.Invoke();
     }
 
     public void OnGeneratedMapDataChanged(GeneratedMapData previous, GeneratedMapData current)

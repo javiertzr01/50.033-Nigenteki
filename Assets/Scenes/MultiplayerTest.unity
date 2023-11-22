@@ -15441,10 +15441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250021520a8415243ad4d9b6ca106703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  netStore: {fileID: 783418997}
   characterDatabase: {fileID: 11400000, guid: 95e3f00a169d5324f8020ea11d214f01, type: 2}
   armDatabase: {fileID: 11400000, guid: 056f62d5ea7cdad438cbd6e86f23f48f, type: 2}
-  leftArmHolderPrefab: {fileID: 0}
-  rightArmHolderPrefab: {fileID: 0}
 --- !u!1 &2092854393
 GameObject:
   m_ObjectHideFlags: 0
