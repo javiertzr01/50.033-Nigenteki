@@ -18,9 +18,14 @@ public class MapGeneratorManager : NetworkBehaviour
             saveMap.Invoke();
             Logger.Instance.LogInfo("Saving Map");
         }
-        else if (IsClient)
+    }
+
+    public void Start()
+    {
+        if (IsClient)
         {
             loadMap.Invoke();
         }
+
     }
 }

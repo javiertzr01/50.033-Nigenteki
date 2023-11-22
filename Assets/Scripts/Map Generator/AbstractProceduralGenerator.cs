@@ -37,6 +37,7 @@ public abstract class AbstractProceduralGenerator : NetworkBehaviour
     {
         tilemapVisualizer.Clear();
         LoadMap();
+        ViewMap();
     }
 
     public abstract void RunProceduralGeneration();

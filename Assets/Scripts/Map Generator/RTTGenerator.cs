@@ -125,7 +125,7 @@ public class RTTGenerator : AbstractProceduralGenerator
             CapturePointPosition = capturePointPosition
         };
 
-        Logger.Instance.LogInfo("Saved map info: " + netStore.generatedMapData.Value.ToString());
+        Logger.Instance.LogInfo("Saved map info, floor position length = " + netStore.generatedMapData.Value.FloorPositionsArray.Length);
     }
 
     public override void LoadMap()
