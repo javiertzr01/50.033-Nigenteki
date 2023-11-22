@@ -114,18 +114,68 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 9
-        y: 1
+        y: 14
         width: 47
-        height: 62
-      alignment: 6
-      pivot: {x: 0, y: 0}
+        height: 49
+      alignment: 9
+      pivot: {x: -0.000000020290942, y: -0.26510733}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19.5, y: -12.5}
+        - {x: 21.5, y: -10.5}
+        - {x: 21.5, y: -8.5}
+        - {x: 23.5, y: -6.5}
+        - {x: 23.5, y: -5.5}
+        - {x: 22.5, y: -3.5}
+        - {x: 23.5, y: -2.5}
+        - {x: 23.5, y: 9.5}
+        - {x: 16.5, y: 15.5}
+        - {x: 14.5, y: 15.5}
+        - {x: 14.5, y: 16.5}
+        - {x: 5.5, y: 24.5}
+        - {x: -12.5, y: 24.5}
+        - {x: -15.5, y: 22.5}
+        - {x: -16.5, y: 20.5}
+        - {x: -20.5, y: 16.5}
+        - {x: -20.5, y: 14.5}
+        - {x: -23.5, y: 11.5}
+        - {x: -23.5, y: -0.5}
+        - {x: -22.5, y: -1.5}
+        - {x: -23.5, y: -2.5}
+        - {x: -23.5, y: -14.5}
+        - {x: -22.5, y: -15.5}
+        - {x: -23.5, y: -17.5}
+        - {x: -18.5, y: -24.5}
+        - {x: 13.5, y: -24.5}
+        - {x: 13.5, y: -22.5}
+        - {x: 14.5, y: -22.5}
+        - {x: 18.5, y: -18.5}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: 8b31cea377d397f4fbea4c1b71eb7105
+      internalID: -1631986757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sakura_tree_1
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 1
+        width: 30
+        height: 13
+      alignment: 9
+      pivot: {x: -0.20275863, y: 0.0148041705}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8b31cea377d397f4fbea4c1b71eb7105
-      internalID: -1631986757
+      spriteID: 898c72b209bad364c8723c8be3cdc9e7
+      internalID: 1908839818
       vertices: []
       indices: 
       edges: []
@@ -142,6 +192,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       sakura_tree_0: -1631986757
+      sakura_tree_1: 1908839818
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

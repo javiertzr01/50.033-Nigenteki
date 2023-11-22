@@ -113,12 +113,12 @@ TextureImporter:
       name: Rock1_1_no_shadow_0
       rect:
         serializedVersion: 2
-        x: 10
+        x: 3
         y: 4
-        width: 46
+        width: 58
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: -0.0008621423, y: -0.0017710307}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
