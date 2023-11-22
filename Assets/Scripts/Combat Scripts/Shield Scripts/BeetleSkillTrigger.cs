@@ -31,7 +31,7 @@ public class BeetleSkillTrigger : ShieldTrigger
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Check if the collision is with a specific object or has specific properties
-        if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
         {
             float projectileDamage = projectile.Damage;
 
