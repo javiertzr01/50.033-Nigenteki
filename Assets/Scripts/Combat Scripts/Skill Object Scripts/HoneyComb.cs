@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class HoneyComb : SkillObject
 {
-    [System.NonSerialized] public float countdownTimer = 10f; // Countdown timer
+    [System.NonSerialized] public float countdownTimer; // Countdown timer
     public float healingValue = 10f;
     private List<PlayerController> enemiestoSlow = new List<PlayerController>();
     private void Update()
