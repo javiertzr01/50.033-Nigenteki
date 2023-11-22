@@ -12,7 +12,6 @@ public class Beetle : Arm
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
     // private float _shieldCurrentHealth;
-    private float _skillCoolDown;
     // private float shieldRegenTimer;
     // protected bool activated;
     // protected bool destroyed;
@@ -127,18 +126,6 @@ public class Beetle : Arm
     //     }
     // }
 
-
-    public float SkillCoolDown
-    {
-        get
-        {
-            return _skillCoolDown;
-        }
-        set
-        {
-            _skillCoolDown = value;
-        }
-    }
 
     public float ultimateStartTime { get; private set; }
 

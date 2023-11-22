@@ -13,6 +13,8 @@ public class HoneyBee : Arm
         base.Initialize();
 
         UltimateCharge = armVariable.ultimateCharge;
+        SkillCoolDown = 0f; // Set skill cooldown to zero initially
+
 
         if (projectiles[1] != null)
         {
@@ -20,9 +22,16 @@ public class HoneyBee : Arm
         }
 
     }
-
-    private void Update()
+    public void Update()
     {
+        if (SkillCoolDown > 0.0f)
+        {
+            SkillCoolDown -= Time.deltaTime;
+        }
+        else if (spellProjectile != null && SkillCoolDown <= 0f)
+        {
+            Debug.Log("Honeybee Skill can be casted");
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -74,20 +83,32 @@ public class HoneyBee : Arm
 
         if (OwnerClientId != clientId) return;
 
-        // Instantiate the skill projectile and add it to the active projectiles queue
-        GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-        skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-        // Set the instantiatingArm
-        skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
-
-        // Cast the Skill ClientRpc
-        CastSkillClientRpc(new ClientRpcParams
+        if (spellProjectile != null && SkillCoolDown <= 0f)
         {
-            Send = new ClientRpcSendParams
+            Debug.Log("HONEYBEE SKILL: Casting");
+            // Instantiate the skill projectile and add it to the active projectiles queue
+            GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            // Set the instantiatingArm
+            skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+
+            // Set the skill cooldown to initial value
+            SkillCoolDown = armVariable.skillCoolDown;
+
+            // Cast the Skill ClientRpc
+            CastSkillClientRpc(new ClientRpcParams
             {
-                TargetClientIds = new ulong[] { clientId }
-            }
-        });
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+        }
+        else
+        {
+            Debug.Log("HONEYBEE SKILL: Cannot cast yet");
+            Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
+        }
     }
 
 

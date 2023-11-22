@@ -31,6 +31,20 @@ public abstract class Arm : NetworkBehaviour
         basicProjectile = projectiles[0];
     }
 
+    private float _skillCoolDown;
+
+    public float SkillCoolDown
+    {
+        get
+        {
+            return _skillCoolDown;
+        }
+        set
+        {
+            _skillCoolDown = value;
+        }
+    }
+
     // The basic attack method
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }

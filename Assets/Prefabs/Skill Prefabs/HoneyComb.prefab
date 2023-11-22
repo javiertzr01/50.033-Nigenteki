@@ -9,13 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6555075284310394039}
-  - component: {fileID: 6944332300555130051}
   - component: {fileID: 5087172626481548059}
   - component: {fileID: 6434477675494045454}
   - component: {fileID: 1798400783577302437}
   - component: {fileID: 4495087841807934595}
   - component: {fileID: 6488906688737789902}
   - component: {fileID: 8254522286094616736}
+  - component: {fileID: -9160053981296115717}
   m_Layer: 0
   m_Name: HoneyComb
   m_TagString: Untagged
@@ -38,19 +38,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6944332300555130051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3242705092520560973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0a980a8cf91c3a42a5f123aca5395c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stunDuration: 5
 --- !u!114 &5087172626481548059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,3 +225,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-9160053981296115717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3242705092520560973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f136aee0ee05748b5f423bf97eddc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healingValue: 10
