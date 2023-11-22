@@ -53,6 +53,10 @@ public class PlayerController : NetworkBehaviour
     private bool doForce = false;
     private TrailRenderer tr;
     private Vector2 lastDashVelocity;
+    public float dashFactor = 500f; // Arbitrary number chosen that feels right
+
+    // Status
+    public bool immuneStun = false;
 
 
     private void Awake()
@@ -162,6 +166,7 @@ public class PlayerController : NetworkBehaviour
         SpawnArmsServerRpc();
         GetCameraFollow();
     }
+
 
     // Update is called once per frame
     void Update()
@@ -275,6 +280,8 @@ public class PlayerController : NetworkBehaviour
 
     public void ApplyStun(float duration)
     {
+        if (immuneStun) return;
+
         // Disable the player's input actions
         playerInput.SwitchCurrentActionMap("Stunned");
         Debug.Log("Stunned Player");
@@ -303,8 +310,8 @@ public class PlayerController : NetworkBehaviour
             dashDirection.Normalize();
 
             // Apply a force to the Rigidbody2D in the specified direction
-            // 500 is an arbitrary number
-            lastDashVelocity = dashDirection * 500;
+
+            lastDashVelocity = dashDirection * dashFactor;
 
             doForce = true;
         }
@@ -316,7 +323,7 @@ public class PlayerController : NetworkBehaviour
         if (doForce)
         {
             doForce = false;
-            Debug.Log("Test" + lastDashVelocity);
+            // Debug.Log(lastDashVelocity);
             tr.emitting = true;
             rb.AddForce(lastDashVelocity, ForceMode2D.Impulse);
         }

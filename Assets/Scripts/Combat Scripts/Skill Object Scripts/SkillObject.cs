@@ -39,8 +39,7 @@ public abstract class SkillObject : NetworkBehaviour
 
         // if (OwnerClientId != clientId) return;
 
-        transform.GetComponent<NetworkObject>().Despawn(true);
+        GetComponent<NetworkObject>().Despawn(true);
         Destroy(gameObject); // Destroy the projectile
-
     }
 }

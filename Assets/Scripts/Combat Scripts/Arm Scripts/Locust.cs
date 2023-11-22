@@ -5,23 +5,34 @@ using Unity.Netcode;
 
 public class Locust : Arm
 {
+    private GameObject ultimateProjectile;
     private float nextBasicFireTime = 0f;
     private int skillCharges;
     private int maxSkillCharges;
     private float skillChargeTimer;
     GameObject shotBasicProjectileClone;
     private bool ulted;
+    private float countdownTimer;
+    private PlayerController playerController;
 
     public override void Initialize()
     {
         base.Initialize();
+        playerController = transform.parent?.parent.GetComponent<PlayerController>();
+
         maxSkillCharges = armVariable.skillMaxCharges;
         skillChargeTimer = armVariable.skillCoolDown;
 
         skillCharges = maxSkillCharges; // Initialize Arm with the maximum skill Charges first
 
         UltimateCharge = armVariable.ultimateCharge;
+        countdownTimer = armVariable.ultimateDuration;
         ulted = false;
+
+        if (projectiles[1] != null)
+        {
+            ultimateProjectile = projectiles[1];
+        }
 
     }
 
@@ -40,6 +51,18 @@ public class Locust : Arm
                 skillChargeTimer = armVariable.skillCoolDown;
             }
         }
+        // Update the ultimate timer
+        if (ulted)
+        {
+            countdownTimer -= Time.deltaTime;
+            if (countdownTimer <= 0f)
+            {
+                ulted = false; // Reset the ulted flag when the timer reaches 0
+                playerController.immuneStun = false;
+                Debug.Log("LOCUST ULT: Expired");
+                countdownTimer = armVariable.ultimateDuration; // Reset the timer for the next ultimate
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -51,13 +74,21 @@ public class Locust : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            // Check if the projectile instantiations exceeds 1
-            if (shotBasicProjectileClone == null)
+            // Limit number of projectiles to 1 UNLESS ULTED
+            if (ulted || shotBasicProjectileClone == null)
             {
                 Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
-                // Instantiate the Projectile
-                shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+                // Instantiate the type of Projectile
+                if (ulted)
+                {
+                    shotBasicProjectileClone = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
+
+                }
+                else
+                {
+                    shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+                }
                 shotBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 // Set the instantiatingArm
                 shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
@@ -73,8 +104,18 @@ public class Locust : Arm
                         TargetClientIds = new ulong[] { clientId }
                     }
                 });
+
+
                 // Set the nextBasicFireTime
-                nextBasicFireTime = Time.time + armVariable.baseFireRate;
+                if (ulted)
+                {
+                    nextBasicFireTime = Time.time + armVariable.ultimateFireRate;
+                }
+                else
+                {
+                    nextBasicFireTime = Time.time + armVariable.baseFireRate;
+                }
+
             }
         }
     }
@@ -95,12 +136,9 @@ public class Locust : Arm
 
         if (OwnerClientId != clientId) return;
 
-
-        if (skillCharges > 0)
+        // Limit number of skill charges to 2 UNLESS ULTED
+        if (ulted || skillCharges > 0)
         {
-            // TODO: Apply a force to the player in the direction of the mouse such that they "dash"
-            // Get the grandparent GameObject
-            PlayerController playerController = transform.parent?.parent.GetComponent<PlayerController>();
             if (playerController != null)
             {
                 // Calculate the dash direction based on the forward direction
@@ -113,8 +151,11 @@ public class Locust : Arm
                 }
 
                 // Decrease the number of available skill charges
-                skillCharges--;
-                Debug.Log("Decrease Locust Skill Charge: " + skillCharges);
+                if (!ulted)
+                {
+                    skillCharges--;
+                    Debug.Log("Decrease Locust Skill Charge: " + skillCharges);
+                }
             }
 
             // Cast the Skill ClientRpc
@@ -152,9 +193,8 @@ public class Locust : Arm
 
             Debug.Log("LOCUST ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
-                                 // Instantiate the ultimate area effect
-
             ulted = true;
+            playerController.immuneStun = true;
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
             {

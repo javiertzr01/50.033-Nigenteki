@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SilkWeb : SkillObject
@@ -40,7 +41,7 @@ public class SilkWeb : SkillObject
         // If the item is found, remove it and shift the remaining elements
         if (indexToRemove != -1)
         {
-            Debug.Log("Index to Remove: " + indexToRemove);
+            // Debug.Log("Index to Remove: " + indexToRemove);
             list.RemoveAt(indexToRemove);
         }
     }

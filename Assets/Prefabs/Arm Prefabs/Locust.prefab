@@ -240,6 +240,7 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: da6ad6e1800bdeb439426e8a8f75d55b, type: 2}
   projectiles:
   - {fileID: 5731709433743611798, guid: 69c31cb0e92092744a7cb8d8e61708ca, type: 3}
+  - {fileID: 6570955299702910688, guid: 11b4516544b363d4e958091cddca2418, type: 3}
   shootPoint: {fileID: 3178301148310594185}
 --- !u!1 &3178301148310594185
 GameObject:

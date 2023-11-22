@@ -583,8 +583,10 @@ MonoBehaviour:
     type: 3}
   leftArmPrefab: {fileID: 1933025567852625395, guid: 5ce05429f4a9c284ba6b4c25f2cad9ed,
     type: 3}
-  rightArmPrefab: {fileID: 6667246287810797203, guid: 2bb099ac156b6d44fa6d8aacd5b0462b,
+  rightArmPrefab: {fileID: 7798768644038380875, guid: dc5c1816bf16b4f4ab074dd190acf255,
     type: 3}
+  dashFactor: 500
+  immuneStun: 0
 --- !u!96 &-7793100030520538945
 TrailRenderer:
   serializedVersion: 3
