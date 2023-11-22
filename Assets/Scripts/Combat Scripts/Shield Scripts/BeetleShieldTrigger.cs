@@ -147,7 +147,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         arm = instantiatingArm.GetComponent<Beetle>();
 
         // Check if the collision is with a specific object or has specific properties
-        if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
         {
             float projectileDamage = projectile.Damage;
 

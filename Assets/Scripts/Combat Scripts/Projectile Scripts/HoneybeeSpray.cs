@@ -58,9 +58,8 @@ public class HoneybeeSpray : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
-            instantiatingArm.ChargeUltimate(Damage, 30);
-            // Friendly Player here
-            // TODO: Implement a list within the PlayerController that stores the unique healing abilities on the player
+            // Only charge ultimate if HP is less than max and healed up
+            instantiatingArm.ChargeUltimate(Damage, 100);
 
         }
     }
@@ -68,7 +67,7 @@ public class HoneybeeSpray : Projectile
     public override void TriggerStay2DLogic(Collider2D other)
     {
         // If friendly player
-        // Check if the HoneybeeSpray is within the HealStore list, if not then heal player
+        // Heal player standing inside
 
         // If enemy player
         // Slowly damage enemy players who stand inside with a damage value of 1
@@ -76,7 +75,6 @@ public class HoneybeeSpray : Projectile
 
     public override void TriggerExit2DLogic(Collider2D other)
     {
-        // Remove "Honeybee Spray" from Player HealStore list
     }
 
 }
