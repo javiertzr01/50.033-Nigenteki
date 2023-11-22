@@ -55,24 +55,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     public Vector2Int capturePointPosition;
 
     // Prefabs
-    GameObject obstacle;
-    [SerializeField]
-    public GameObject AutumnTree2x2;
-    public GameObject Green1Tree2x2;
-    public GameObject Green2Tree2x2;
-    public GameObject Green3Tree2x2;
-    public GameObject SakuraTree2x2;
-    public GameObject AutumnTree5x5;
-    public GameObject Green1Tree5x5;
-    public GameObject Green2Tree5x5;
-    public GameObject Green3Tree5x5;
-    public GameObject SakuraTree5x5;
-    public GameObject RedFlower;
-    public GameObject BlueFlower;
-    public GameObject GreenFlower;
-    public GameObject RedSpawn;
-    public GameObject BlueSpawn;
-    public GameObject CapturePoint;
+    private List<GameObject> instantiatedPrefabs = new List<GameObject>();
 
     public override void RunProceduralGeneration()
     {
@@ -239,9 +222,9 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public void SpawnPOI(Vector2Int red, Vector2Int blue, Vector2Int cp)
     {
-        GameObject redSpawnGO = GameObject.Instantiate(RedSpawn, new Vector3(red.x, red.y, 0), Quaternion.identity);
-        GameObject blueSpawnGO = GameObject.Instantiate(BlueSpawn, new Vector3(blue.x, blue.y, 0), Quaternion.identity);
-        GameObject capturePointGO = GameObject.Instantiate(CapturePoint, new Vector3(cp.x, cp.y, 0), Quaternion.identity);
+        PrefabLoader.LoadAndInstantiatePrefab("RedSpawn", new Vector3(red.x, red.y, 0));
+        PrefabLoader.LoadAndInstantiatePrefab("BlueSpawn", new Vector3(blue.x, blue.y, 0));
+        PrefabLoader.LoadAndInstantiatePrefab("CapturePoint", new Vector3(cp.x, cp.y, 0));
     }
 
 
@@ -370,76 +353,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public void SpawnItems(Vector2Int[] positionsArray, string[] namesArray)
     {
-        for(int i = 0; i < positionsArray.Count(); i++)
-        {
-            string biome = namesArray[i].Substring(0,6);
-            string item = namesArray[i].Substring(6);
-            if (item == "tree2x2")
-            {
-                switch(biome)
-                {
-                    case "Autumn":
-                        obstacle = AutumnTree2x2;
-                        break;
-                    case "Green1":
-                        obstacle = Green1Tree2x2;
-                        break;
-                    case "Green2":
-                        obstacle = Green2Tree2x2;
-                        break;
-                    case "Green3":
-                        obstacle = Green3Tree2x2;
-                        break;
-                    case "Sakura":
-                        obstacle = SakuraTree2x2;
-                        break;
-                    default:
-                        Debug.Log("No Prefab");
-                        break;
-                }
-            }
-            else if (item == "tree5x5")
-            {
-                switch(biome)
-                {
-                    case "Autumn":
-                        obstacle = AutumnTree5x5;
-                        break;
-                    case "Green1":
-                        obstacle = Green1Tree5x5;
-                        break;
-                    case "Green2":
-                        obstacle = Green2Tree5x5;
-                        break;
-                    case "Green3":
-                        obstacle = Green3Tree5x5;
-                        break;
-                    case "Sakura":
-                        obstacle = SakuraTree5x5;
-                        break;
-                    default:
-                        Debug.Log("No Prefab");
-                        break;
-                }
-            }
-            else
-            {
-                switch(item)
-                {
-                    case "redFlower1x1":
-                        obstacle = RedFlower;
-                        break;
-                    case "blueFlower1x1":
-                        obstacle = BlueFlower;
-                        break;
-                    case "greenFlower1x1":
-                        obstacle = GreenFlower;
-                        break;
-                }
-            }
-            GameObject obs = GameObject.Instantiate(obstacle, new Vector3(positionsArray[i].x, positionsArray[i].y, 0), Quaternion.identity);
-        }
-            // Debug.Log(kvp.Key + ":" + kvp.Value);
+        instantiatedPrefabs = PrefabLoader.LoadAndInstantiatePrefabs(namesArray, positionsArray);
     }
 
 

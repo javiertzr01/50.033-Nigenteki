@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: 2x2Tree
+  m_EditorClassIdentifier: 
+  m_GroupName: 2x2Tree
+  m_Data:
+    m_SerializedData: []
+  m_GUID: fd027f35e61a98348a1724db5b8b3d3c
+  m_SerializeEntries:
+  - m_GUID: b699b35de3f646b4498624eb84103e7e
+    m_Address: AutumnTree2x2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 892c0fe3cd53d314bbd5f5d07ab3a782
+    m_Address: Green1Tree2x2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ab3ce4374f760b4b9603ccfef58e32d
+    m_Address: Green2Tree2x2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 038c697932049fc458d3ed1141af25b3
+    m_Address: Green3Tree2x2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c75f8b01083d34469d8f64f9df3cb15
+    m_Address: SakuraTree2x2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d2d4a1c4e407216449aca69668b6cdfd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a5c5bb4157c7b8e4faca2617dce8cf36, type: 2}
+    - {fileID: 11400000, guid: d9e599bb75744fb41a1f90e108fa4958, type: 2}
