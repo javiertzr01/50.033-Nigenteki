@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -40,6 +41,13 @@ public class PlayerController : NetworkBehaviour
 
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
+
+    [System.NonSerialized] public float damageTakenScale = 1f; // TODO: Player Take Damage
+    [System.NonSerialized] public float damageDealtScale = 1f; // this is for classes to reference for their projectiles
+    [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // TODO: In Update(), health regeneration every 1 second
+    private float secondTicker = 0f;
+    [System.NonSerialized] public bool interactingWithHoneyComb = false;
+    [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
 
     private void Awake()
     {
@@ -157,6 +165,21 @@ public class PlayerController : NetworkBehaviour
         Look();
         LeftArmBasicAttack();
         RightArmBasicAttack();
+
+        if (passiveHealthRegenerationPercentage > 0f || healingPerSecond > 0f)
+        {
+            if (Time.time >= secondTicker)
+            {
+                // TODO: PASSIVE REGEN FUNCTION
+                Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
+                // TODO: HEALING FUNCTION
+                Debug.Log("Healing per second: " + healingPerSecond);
+
+                // Set the next second
+                secondTicker = Time.time + 1f;
+            }
+
+        }
     }
 
     void Movement()

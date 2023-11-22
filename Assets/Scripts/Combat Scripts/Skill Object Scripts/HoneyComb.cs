@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class HoneyComb : SkillObject
 {
-    private float countdownTimer = 5f; // Countdown timer
-    public float healingValue = 10;
+    [System.NonSerialized] public float countdownTimer = 10f; // Countdown timer
+    public float healingValue = 10f;
     private List<PlayerController> enemiestoSlow = new List<PlayerController>();
     private void Update()
     {
@@ -25,9 +25,18 @@ public class HoneyComb : SkillObject
     {
         if (other.gameObject.tag == "Player")
         {
-            instantiatingArm.ChargeUltimate(healingValue, 50);
+            // instantiatingArm.ChargeUltimate(healingValue, 50);
+
             // Friendly Player here
             // TODO: Implement a list within the PlayerController that stores the unique healing abilities on the player
+            PlayerController playerController = other.GetComponent<PlayerController>();
+            if (playerController != null && !playerController.interactingWithHoneyComb)
+            {
+                playerController.interactingWithHoneyComb = true;
+                Debug.Log("HoneyComb Trigger Enter: " + playerController.interactingWithHoneyComb);
+                playerController.healingPerSecond += healingValue;
+            }
+
 
             // // Enemy Player here
             // PlayerController playerController = other.GetComponent<PlayerController>();
@@ -43,15 +52,19 @@ public class HoneyComb : SkillObject
 
     public override void TriggerStay2DLogic(Collider2D other)
     {
-        // If friendly player
-        // Check if the HoneybeeSpray is within the HealStore list, if not then heal player
-
+        // Adjust per second healing percentage
     }
 
     public override void TriggerExit2DLogic(Collider2D other)
     {
         // Friendly Player
-        // Remove "Honeybee Spray" from Player HealStore list
+        PlayerController playerController = other.GetComponent<PlayerController>();
+        if (playerController != null && playerController.interactingWithHoneyComb)
+        {
+            playerController.interactingWithHoneyComb = false;
+            Debug.Log("HoneyComb Trigger Enter: " + playerController.interactingWithHoneyComb);
+            playerController.healingPerSecond -= healingValue;
+        }
 
 
         // // Enemy Player here

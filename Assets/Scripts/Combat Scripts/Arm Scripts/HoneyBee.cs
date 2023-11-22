@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.AI;
 
 public class HoneyBee : Arm
 {
     private GameObject spellProjectile;
     private float nextBasicFireTime = 0f;
+    private bool ulted = false;
+    private float countdownTimer = 0f;
+    private GameObject[] players;
+    private bool skillReady;
+
 
     public override void Initialize()
     {
@@ -14,6 +20,11 @@ public class HoneyBee : Arm
 
         UltimateCharge = armVariable.ultimateCharge;
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
+        skillReady = true;
+
+        // Find all game objects with the tag "Player"
+        players = GameObject.FindGameObjectsWithTag("Player");
+        // TODO: Add filter for teams
 
 
         if (projectiles[1] != null)
@@ -28,9 +39,45 @@ public class HoneyBee : Arm
         {
             SkillCoolDown -= Time.deltaTime;
         }
-        else if (spellProjectile != null && SkillCoolDown <= 0f)
+        else if (spellProjectile != null && SkillCoolDown <= 0f && !skillReady)
         {
             Debug.Log("Honeybee Skill can be casted");
+            skillReady = true;
+        }
+
+
+        if (ulted)
+        {
+            if (countdownTimer > 0f)
+            {
+                countdownTimer -= Time.deltaTime;
+                if (countdownTimer <= 0f)
+                {
+                    Debug.Log("Honeybee Ultimate ended");
+                    // Reset
+                    // Iterate through each player
+                    foreach (var player in players)
+                    {
+                        // Access the PlayerController script
+                        PlayerController playerController = player.GetComponent<PlayerController>();
+
+                        // Check if the playerController is not null
+                        if (playerController != null)
+                        {
+                            // Reset the MoveSpeed variable
+                            playerController.MoveSpeed /= 2;
+                            // Reset damage taken
+                            playerController.damageTakenScale /= 0.75f;
+
+                            // TODO: Deactivate Passive Health Regen
+                            playerController.passiveHealthRegenerationPercentage -= 0.05f;
+                        }
+                    }
+
+                    ulted = false;
+                    countdownTimer = armVariable.ultimateDuration;
+                }
+            }
         }
     }
 
@@ -91,9 +138,11 @@ public class HoneyBee : Arm
             skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Set the instantiatingArm
             skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+            skillProjectile.GetComponent<HoneyComb>().countdownTimer = armVariable.skillDuration;
 
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
+            skillReady = false;
 
             // Cast the Skill ClientRpc
             CastSkillClientRpc(new ClientRpcParams
@@ -135,7 +184,29 @@ public class HoneyBee : Arm
 
             Debug.Log("HONEYBEE ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
-                                 // Instantiate the ultimate area effect
+
+            // Iterate through each player
+            foreach (var player in players)
+            {
+                // Access the PlayerController script
+                PlayerController playerController = player.GetComponent<PlayerController>();
+
+                // Check if the playerController is not null
+                if (playerController != null)
+                {
+                    // Multiply the MoveSpeed variable by 2
+                    playerController.MoveSpeed *= 2;
+                    // Reduce damage taken by 25%
+                    playerController.damageTakenScale *= 0.75f;
+
+                    // TODO: Activate Passive Health Regen
+                    playerController.passiveHealthRegenerationPercentage += 0.05f;
+                }
+            }
+
+            ulted = true;
+            countdownTimer = armVariable.ultimateDuration;
+
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
@@ -146,8 +217,6 @@ public class HoneyBee : Arm
                 }
             });
         }
-
-
     }
 
 
