@@ -12969,7 +12969,7 @@ MonoBehaviour:
     type: 3}
   GreenFlower: {fileID: 6804966583983567202, guid: c1fc5007266d20e4e9f7bfa5b30750bf,
     type: 3}
-  RedSpawn: {fileID: 6804966583983567202, guid: 28371a3e857d3bc418e6858a20fb88f8,
+  RedSpawn: {fileID: 6804966583983567202, guid: c53146f4b3a1c564d82a8dbc5a1640b9,
     type: 3}
   BlueSpawn: {fileID: 6804966583983567202, guid: c6cf910a2c03e5c46b794c1e1562ffd3,
     type: 3}
@@ -14075,7 +14075,7 @@ TilemapCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
