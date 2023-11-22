@@ -283,8 +283,8 @@ public class RTTGenerator : AbstractProceduralGenerator
     protected Dictionary<Vector2Int, Sprites> GenerateSpriteMap()
     {
         Dictionary<Vector2Int, Sprites> map = new Dictionary<Vector2Int, Sprites>();
-        foreach (Vector2Int position in pathPositions)
-            map[position] = Sprites.Path;                  // Set the sprite for path
+        // foreach (Vector2Int position in pathPositions)
+        //     map[position] = Sprites.Path;                  // Set the sprite for path
         foreach (var kvp in nodePositionZone)
         {
             Sprites biome = GetBiome(kvp.Key);                              // Get Biome
@@ -307,7 +307,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         foreach(var kvp in biomeZone)
         {
             HashSet<Vector2Int> floorPositions = kvp.Value;
-            floorPositions.ExceptWith(pathPositions);
+            // floorPositions.ExceptWith(pathPositions);
             Sprites biome = spriteMap[floorPositions.First()];
             BiomeInfo biomeInfo;
             switch (biome)

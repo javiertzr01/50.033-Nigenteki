@@ -54,7 +54,7 @@ public class ItemPlacementHelper
                 position = validNodeFloorPositions.ElementAt(index);
             }
 
-            if (itemArea > 1)
+            if (itemArea > 1 || placementType == PlacementType.ColliderActive)
             {
                 var (result, placementPositions) = PlaceBigItem(position, size, addOffset);
 
