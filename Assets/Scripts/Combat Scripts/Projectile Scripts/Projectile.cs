@@ -10,6 +10,8 @@ public abstract class Projectile : NetworkBehaviour
     private float _maxDistance;
     private float _damage;
 
+    private bool isColliding = false;
+
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this projectile
 
@@ -43,6 +45,9 @@ public abstract class Projectile : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (isColliding) return;
+
+        isColliding = true;
         TriggerEnter2DLogic(other);
     }
 
@@ -73,6 +78,12 @@ public abstract class Projectile : NetworkBehaviour
         transform.GetComponent<NetworkObject>().Despawn(true);
         Destroy(gameObject); // Destroy the projectile
 
+    }
+
+    private void Awake()
+    {
+        maxDistance = projectileVariable.maxDistance;
+        Damage = projectileVariable.damage;
     }
 
     void Start()

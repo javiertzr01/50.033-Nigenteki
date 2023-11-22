@@ -14,9 +14,11 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     float maxHealth;
     private float moveSpeed;
-    NetworkVariable<float> _currentHealth;
+    //NetworkVariable<float> _currentHealth;
 
+    private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
+    private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
 
     private Rigidbody2D rb;
     private Vector2 moveDir;
@@ -61,7 +63,9 @@ public class PlayerController : NetworkBehaviour
         animator = GetComponent<Animator>();
         maxHealth = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
-        _currentHealth = playerVariables.currentHealth;
+        //_currentHealth = playerVariables.currentHealth;
+        playerHealth.Value = playerVariables.maxHealth;
+        spawnPosition.Value = transform.position;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -114,6 +118,64 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDamageServerRpc(float damage, ulong clientId)
+    {
+        var damagedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        if ((damagedClient.playerHealth.Value - damage) <= 0)
+        {
+            RespawnServerRpc(clientId);
+        }
+        else
+        {
+            damagedClient.playerHealth.Value -= damage;
+        }
+
+        Logger.Instance.LogInfo($"Player {clientId} took {damage} damage and has {damagedClient.playerHealth.Value}");
+    }
+
+    [ClientRpc]
+    public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetRespawnServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var setClient = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>();
+
+        setClient.spawnPosition.Value = setClient.transform.position;
+
+        Logger.Instance.LogInfo($"Set Player {OwnerClientId} spawn position as {setClient.spawnPosition.Value}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RespawnServerRpc(ulong clientId, ServerRpcParams serverRpcParams = default)
+    {
+        var respawnClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        respawnClient.transform.position = respawnClient.spawnPosition.Value;
+
+        respawnClient.playerHealth.Value = maxHealth;
+
+        RespawnClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { clientId }
+            }
+        });
+
+        Logger.Instance.LogInfo($"Player {clientId} has respawned at {respawnClient.spawnPosition.Value}");
+    }
+
+    [ClientRpc]
+    public void RespawnClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        transform.position = spawnPosition.Value;
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void UpdatePlayerStateServerRpc(PlayerState newState)
@@ -133,7 +195,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public NetworkVariable<float> currentHealth
+    /*public NetworkVariable<float> currentHealth
     {
         get
         {
@@ -143,7 +205,7 @@ public class PlayerController : NetworkBehaviour
         {
             _currentHealth = value;
         }
-    }
+    }*/
 
     // Start is called before the first frame update
     void Start()
@@ -153,6 +215,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
+        SetRespawnServerRpc();
     }
 
     public override void OnNetworkSpawn()
@@ -322,6 +385,8 @@ public class PlayerController : NetworkBehaviour
     public enum PlayerState
     {
         Idle,
-        Walking
+        Walking,
+        Damaged,
+        Death
     }
 }
