@@ -49,12 +49,19 @@ public class PlayerController : NetworkBehaviour
     [System.NonSerialized] public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
 
+    // Implemented for Dash Function
+    private bool doForce = false;
+    private TrailRenderer tr;
+    private Vector2 lastDashVelocity;
+
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
         _currentHealth = playerVariables.currentHealth;
+        tr = GetComponent<TrailRenderer>();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -287,4 +294,35 @@ public class PlayerController : NetworkBehaviour
     }
 
 
+    public void Dash(Vector2 dashDirection)
+    {
+
+        if (rb != null)
+        {
+            // Normalize the dash direction to ensure consistent speed in all directions
+            dashDirection.Normalize();
+
+            // Apply a force to the Rigidbody2D in the specified direction
+            // 500 is an arbitrary number
+            lastDashVelocity = dashDirection * 500;
+
+            doForce = true;
+        }
+    }
+
+
+    private void FixedUpdate()
+    {
+        if (doForce)
+        {
+            doForce = false;
+            Debug.Log("Test" + lastDashVelocity);
+            tr.emitting = true;
+            rb.AddForce(lastDashVelocity, ForceMode2D.Impulse);
+        }
+        else
+        {
+            tr.emitting = false;
+        }
+    }
 }

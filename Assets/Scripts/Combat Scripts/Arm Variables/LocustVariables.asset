@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371915ed5e35a6a4fa025f598048d0a5, type: 3}
   m_Name: LocustVariables
   m_EditorClassIdentifier: 
-  armName: 
-  baseForce: 0
-  baseFireRate: 0
+  armName: Locust
+  baseForce: 4
+  baseFireRate: 0.3
   skillForce: 0
-  skillCoolDown: 0
+  skillCoolDown: 5
   skillDuration: 0
-  skillMaxCharges: 0
+  skillMaxCharges: 2
   skillMaxInstants: 0
   ultimateForce: 0
-  ultimateFireRate: 0
-  ultimateCharge: 0
-  ultimateDuration: 0
+  ultimateFireRate: 0.15
+  ultimateCharge: 100
+  ultimateDuration: 15
   shieldMaxHealth: 0

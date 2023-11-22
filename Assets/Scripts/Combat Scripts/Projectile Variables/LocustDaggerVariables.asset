@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c07e014a5f8d1847a77afcde0787715, type: 3}
   m_Name: LocustDaggerVariables
   m_EditorClassIdentifier: 
-  projectileName: 
-  damage: 0
-  maxDistance: 0
+  projectileName: Locust Dagger
+  damage: 50
+  maxDistance: 1

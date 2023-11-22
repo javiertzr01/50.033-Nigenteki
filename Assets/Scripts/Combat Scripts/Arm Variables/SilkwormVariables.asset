@@ -16,7 +16,7 @@ MonoBehaviour:
   baseForce: 10
   baseFireRate: 0.2
   skillForce: 0
-  skillCoolDown: 1
+  skillCoolDown: 20
   skillDuration: 0
   skillMaxCharges: 2
   skillMaxInstants: 4

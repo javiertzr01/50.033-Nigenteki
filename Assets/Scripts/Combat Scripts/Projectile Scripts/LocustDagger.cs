@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LocustDagger : MonoBehaviour
+public class LocustDagger : Projectile
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public override void CollisionEnter2DLogic(Collision2D collision)
     {
-        
+        // DestroyServerRpc();
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void TriggerEnter2DLogic(Collider2D other)
     {
-        
+        if (other.gameObject.tag == "Player")
+        {
+            // Damage the player
+            // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
+            instantiatingArm.ChargeUltimate(Damage, 30);
+            DestroyServerRpc();
+        }
+        else if (other.gameObject.tag == "Shield")
+        {
+            instantiatingArm.ChargeUltimate(Damage, 30);
+            DestroyServerRpc();
+        }
     }
+
 }
