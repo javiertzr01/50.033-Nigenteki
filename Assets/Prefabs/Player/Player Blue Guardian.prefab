@@ -69,7 +69,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 7
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -442,7 +442,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &-8398914158483538243
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -450,7 +450,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5009592937343648668}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -935,7 +935,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 40
-    OrthographicSize: 10
+    OrthographicSize: 7
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
