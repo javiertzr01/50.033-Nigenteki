@@ -43,11 +43,11 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 6
+  spritePivot: {x: 0, y: 0}
   spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -108,18 +108,264 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Blue-gray_ruins1_1
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 8
+        width: 73
+        height: 93
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -14.5, y: -36.5}
+        - {x: -17.5, y: -29.5}
+        - {x: -19.5, y: -28.5}
+        - {x: -16.5, y: -28.5}
+        - {x: -14.5, y: -26.5}
+        - {x: -14.5, y: -23.5}
+        - {x: -8.5, y: -30.5}
+        - {x: -5.5, y: -31.5}
+        - {x: -3.5, y: -32.5}
+        - {x: -3.5, y: -37.5}
+        - {x: 0.5, y: -41.5}
+        - {x: 2.5, y: -41.5}
+        - {x: 4.5, y: -39.5}
+        - {x: 4.5, y: -36.5}
+        - {x: 7.5, y: -38.5}
+        - {x: 15.5, y: -39.5}
+        - {x: 18.5, y: -37.5}
+        - {x: 19.5, y: -41.5}
+        - {x: 22.5, y: -41.5}
+        - {x: 26.5, y: -37.5}
+        - {x: 26.5, y: -32.5}
+        - {x: 28.5, y: -31.5}
+        - {x: 31.5, y: -30.5}
+        - {x: 37.5, y: -23.5}
+        - {x: 37.5, y: -17.5}
+        - {x: 38.5, y: -17.5}
+        - {x: 38.5, y: 46.5}
+        - {x: -10.5, y: 46.5}
+        - {x: -11.5, y: 45.5}
+        - {x: -11.5, y: 41.5}
+        - {x: -9.5, y: 38.5}
+        - {x: -8.5, y: 36.5}
+        - {x: -10.5, y: 34.5}
+        - {x: -10.5, y: 33.5}
+        - {x: -9.5, y: 32.5}
+        - {x: -9.5, y: 27.5}
+        - {x: -15.5, y: 27.5}
+        - {x: -18.5, y: 24.5}
+        - {x: -19.5, y: 24.5}
+        - {x: -21.5, y: 26.5}
+        - {x: -22.5, y: 26.5}
+        - {x: -25.5, y: 24.5}
+        - {x: -27.5, y: 20.5}
+        - {x: -32.5, y: 20.5}
+        - {x: -35.5, y: 17.5}
+        - {x: -36.5, y: 13.5}
+        - {x: -34.5, y: 11.5}
+        - {x: -28.5, y: 11.5}
+        - {x: -28.5, y: 7.5}
+        - {x: -27.5, y: 6.5}
+        - {x: -28.5, y: 5.5}
+        - {x: -28.5, y: 1.5}
+        - {x: -26.5, y: -2.5}
+        - {x: -24.5, y: -3.5}
+        - {x: -24.5, y: -6.5}
+        - {x: -23.5, y: -7.5}
+        - {x: -23.5, y: -10.5}
+        - {x: -22.5, y: -11.5}
+        - {x: -21.5, y: -16.5}
+        - {x: -22.5, y: -17.5}
+        - {x: -22.5, y: -24.5}
+        - {x: -20.5, y: -27.5}
+        - {x: -22.5, y: -27.5}
+        - {x: -25.5, y: -31.5}
+        - {x: -26.5, y: -35.5}
+        - {x: -22.5, y: -44.5}
+        - {x: -19.5, y: -46.5}
+        - {x: -12.5, y: -46.5}
+        - {x: -11.5, y: -43.5}
+        - {x: -11.5, y: -40.5}
+      - - {x: 36.5, y: -30.5}
+        - {x: 32.5, y: -32.5}
+        - {x: 30.5, y: -32.5}
+        - {x: 27.5, y: -35.5}
+        - {x: 26.5, y: -39.5}
+        - {x: 33.5, y: -46.5}
+        - {x: 35.5, y: -46.5}
+        - {x: 38.5, y: -44.5}
+        - {x: 38.5, y: -30.5}
+      - - {x: -31.5, y: 9.5}
+        - {x: -36.5, y: 9.5}
+        - {x: -38.5, y: 7.5}
+        - {x: -38.5, y: -1.5}
+        - {x: -37.5, y: -2.5}
+        - {x: -35.5, y: -2.5}
+        - {x: -29.5, y: 3.5}
+        - {x: -29.5, y: 8.5}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: d1a793e6eecfc364fa17dda9ae89b4eb
+      internalID: 1790696158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue-gray_ruins1_0
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 8
+        width: 22
+        height: 61
+      alignment: 9
+      pivot: {x: -3.314901, y: -0.001430918}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -9, y: -15.5}
+        - {x: -9, y: -25.5}
+        - {x: -6, y: -24.5}
+        - {x: -4, y: -20.5}
+        - {x: -4, y: -18.5}
+        - {x: -7, y: -15.5}
+      - - {x: 0, y: -11.5}
+        - {x: 3, y: -11.5}
+        - {x: 9, y: -5.5}
+        - {x: 9, y: 2.5}
+        - {x: 6, y: 5.5}
+        - {x: 2, y: 6.5}
+        - {x: -2, y: 3.5}
+        - {x: -3, y: 2.5}
+        - {x: -3, y: 7.5}
+        - {x: -4, y: 8.5}
+        - {x: -4, y: 11.5}
+        - {x: -3, y: 12.5}
+        - {x: -3, y: 14.5}
+        - {x: -2, y: 15.5}
+        - {x: -2, y: 11.5}
+        - {x: 0, y: 9.5}
+        - {x: 8, y: 9.5}
+        - {x: 9, y: 10.5}
+        - {x: 9, y: 26.5}
+        - {x: 7, y: 30.5}
+        - {x: -9, y: 30.5}
+        - {x: -9, y: 27.5}
+        - {x: -7, y: 27.5}
+        - {x: -6, y: 28.5}
+        - {x: -7, y: 27.5}
+        - {x: -9, y: 27.5}
+        - {x: -9, y: -11.5}
+        - {x: -8, y: -12.5}
+        - {x: -5, y: -12.5}
+        - {x: -2, y: -9.5}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: 49da2ec28fd91514fb7a9c5375df1d91
+      internalID: -1962405190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue-gray_ruins1_2
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 101
+        width: 59
+        height: 25
+      alignment: 9
+      pivot: {x: -0.5749338, y: -3.723464}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 22.5, y: -5.5}
+        - {x: 23.5, y: -3.5}
+        - {x: 20.5, y: 0.5}
+        - {x: 20.5, y: 2.5}
+        - {x: 15.5, y: 8.5}
+        - {x: 14.5, y: 8.5}
+        - {x: 11.5, y: 11.5}
+        - {x: 7.5, y: 11.5}
+        - {x: 5.5, y: 12.5}
+        - {x: -10.5, y: 12.5}
+        - {x: -11.5, y: 11.5}
+        - {x: -13.5, y: 12.5}
+        - {x: -15.5, y: 10.5}
+        - {x: -17.5, y: 10.5}
+        - {x: -23.5, y: 4.5}
+        - {x: -23.5, y: 3.5}
+        - {x: -27.5, y: -0.5}
+        - {x: -27.5, y: -1.5}
+        - {x: -29.5, y: -3.5}
+        - {x: -29.5, y: -12.5}
+        - {x: 29.5, y: -12.5}
+        - {x: 29.5, y: -8.5}
+        - {x: 26.5, y: -5.5}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: f94e34e20a2c6264c88d22f1fdc5faf2
+      internalID: 215902008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue-gray_ruins1_3
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 69
+        width: 26
+        height: 32
+      alignment: 9
+      pivot: {x: -2.8069463, y: -1.9085324}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 11, y: -2}
+        - {x: 11, y: 8}
+        - {x: 10, y: 10}
+        - {x: 11, y: 12}
+        - {x: 8, y: 15}
+        - {x: 8, y: 16}
+        - {x: -11, y: 16}
+        - {x: -11, y: -16}
+        - {x: 4, y: -16}
+        - {x: 5, y: -12}
+        - {x: 10, y: -6}
+        - {x: 10, y: -3}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: 3eb209563a50d394585e64386658ade6
+      internalID: -1635039864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Blue-gray_ruins1_0: -1962405190
+      Blue-gray_ruins1_1: 1790696158
+      Blue-gray_ruins1_2: 215902008
+      Blue-gray_ruins1_3: -1635039864
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -12943,38 +12943,6 @@ MonoBehaviour:
   redSpawnPosition: {x: 57, y: 48}
   blueSpawnPosition: {x: -51, y: -23}
   capturePointPosition: {x: 9, y: 4}
-  AutumnTree2x2: {fileID: 6804966583983567202, guid: b699b35de3f646b4498624eb84103e7e,
-    type: 3}
-  Green1Tree2x2: {fileID: 6804966583983567202, guid: 892c0fe3cd53d314bbd5f5d07ab3a782,
-    type: 3}
-  Green2Tree2x2: {fileID: 6804966583983567202, guid: 8ab3ce4374f760b4b9603ccfef58e32d,
-    type: 3}
-  Green3Tree2x2: {fileID: 6804966583983567202, guid: 038c697932049fc458d3ed1141af25b3,
-    type: 3}
-  SakuraTree2x2: {fileID: 6804966583983567202, guid: 3c75f8b01083d34469d8f64f9df3cb15,
-    type: 3}
-  AutumnTree5x5: {fileID: 6804966583983567202, guid: 563840d282dbc9446a8bb44a550a85b0,
-    type: 3}
-  Green1Tree5x5: {fileID: 6804966583983567202, guid: c32cfb0f4614af243a27d8ca1f2ad99c,
-    type: 3}
-  Green2Tree5x5: {fileID: 6804966583983567202, guid: fac1e7f11a036ed41b113bff93e022e7,
-    type: 3}
-  Green3Tree5x5: {fileID: 6804966583983567202, guid: 04c48161c15712344b60b13788b653c5,
-    type: 3}
-  SakuraTree5x5: {fileID: 6804966583983567202, guid: 210ca3383346f32489e8a1f080d7ee31,
-    type: 3}
-  RedFlower: {fileID: 6804966583983567202, guid: fa2e5980a8f2cf1438d66fb888c1dd96,
-    type: 3}
-  BlueFlower: {fileID: 6804966583983567202, guid: e4fa50dd2994f3e419d82afdaea6b6e5,
-    type: 3}
-  GreenFlower: {fileID: 6804966583983567202, guid: c1fc5007266d20e4e9f7bfa5b30750bf,
-    type: 3}
-  RedSpawn: {fileID: 6804966583983567202, guid: c53146f4b3a1c564d82a8dbc5a1640b9,
-    type: 3}
-  BlueSpawn: {fileID: 6804966583983567202, guid: c6cf910a2c03e5c46b794c1e1562ffd3,
-    type: 3}
-  CapturePoint: {fileID: 6804966583983567202, guid: 3e39dd102af137641b3febdc833ffb71,
-    type: 3}
 --- !u!4 &910402511
 Transform:
   m_ObjectHideFlags: 0
@@ -14075,7 +14043,7 @@ TilemapCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

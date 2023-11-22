@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3d7fe1fca0c9847b0e47d9518d532a, type: 3}
   m_Name: Tree5x5
   m_EditorClassIdentifier: 
-  size: {x: 5, y: 5}
+  size: {x: 2, y: 2}
   placementType: 1
