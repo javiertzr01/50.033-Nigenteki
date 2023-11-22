@@ -52,7 +52,20 @@ public abstract class Projectile : NetworkBehaviour
         TriggerEnter2DLogic(other);
     }
 
+    void OnTriggerStay2D(Collider2D other)
+    {
+        TriggerStay2DLogic(other);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        TriggerExit2DLogic(other);
+    }
+
     public abstract void TriggerEnter2DLogic(Collider2D other);
+    public virtual void TriggerStay2DLogic(Collider2D other) { }
+    public virtual void TriggerExit2DLogic(Collider2D other) { }
+
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -81,14 +94,14 @@ public abstract class Projectile : NetworkBehaviour
 
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         startingPosition = transform.position;
         MaxDistance = projectileVariable.maxDistance;
         Damage = projectileVariable.damage;
     }
 
-    void Update()
+    protected virtual void Update()
     {
         DestroyAfterDistanceServerRpc();
     }
