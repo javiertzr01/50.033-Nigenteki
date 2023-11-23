@@ -8,9 +8,9 @@ public class BasicShooter : Arm
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
 
-    public AudioClip basicAttackSFX;   // Assign this in the Inspector
-    public AudioClip skillSFX;   // Assign this in the Inspector
-    public AudioClip ultimateSFX;   // Assign this in the Inspector
+    //public AudioClip basicAttackSFX;   // Assign this in the Inspector
+    //public AudioClip skillSFX;   // Assign this in the Inspector
+    //public AudioClip ultimateSFX;   // Assign this in the Inspector
 
     private float nextBasicFireTime = 0f;
 
@@ -41,6 +41,7 @@ public class BasicShooter : Arm
         UpdateWeaponAnimator();
     }
 
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -59,7 +60,7 @@ public class BasicShooter : Arm
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 
             //Audio Player
-            audioSource.PlayOneShot(basicAttackSFX);
+            CastBasicAttackSFXServerRpc(serverRpcParams);
 
             UpdateWeaponAnimatorServerRpc(WeaponState.BasicAttack);
 
@@ -84,7 +85,6 @@ public class BasicShooter : Arm
     [ClientRpc]
     public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        audioSource.PlayOneShot(basicAttackSFX);
         if (!IsOwner) return;
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
