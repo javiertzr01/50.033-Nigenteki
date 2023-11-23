@@ -22,9 +22,9 @@ public abstract class Arm : NetworkBehaviour
     private float _ultimateCharge;
 
     protected AudioSource audioSource;
-    //public AudioClip basicAttackSFX;   // Assign this in the Inspector
-    //public AudioClip skillSFX;   // Assign this in the Inspector
-    //public AudioClip ultimateSFX;   // Assign this in the Inspector
+    public AudioClip basicAttackSFX;   // Assign this in the Inspector
+    public AudioClip skillSFX;   // Assign this in the Inspector
+    public AudioClip ultimateSFX;   // Assign this in the Inspector
 
 
     void Awake()
@@ -45,6 +45,34 @@ public abstract class Arm : NetworkBehaviour
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
     [ClientRpc]
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if(basicAttackSFX != null && audioSource != null)
+        {
+            foreach (var player in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                CastBasicAttackSFXClientRpc(new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = new ulong[] { player }
+                    }
+                });
+            }
+            audioSource.PlayOneShot(basicAttackSFX);
+        }
+    }
+
+    [ClientRpc]
+    public void CastBasicAttackSFXClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (basicAttackSFX != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(basicAttackSFX);
+        }
+    }
 
     // The skill method
     public abstract void CastSkill();
