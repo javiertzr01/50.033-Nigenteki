@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 070640390523326428bc2883adab0f07, type: 3}
-  m_Name: Red Defender
+  m_Name: Blue Guardian
   m_EditorClassIdentifier: 
-  id: 3
-  displayName: Character 1
-  icon: {fileID: -922346740, guid: ae633ce554157764a95a0a1dab84abe8, type: 3}
-  characterPrefab: {fileID: 5009592937343648668, guid: 95001c1c5c37fe347a909decfc1b4abe,
+  id: 1
+  displayName: Blue Guardian
+  icon: {fileID: -1349039727, guid: cd281d1b3e0dfa84c96496ba496e3e82, type: 3}
+  characterPrefab: {fileID: 5009592937343648668, guid: d32c592614a35f645a6ab5a47fad4331,
     type: 3}
