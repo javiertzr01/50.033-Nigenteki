@@ -21,6 +21,10 @@ public abstract class Arm : NetworkBehaviour
     protected GameObject basicProjectile;
     private float _ultimateCharge;
 
+    protected AudioSource audioSource;
+    //public AudioClip basicAttackSFX;   // Assign this in the Inspector
+    //public AudioClip skillSFX;   // Assign this in the Inspector
+    //public AudioClip ultimateSFX;   // Assign this in the Inspector
 
 
     void Awake()
