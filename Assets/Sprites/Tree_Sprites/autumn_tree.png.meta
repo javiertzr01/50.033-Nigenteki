@@ -110,22 +110,96 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: autumn_tree_0
+      name: autumn_tree_bottom
       rect:
         serializedVersion: 2
-        x: 2
+        x: 14
         y: 0
-        width: 60
-        height: 64
-      alignment: 6
-      pivot: {x: 0, y: 0}
+        width: 33
+        height: 11
+      alignment: 9
+      pivot: {x: -0.36404762, y: 0.020846667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d64638a2ab036bd4d8d110cf69faf785
-      internalID: 2010988740
+      spriteID: da325b384e9231e4581b9373fbe1caf8
+      internalID: -1367416349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: autumn_tree_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 11
+        width: 60
+        height: 53
+      alignment: 9
+      pivot: {x: -0.0011475941, y: -0.20264995}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 26, y: -16.5}
+        - {x: 26, y: -13.5}
+        - {x: 24, y: -11.5}
+        - {x: 26, y: -11.5}
+        - {x: 29, y: -8.5}
+        - {x: 29, y: -5.5}
+        - {x: 28, y: -3.5}
+        - {x: 30, y: -2.5}
+        - {x: 30, y: 4.5}
+        - {x: 27, y: 7.5}
+        - {x: 25, y: 6.5}
+        - {x: 24, y: 7.5}
+        - {x: 24, y: 9.5}
+        - {x: 25, y: 10.5}
+        - {x: 24, y: 13.5}
+        - {x: 25, y: 15.5}
+        - {x: 23, y: 17.5}
+        - {x: 23, y: 19.5}
+        - {x: 20, y: 22.5}
+        - {x: 18, y: 21.5}
+        - {x: 15, y: 24.5}
+        - {x: 14, y: 24.5}
+        - {x: 11, y: 21.5}
+        - {x: 10, y: 22.5}
+        - {x: 10, y: 24.5}
+        - {x: 8, y: 26.5}
+        - {x: -9, y: 26.5}
+        - {x: -14, y: 22.5}
+        - {x: -16, y: 22.5}
+        - {x: -18, y: 23.5}
+        - {x: -21, y: 20.5}
+        - {x: -21, y: 16.5}
+        - {x: -26, y: 11.5}
+        - {x: -26, y: 9.5}
+        - {x: -28, y: 7.5}
+        - {x: -28, y: 4.5}
+        - {x: -30, y: 2.5}
+        - {x: -30, y: 1.5}
+        - {x: -29, y: 0.5}
+        - {x: -30, y: -0.5}
+        - {x: -30, y: -10.5}
+        - {x: -27, y: -13.5}
+        - {x: -25, y: -13.5}
+        - {x: -25, y: -14.5}
+        - {x: -24, y: -15.5}
+        - {x: -24, y: -19.5}
+        - {x: -23, y: -20.5}
+        - {x: -23, y: -24.5}
+        - {x: -21, y: -26.5}
+        - {x: 16, y: -26.5}
+        - {x: 17, y: -25.5}
+        - {x: 20, y: -24.5}
+        - {x: 27, y: -18.5}
+      physicsShape: []
+      tessellationDetail: 1
+      bones: []
+      spriteID: d6f66b56b9b9a614b83de144cef20755
+      internalID: -360395519
       vertices: []
       indices: 
       edges: []
@@ -141,7 +215,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      autumn_tree_0: 2010988740
+      autumn_tree_0: -360395519
+      autumn_tree_bottom: -1367416349
+      autumn_tree_top: 2010988740
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

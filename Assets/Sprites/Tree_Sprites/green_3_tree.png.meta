@@ -110,15 +110,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: green_3_tree_0
+      name: green_3_tree_top
       rect:
         serializedVersion: 2
         x: 33
-        y: 25
+        y: 40
         width: 62
-        height: 78
-      alignment: 6
-      pivot: {x: 0, y: 0}
+        height: 63
+      alignment: 9
+      pivot: {x: -0.0038085445, y: -0.23873937}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -126,6 +126,27 @@ TextureImporter:
       bones: []
       spriteID: 4c10f0eb3443f0b4bacaa229b322e0e3
       internalID: -1785342501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: green_3_tree_bottom
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 25
+        width: 41
+        height: 15
+      alignment: 9
+      pivot: {x: -0.27481973, y: -0.0037643432}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7d8a05c0ea6a214188b6ba835d88ead
+      internalID: -1032140036
       vertices: []
       indices: 
       edges: []
@@ -141,7 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      green_3_tree_0: -1785342501
+      green_3_tree_bottom: -1032140036
+      green_3_tree_top: -1785342501
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
