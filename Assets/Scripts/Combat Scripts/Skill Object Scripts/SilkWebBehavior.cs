@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class SilkWebBehavior : MonoBehaviour
+public class SilkWebBehavior : NetworkBehaviour
 {
     private SpriteRenderer spriteRenderer;
     private Transform playerTransform;

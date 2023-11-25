@@ -77,10 +77,4 @@ public class HoneyComb : SkillObject
     }
 
 
-    public override void CollisionEnter2DLogic(Collision2D collider)
-    {
-        // throw new System.NotImplementedException();
-    }
-
-
 }

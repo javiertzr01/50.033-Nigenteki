@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class SilkWeb : SkillObject
 {
-    public override void CollisionEnter2DLogic(Collision2D collider)
-    {
-        // throw new System.NotImplementedException();
-    }
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {

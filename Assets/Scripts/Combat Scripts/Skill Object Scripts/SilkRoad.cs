@@ -20,6 +20,7 @@ public class SilkRoad : SkillObject
             {
                 ApplyStunToPlayers();
                 DestroyServerRpc();
+
             }
         }
     }
@@ -43,26 +44,18 @@ public class SilkRoad : SkillObject
             playersToStun.Remove(playerController);
         }
     }
-
     private void ApplyStunToPlayers()
     {
         foreach (PlayerController playerController in playersToStun)
         {
-            playerController.MoveSpeed *= 2f; // Reset MoveSpeed
             if (playerController != null)
             {
-                // Apply stun effect by calling ApplyStun from PlayerController
-                playerController.ApplyStun(stunDuration);
+                playerController.RequestStunServerRpc(stunDuration);
+                playerController.MoveSpeed *= 2f; // Reset Movespeed
             }
         }
 
-        playersToStun.Clear(); // Clear the list of players to prevent duplicate stuns
+        playersToStun.Clear(); // Clear the list after applying stun
     }
-
-    public override void CollisionEnter2DLogic(Collision2D collider)
-    {
-        // throw new System.NotImplementedException();
-    }
-
 
 }

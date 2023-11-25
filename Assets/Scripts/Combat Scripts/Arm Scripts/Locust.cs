@@ -58,7 +58,7 @@ public class Locust : Arm
             if (countdownTimer <= 0f)
             {
                 ulted = false; // Reset the ulted flag when the timer reaches 0
-                playerController.immuneStun = false;
+                playerController.immuneStun.Value = false;
                 Debug.Log("LOCUST ULT: Expired");
                 countdownTimer = armVariable.ultimateDuration; // Reset the timer for the next ultimate
             }
@@ -194,7 +194,7 @@ public class Locust : Arm
             Debug.Log("LOCUST ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
             ulted = true;
-            playerController.immuneStun = true;
+            playerController.immuneStun.Value = true;
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
             {

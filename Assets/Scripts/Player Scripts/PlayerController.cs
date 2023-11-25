@@ -56,7 +56,7 @@ public class PlayerController : NetworkBehaviour
     public float dashFactor = 500f; // Arbitrary number chosen that feels right
 
     // Status
-    public bool immuneStun = false;
+    public NetworkVariable<bool> immuneStun = new NetworkVariable<bool>(false);
 
 
     private void Awake()
@@ -278,25 +278,64 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
+    {
+        if (!IsServer || immuneStun.Value) return; // Check for server and immunity
+
+        // Server-side stun logic
+        ApplyStun(duration);
+
+        // Notify the client to apply client-side effects
+        ApplyStunClientRpc(duration, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { OwnerClientId } } });
+    }
+
+    [ClientRpc]
+    private void ApplyStunClientRpc(float duration, ClientRpcParams rpcParams = default)
+    {
+        // Check if this is the correct instance of PlayerController
+        if (NetworkManager.Singleton.LocalClientId != OwnerClientId)
+        {
+            Debug.Log("This is not the PlayerController instance we stun");
+            return; // This is not the PlayerController instance we need to stun
+        }
+
+        // Assuming playerInput is a component on the same GameObject as PlayerController
+        playerInput = GetComponent<PlayerInput>();
+        if (playerInput == null)
+        {
+            Debug.LogError("PlayerInput component not found!");
+            return;
+        }
+
+        // Apply stun effects here
+        playerInput.SwitchCurrentActionMap("Stunned");
+        StartCoroutine(ReenableInputAfterStun(duration));
+    }
+
+
     public void ApplyStun(float duration)
     {
-        if (immuneStun) return;
+        if (!immuneStun.Value)
+        {
+            // Disable the player's input actions
+            playerInput.SwitchCurrentActionMap("Stunned");
+            Debug.Log($"Stunned Player on client {OwnerClientId}");
 
-        // Disable the player's input actions
-        playerInput.SwitchCurrentActionMap("Stunned");
-        Debug.Log("Stunned Player");
-
-        // Start a coroutine to re-enable input after a duration
-        StartCoroutine(ReenableInputAfterStun(duration));
+            // Start a coroutine to re-enable input after a duration
+            StartCoroutine(ReenableInputAfterStun(duration));
+        }
+        else
+        {
+            Debug.Log($"Player is immune to stun on client {OwnerClientId}");
+        }
     }
 
     private IEnumerator ReenableInputAfterStun(float duration)
     {
-        // Wait for the specified duration
         yield return new WaitForSeconds(duration);
-
-        // Re-enable the default action map
-        playerInput.SwitchCurrentActionMap("Player");
+        playerInput.SwitchCurrentActionMap("Player"); // Switch back to normal input
+        // Here you can also end the stun animation or effect if any
         Debug.Log("Unstunned Player");
     }
 
