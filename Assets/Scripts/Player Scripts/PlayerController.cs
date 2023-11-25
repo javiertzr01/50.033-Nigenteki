@@ -281,7 +281,12 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
     {
-        if (!IsServer || immuneStun.Value) return; // Check for server and immunity
+        // Check for server and immunity
+        if (!IsServer || immuneStun.Value)
+        {
+            Debug.Log("Either server or immune to stun");
+            return;
+        }
 
         // Server-side stun logic
         ApplyStun(duration);
