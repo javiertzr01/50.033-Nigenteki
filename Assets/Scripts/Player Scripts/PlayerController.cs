@@ -344,6 +344,15 @@ public class PlayerController : NetworkBehaviour
         Debug.Log("Unstunned Player");
     }
 
+    [ClientRpc]
+    public void TriggerDashClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner) return;
+
+        Vector2 dashDirection = transform.up; // Calculate the dash direction
+        Dash(dashDirection);
+    }
+
 
     public void Dash(Vector2 dashDirection)
     {

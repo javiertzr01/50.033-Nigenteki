@@ -129,6 +129,46 @@ public class Locust : Arm
     }
 
 
+    // [ServerRpc(RequireOwnership = false)]
+    // public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
+    // {
+    //     var clientId = serverRpcParams.Receive.SenderClientId;
+
+    //     if (OwnerClientId != clientId) return;
+
+    //     // Limit number of skill charges to 2 UNLESS ULTED
+    //     if (ulted || skillCharges > 0)
+    //     {
+    //         if (playerController != null)
+    //         {
+    //             // Calculate the dash direction based on the forward direction
+    //             Vector2 dashDirection = playerController.transform.up;
+
+    //             if (playerController != null)
+    //             {
+    //                 // Apply the dash force or movement to the grandparent GameObject
+    //                 playerController.Dash(dashDirection);
+    //             }
+
+    //             // Decrease the number of available skill charges
+    //             if (!ulted)
+    //             {
+    //                 skillCharges--;
+    //                 Debug.Log("Decrease Locust Skill Charge: " + skillCharges);
+    //             }
+    //         }
+
+    //         // Cast the Skill ClientRpc
+    //         CastSkillClientRpc(new ClientRpcParams
+    //         {
+    //             Send = new ClientRpcSendParams
+    //             {
+    //                 TargetClientIds = new ulong[] { clientId }
+    //             }
+    //         });
+    //     }
+    // }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -136,39 +176,25 @@ public class Locust : Arm
 
         if (OwnerClientId != clientId) return;
 
-        // Limit number of skill charges to 2 UNLESS ULTED
         if (ulted || skillCharges > 0)
         {
-            if (playerController != null)
-            {
-                // Calculate the dash direction based on the forward direction
-                Vector2 dashDirection = playerController.transform.up;
-
-                if (playerController != null)
-                {
-                    // Apply the dash force or movement to the grandparent GameObject
-                    playerController.Dash(dashDirection);
-                }
-
-                // Decrease the number of available skill charges
-                if (!ulted)
-                {
-                    skillCharges--;
-                    Debug.Log("Decrease Locust Skill Charge: " + skillCharges);
-                }
-            }
-
-            // Cast the Skill ClientRpc
-            CastSkillClientRpc(new ClientRpcParams
+            // Trigger the dash on the client
+            playerController.TriggerDashClientRpc(new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
                 {
                     TargetClientIds = new ulong[] { clientId }
                 }
             });
+
+            // Decrease the number of available skill charges
+            if (!ulted)
+            {
+                skillCharges--;
+                Debug.Log("Decrease Locust Skill Charge: " + skillCharges);
+            }
         }
     }
-
 
     [ClientRpc]
     public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
