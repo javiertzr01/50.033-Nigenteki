@@ -10,16 +10,16 @@ public class SilkwormBullet : Projectile
         if (other.gameObject.tag == "Player")
         {
             other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-            instantiatingArm.ChargeUltimate(Damage, 30);
+            instantiatingArm.ChargeUltimate(Damage, 100);
             DestroyServerRpc();
 
         }
 
-        if (other.gameObject.tag == "Shield")
-        {
-            instantiatingArm.ChargeUltimate(Damage, 30);
-            DestroyServerRpc();
-        }
+        // if (other.gameObject.tag == "Shield")
+        // {
+        //     instantiatingArm.ChargeUltimate(Damage, 30);
+        //     DestroyServerRpc();
+        // }
     }
 
 }

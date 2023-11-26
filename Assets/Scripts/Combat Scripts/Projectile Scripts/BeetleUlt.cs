@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -21,9 +22,8 @@ public class BeetleUlt : Projectile
 
         if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))
         {
-            // Damage the player
-            Debug.Log("BeetleUlt: HIT " + other.gameObject.name);
-            // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
+            // Damage the players
+            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
 
             // Add the GameObject to the set of damaged objects to track it
             damagedObjects.Add(other.gameObject);

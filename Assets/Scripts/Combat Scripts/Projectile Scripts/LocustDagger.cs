@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class LocustDagger : Projectile
@@ -9,16 +10,16 @@ public class LocustDagger : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
-            // Damage the player
-            // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
-            instantiatingArm.ChargeUltimate(Damage, 30);
+            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+            instantiatingArm.ChargeUltimate(Damage, 100);
             DestroyServerRpc();
+
         }
-        else if (other.gameObject.tag == "Shield")
-        {
-            instantiatingArm.ChargeUltimate(Damage, 30);
-            DestroyServerRpc();
-        }
+        // else if (other.gameObject.tag == "Shield")
+        // {
+        //     instantiatingArm.ChargeUltimate(Damage, 30);
+        //     DestroyServerRpc();
+        // }
     }
 
 }
