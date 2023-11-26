@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Flower
+  m_EditorClassIdentifier: 
+  m_GroupName: Flower
+  m_Data:
+    m_SerializedData: []
+  m_GUID: e1d88cc08c5faaa4cbf2fa9529361269
+  m_SerializeEntries:
+  - m_GUID: e4fa50dd2994f3e419d82afdaea6b6e5
+    m_Address: BlueFlower
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1fc5007266d20e4e9f7bfa5b30750bf
+    m_Address: GreenFlower
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa2e5980a8f2cf1438d66fb888c1dd96
+    m_Address: RedFlower
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d2d4a1c4e407216449aca69668b6cdfd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4bb2c671cd5469c438a3bc259ebf7909, type: 2}
+    - {fileID: 11400000, guid: 76fe2d1f4e2e474449a7ad539661132c, type: 2}

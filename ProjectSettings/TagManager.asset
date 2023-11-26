@@ -7,7 +7,6 @@ TagManager:
   - Shield
   - Projectile
   - Obstacle
-  - Healing
   layers:
   - Default
   - TransparentFX

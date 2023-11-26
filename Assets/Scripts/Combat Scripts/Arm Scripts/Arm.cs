@@ -6,6 +6,7 @@ using Unity.Netcode;
 public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
     public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
+    public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
 
     // Serialize references by ID or some other network-friendly method, not directly
     [SerializeField]
@@ -13,9 +14,15 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
     [SerializeField]
     protected GameObject shootPoint; // Same as above, consider what needs to be synchronized
-
+    [SerializeField]
+    private Animator animator;
     protected GameObject basicProjectile;
     private float _ultimateCharge;
+    protected AudioSource audioSource;
+    public AudioClip basicAttackSFX;   // Assign this in the Inspector
+    public AudioClip skillSFX;   // Assign this in the Inspector
+    public AudioClip ultimateSFX;   // Assign this in the Inspector
+
 
     void Start()
     {
@@ -35,11 +42,39 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         set => _skillCoolDown = value;
     }
 
+    // The basic attack method
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
-
     [ClientRpc]
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (basicAttackSFX != null && audioSource != null)
+        {
+            foreach (var player in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                CastBasicAttackSFXClientRpc(new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = new ulong[] { player }
+                    }
+                });
+            }
+            audioSource.PlayOneShot(basicAttackSFX);
+        }
+    }
+
+    [ClientRpc]
+    public void CastBasicAttackSFXClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (basicAttackSFX != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(basicAttackSFX);
+        }
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
@@ -63,6 +98,24 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateWeaponAnimatorServerRpc(WeaponState newState)
+    {
+        networkWeaponState.Value = newState;
+    }
+
+    public void UpdateWeaponAnimator()
+    {
+        if (networkWeaponState.Value == WeaponState.Idle)
+        {
+            animator.SetBool("isBasicAttack", true);
+        }
+        else if (networkWeaponState.Value == WeaponState.BasicAttack)
+        {
+            animator.SetBool("isBasicAttack", false);
+        }
+    }
+
     public float UltimateCharge
     {
         get => _ultimateCharge;
@@ -72,5 +125,13 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         throw new System.NotImplementedException();
+    }
+
+    public enum WeaponState
+    {
+        Idle,
+        BasicAttack,
+        SkillAttack,
+        UltimateAttack
     }
 }

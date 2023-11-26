@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: POI
+  m_EditorClassIdentifier: 
+  m_GroupName: POI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 152124e12eacd4745bcae313d3e77796
+  m_SerializeEntries:
+  - m_GUID: c6cf910a2c03e5c46b794c1e1562ffd3
+    m_Address: BlueSpawn
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e39dd102af137641b3febdc833ffb71
+    m_Address: CapturePoint
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c53146f4b3a1c564d82a8dbc5a1640b9
+    m_Address: RedSpawn
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d2d4a1c4e407216449aca69668b6cdfd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3bf2e72d4d6c52644925b00fcb599dc6, type: 2}
+    - {fileID: 11400000, guid: 9c38c10f42e83cc409d53f771ff46c5e, type: 2}

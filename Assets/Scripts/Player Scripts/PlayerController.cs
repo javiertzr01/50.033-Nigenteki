@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
 using System;
+using Cinemachine;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -28,10 +29,19 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private GameObject rightArmHolderPrefab;
 
+    public GameObject leftArmPrefab;
+    public GameObject rightArmPrefab;
+
     [SerializeField]
-    private GameObject leftArmPrefab;
+    private CinemachineVirtualCamera vc;
+
     [SerializeField]
-    private GameObject rightArmPrefab;
+    private Camera cam;
+
+    [SerializeField]
+    private AudioListener listener;
+
+    private Animator animator;
 
     private GameObject player;
     private GameObject leftArmHolder;
@@ -61,6 +71,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
         maxHealth = playerVariables.maxHealth;
         // _currentHealth = playerVariables.currentHealth;
         playerHealth.Value = playerVariables.maxHealth;
@@ -74,8 +85,6 @@ public class PlayerController : NetworkBehaviour
         if (armsInitialized) return;
 
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
-
-        player = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
 
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         //leftArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
@@ -120,6 +129,7 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
+
     [ServerRpc(RequireOwnership = false)]
     public void TakeDamageServerRpc(float damage, ulong clientId)
     {
@@ -131,8 +141,8 @@ public class PlayerController : NetworkBehaviour
         if ((damagedClient.playerHealth.Value - calculatedDamage) <= 0)
         {
             Logger.Instance.LogInfo("Health below 0 - Respawn: " + damagedClient);
-            damagedClient.playerHealth.Value = 0;
-            // RespawnServerRpc(clientId);
+            // damagedClient.playerHealth.Value = 0;
+            RespawnServerRpc(clientId);
         }
         else
         {
@@ -146,7 +156,6 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
     {
-
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -168,7 +177,6 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void HealPlayerClientRpc(ClientRpcParams clientRpcParams = default)
     {
-
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -213,7 +221,6 @@ public class PlayerController : NetworkBehaviour
         networkPlayerState.Value = newState;
     }
 
-
     public float MoveSpeed
     {
         get => moveSpeed.Value;
@@ -234,31 +241,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // public NetworkVariable<float> currentHealth
-    // {
-    //     get
-    //     {
-    //         return _currentHealth;
-    //     }
-    //     set
-    //     {
-    //         _currentHealth = value;
-    //     }
-    // }
-
-    // private void DestroyAllChildObjects(GameObject parentGameObject)
-    // {
-    //     // Check if the parent GameObject has any children
-    //     if (parentGameObject.transform.childCount > 0)
-    //     {
-    //         // Loop through all child objects and destroy them
-    //         foreach (Transform child in parentGameObject.transform)
-    //         {
-    //             Destroy(child.gameObject);
-    //         }
-    //     }
-    // }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -272,6 +254,18 @@ public class PlayerController : NetworkBehaviour
         DamageTakenScale = 1f;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            listener.enabled = true;
+            vc.Priority = 1;
+        }
+        else
+        {
+            vc.Priority = 0;
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -282,6 +276,7 @@ public class PlayerController : NetworkBehaviour
         Look();
         LeftArmBasicAttack();
         RightArmBasicAttack();
+        UpdateAnimator();
 
         bool timeSinceLastDamage = Time.time - lastDamageTime >= 2f;
         if (Time.time >= secondTicker)
@@ -299,20 +294,39 @@ public class PlayerController : NetworkBehaviour
             }
             // Set the next second
             secondTicker += 1f;
-
         }
     }
 
     void Movement()
     {
         rb.velocity = moveDir * MoveSpeed;
+        if (rb.velocity.magnitude > 0f)
+        {
+            UpdatePlayerStateServerRpc(PlayerState.Walking);
+        }
+        else
+        {
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
+        }
     }
 
     void Look()
     {
-        Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector2 worldMousePos = cam.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
-        transform.up = lookDir;
+        //transform.up = lookDir;
+        transform.GetChild(1).transform.up = lookDir;
+        transform.GetChild(2).transform.up = lookDir;
+
+        float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+        if (rotZ < 89 && rotZ > -89)
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            transform.GetComponent<SpriteRenderer>().flipX = false;
+        }
 
     }
 
@@ -329,6 +343,7 @@ public class PlayerController : NetworkBehaviour
     public void GetCameraFollow()
     {
         cameraFollow.Invoke();
+        //cameraController.FollowPlayer(player.transform);
     }
 
     public void LeftArmBasicAttackCheck(bool value)
@@ -339,15 +354,16 @@ public class PlayerController : NetworkBehaviour
     void LeftArmBasicAttack()
     {
         if (!leftArmBasicUse) return;
-        //leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
-        transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+
+        //transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void LeftArmSkillCheck(bool value)
     {
         if (value)
         {
-            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -355,7 +371,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
@@ -367,15 +383,14 @@ public class PlayerController : NetworkBehaviour
     {
         if (!rightArmBasicUse) return;
 
-        //rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
-        transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
+        transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
 
     public void RightArmSkillCheck(bool value)
     {
         if (value)
         {
-            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -383,9 +398,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
@@ -486,12 +502,32 @@ public class PlayerController : NetworkBehaviour
         {
             doForce = false;
             // Debug.Log(lastDashVelocity);
-            tr.emitting = true;
+            if (tr != null)
+            {
+                tr.emitting = true;
+
+            }
             rb.AddForce(lastDashVelocity, ForceMode2D.Impulse);
         }
         else
         {
-            tr.emitting = false;
+            if (tr != null)
+            {
+                tr.emitting = false;
+
+            }
+        }
+    }
+
+    private void UpdateAnimator()
+    {
+        if (networkPlayerState.Value == PlayerState.Walking)
+        {
+            animator.SetBool("isMoving", true);
+        }
+        else if (networkPlayerState.Value == PlayerState.Idle)
+        {
+            animator.SetBool("isMoving", false);
         }
     }
 

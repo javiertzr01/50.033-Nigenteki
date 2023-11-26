@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 2484371342443195374}
   - component: {fileID: 8173907169347470429}
   - component: {fileID: 6935096819013181732}
-  - component: {fileID: -4507577999880663521}
+  - component: {fileID: -5284786589227282400}
   m_Layer: 6
   m_Name: BeetleShield
   m_TagString: Shield
@@ -205,9 +205,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6646d69b608cc4887a04dea5182f02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldCollider: {fileID: 2484371342443195374}
-  shieldSprite: {fileID: 135123995503289991}
---- !u!114 &-4507577999880663521
+  shieldCollider: {fileID: 0}
+  shieldSprite: {fileID: 0}
+--- !u!114 &-5284786589227282400
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -8,6 +8,7 @@ public class PlayerVariables : ScriptableObject
 {
     public float maxHealth;
     public float moveSpeed;
+    public string team; // Red || Blue
 
     public GameObject rightArm;
     public GameObject leftArm;
