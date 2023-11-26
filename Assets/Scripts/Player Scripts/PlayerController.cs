@@ -13,7 +13,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     float maxHealth;
-    private float moveSpeed;
+    private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     // NetworkVariable<float> _currentHealth;
     private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
@@ -44,13 +44,13 @@ public class PlayerController : NetworkBehaviour
 
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
-
-    [System.NonSerialized] public float damageTakenScale = 1f; // TODO: Player Take Damage
-    [System.NonSerialized] public float damageDealtScale = 1f; // this is for classes to reference for their projectiles
-    [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // TODO: In Update(), health regeneration every 1 second
+    private NetworkVariable<float> damageTakenScale = new NetworkVariable<float>(); // Reduce/Increase Damage Taken
+    private NetworkVariable<float> damageDealtScale = new NetworkVariable<float>(); // this is for classes to reference for their projectiles
+    [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
     private float secondTicker = 0f;
     [System.NonSerialized] public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
+    private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
 
     // Implemented for Dash Function
     private bool doForce = false;
@@ -66,7 +66,6 @@ public class PlayerController : NetworkBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
-        MoveSpeed = playerVariables.moveSpeed;
         // _currentHealth = playerVariables.currentHealth;
         playerHealth.Value = playerVariables.maxHealth;
         spawnPosition.Value = transform.position;
@@ -129,8 +128,11 @@ public class PlayerController : NetworkBehaviour
     public void TakeDamageServerRpc(float damage, ulong clientId)
     {
         var damagedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+        // Update the time when damage is taken
+        lastDamageTime = Time.time;
 
-        if ((damagedClient.playerHealth.Value - damage) <= 0)
+        float calculatedDamage = damage * DamageTakenScale;
+        if ((damagedClient.playerHealth.Value - calculatedDamage) <= 0)
         {
             Debug.Log("Health below 0 - Respawn: " + clientId);
             damagedClient.playerHealth.Value = 0;
@@ -138,10 +140,10 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            damagedClient.playerHealth.Value -= damage;
+            damagedClient.playerHealth.Value -= calculatedDamage;
         }
 
-        Logger.Instance.LogInfo($"Player {clientId} took {damage} damage and has {damagedClient.playerHealth.Value}");
+        Logger.Instance.LogInfo($"Player {clientId} took {calculatedDamage} damage and has {damagedClient.playerHealth.Value}");
     }
 
     [ClientRpc]
@@ -218,13 +220,31 @@ public class PlayerController : NetworkBehaviour
 
     public float MoveSpeed
     {
-        get
-        {
-            return moveSpeed;
-        }
+        get => moveSpeed.Value;
         set
         {
-            moveSpeed = value;
+            Logger.Instance.LogInfo($"Adjusted MoveSpeed to {value} on {OwnerClientId}");
+            moveSpeed.Value = value;
+        }
+    }
+
+    public float DamageTakenScale
+    {
+        get => damageTakenScale.Value;
+        set
+        {
+            Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
+            damageTakenScale.Value = value;
+        }
+    }
+
+    public float DamageDealtScale
+    {
+        get => damageDealtScale.Value;
+        set
+        {
+            Logger.Instance.LogInfo($"Adjusted DamageDealtScale to {value} on {OwnerClientId}");
+            damageDealtScale.Value = value;
         }
     }
 
@@ -261,6 +281,10 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         SpawnArmsServerRpc();
         GetCameraFollow();
+
+        MoveSpeed = playerVariables.moveSpeed;
+        DamageTakenScale = 1f;
+        DamageDealtScale = 1f;
     }
 
 
@@ -274,7 +298,7 @@ public class PlayerController : NetworkBehaviour
         LeftArmBasicAttack();
         RightArmBasicAttack();
 
-
+        bool timeSinceLastDamage = Time.time - lastDamageTime >= 2f;
         if (Time.time >= secondTicker)
         {
             if (passiveHealthRegenerationPercentage > 0f)
@@ -282,31 +306,16 @@ public class PlayerController : NetworkBehaviour
                 Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
                 HealPlayerServerRpc(maxHealth * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
             }
-            if (healingPerSecond > 0f)
+
+            if (healingPerSecond > 0f && timeSinceLastDamage)
             {
                 Debug.Log("Healing per second: " + healingPerSecond);
                 HealPlayerServerRpc(healingPerSecond, GetComponent<NetworkObject>().OwnerClientId);
             }
             // Set the next second
-            secondTicker = Time.time + 1f;
+            secondTicker += 1f;
+
         }
-
-        // if (passiveHealthRegenerationPercentage > 0f || healingPerSecond > 0f)
-        // {
-        //     if (Time.time >= secondTicker)
-        //     {
-        //         // TODO: PASSIVE REGEN FUNCTION
-        //         Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
-        //         HealPlayerServerRpc(maxHealth * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
-        //         // TODO: HEALING FUNCTION
-        //         Debug.Log("Healing per second: " + healingPerSecond);
-        //         HealPlayerServerRpc(healingPerSecond, GetComponent<NetworkObject>().OwnerClientId);
-
-        //         // Set the next second
-        //         secondTicker = Time.time + 1f;
-        //     }
-
-        // }
     }
 
     void Movement()

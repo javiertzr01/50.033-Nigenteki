@@ -23,5 +23,5 @@ MonoBehaviour:
   ultimateForce: 0
   ultimateFireRate: 0
   ultimateCharge: 100
-  ultimateDuration: 20
+  ultimateDuration: 3
   shieldMaxHealth: 0

@@ -66,7 +66,7 @@ public class HoneybeeSpray : Projectile
         if (other.gameObject.tag == "Player")
         {
             other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-            instantiatingArm.ChargeUltimate(Damage, 100);
+            instantiatingArm.ChargeUltimate(Damage, 1);
 
         }
 

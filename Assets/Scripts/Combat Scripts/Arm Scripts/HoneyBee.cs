@@ -22,11 +22,6 @@ public class HoneyBee : Arm
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
         skillReady = true;
 
-        // Find all game objects with the tag "Player"
-        players = GameObject.FindGameObjectsWithTag("Player");
-        // TODO: Add filter for teams
-
-
         if (projectiles[1] != null)
         {
             spellProjectile = projectiles[1];
@@ -67,7 +62,7 @@ public class HoneyBee : Arm
                             // Reset the MoveSpeed variable
                             playerController.MoveSpeed /= 2;
                             // Reset damage taken
-                            playerController.damageTakenScale /= 0.75f;
+                            playerController.DamageTakenScale /= 0.75f;
 
                             // TODO: Deactivate Passive Health Regen
                             playerController.passiveHealthRegenerationPercentage -= 0.05f;
@@ -185,6 +180,10 @@ public class HoneyBee : Arm
             Debug.Log("HONEYBEE ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
 
+            // Find all game objects with the tag "Player"
+            players = GameObject.FindGameObjectsWithTag("Player");
+            // TODO: Add filter for teams
+
             // Iterate through each player
             foreach (var player in players)
             {
@@ -197,7 +196,7 @@ public class HoneyBee : Arm
                     // Multiply the MoveSpeed variable by 2
                     playerController.MoveSpeed *= 2;
                     // Reduce damage taken by 25%
-                    playerController.damageTakenScale *= 0.75f;
+                    playerController.DamageTakenScale *= 0.75f;
 
                     // TODO: Activate Passive Health Regen
                     playerController.passiveHealthRegenerationPercentage += 0.05f;
