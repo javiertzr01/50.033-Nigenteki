@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b8e3a22209629684c98748f59508846f
+guid: 61ae9229fb8576541925316e9a2aea2f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spray-can_0
+      name: honeycomb_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 24
-        height: 24
+        y: 26
+        width: 67
+        height: 73
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,29 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 730f0bda3ddb424419620bfd4a804993
-      internalID: 1800038449
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spray-can_1
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 0
-        width: 24
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 67705262126e01c4e9cec7942228595b
-      internalID: 1428446539
+      spriteID: cfc457568d304d54384d060fda1b802c
+      internalID: -1016334090
       vertices: []
       indices: 
       edges: []
@@ -162,8 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spray-can_0: 1800038449
-      spray-can_1: 1428446539
+      honeycomb_0: -1016334090
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
