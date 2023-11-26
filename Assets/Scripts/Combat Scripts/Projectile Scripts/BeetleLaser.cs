@@ -18,11 +18,6 @@ public class BeetleLaser : Projectile
         arm = instantiatingArm.GetComponent<Beetle>();
     }
 
-    public override void CollisionEnter2DLogic(Collision2D collision)
-    {
-        // No Collision Logic as it should "pierce" objects and players
-    }
-
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         if (other.gameObject.tag == "Shield")

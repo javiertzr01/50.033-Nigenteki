@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.Profiling;
 using UnityEngine;
 
@@ -49,17 +50,11 @@ public class HoneybeeSpray : Projectile
         coll.radius = spr.sprite.bounds.extents.x / spriteScale; // Assuming your sprite is a circle
     }
 
-    public override void CollisionEnter2DLogic(Collision2D collision)
-    {
-        DestroyServerRpc();
-    }
-
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
             // Only charge ultimate if HP is less than max and healed up
-            instantiatingArm.ChargeUltimate(Damage, 100);
 
         }
     }
@@ -68,6 +63,12 @@ public class HoneybeeSpray : Projectile
     {
         // If friendly player
         // Heal player standing inside
+        if (other.gameObject.tag == "Player")
+        {
+            other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+            instantiatingArm.ChargeUltimate(Damage, 100);
+
+        }
 
         // If enemy player
         // Slowly damage enemy players who stand inside with a damage value of 1

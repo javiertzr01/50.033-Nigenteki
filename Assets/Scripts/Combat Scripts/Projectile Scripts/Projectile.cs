@@ -9,6 +9,7 @@ public abstract class Projectile : NetworkBehaviour
     public ProjectileVariables projectileVariable;
     private float _maxDistance;
     private float _damage;
+    private bool isColliding = false;
 
     [System.NonSerialized]
     public Arm instantiatingArm;
@@ -39,13 +40,6 @@ public abstract class Projectile : NetworkBehaviour
             _damage = value;
         }
     }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        CollisionEnter2DLogic(collision);
-    }
-
-    public abstract void CollisionEnter2DLogic(Collision2D collision);
 
     void OnTriggerEnter2D(Collider2D other)
     {

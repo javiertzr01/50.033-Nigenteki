@@ -14,7 +14,10 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     float maxHealth;
     private float moveSpeed;
-    NetworkVariable<float> _currentHealth;
+    // NetworkVariable<float> _currentHealth;
+    private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
+    private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
+    private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
 
     private Rigidbody2D rb;
     private Vector2 moveDir;
@@ -64,7 +67,9 @@ public class PlayerController : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
         maxHealth = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
-        _currentHealth = playerVariables.currentHealth;
+        // _currentHealth = playerVariables.currentHealth;
+        playerHealth.Value = playerVariables.maxHealth;
+        spawnPosition.Value = transform.position;
         tr = GetComponent<TrailRenderer>();
     }
 
@@ -120,6 +125,97 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDamageServerRpc(float damage, ulong clientId)
+    {
+        var damagedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        if ((damagedClient.playerHealth.Value - damage) <= 0)
+        {
+            Debug.Log("Health below 0 - Respawn: " + clientId);
+            damagedClient.playerHealth.Value = 0;
+            // RespawnServerRpc(clientId);
+        }
+        else
+        {
+            damagedClient.playerHealth.Value -= damage;
+        }
+
+        Logger.Instance.LogInfo($"Player {clientId} took {damage} damage and has {damagedClient.playerHealth.Value}");
+    }
+
+    [ClientRpc]
+    public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void HealPlayerServerRpc(float heal, ulong clientId)
+    {
+        var healedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        if ((healedClient.playerHealth.Value + heal) >= playerVariables.maxHealth)
+        {
+            healedClient.playerHealth.Value = playerVariables.maxHealth;
+        }
+        else
+        {
+            healedClient.playerHealth.Value += heal;
+        }
+
+        Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
+    }
+
+    [ClientRpc]
+    public void HealPlayerClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetRespawnServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var setClient = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>();
+
+        setClient.spawnPosition.Value = setClient.transform.position;
+
+        Logger.Instance.LogInfo($"Set Player {OwnerClientId} spawn position as {setClient.spawnPosition.Value}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RespawnServerRpc(ulong clientId, ServerRpcParams serverRpcParams = default)
+    {
+        var respawnClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        respawnClient.transform.position = respawnClient.spawnPosition.Value;
+
+        respawnClient.playerHealth.Value = maxHealth;
+
+        RespawnClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { clientId }
+            }
+        });
+
+        Logger.Instance.LogInfo($"Player {clientId} has respawned at {respawnClient.spawnPosition.Value}");
+    }
+
+    [ClientRpc]
+    public void RespawnClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        transform.position = spawnPosition.Value;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerStateServerRpc(PlayerState newState)
+    {
+        networkPlayerState.Value = newState;
+    }
+
+
     public float MoveSpeed
     {
         get
@@ -132,30 +228,30 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public NetworkVariable<float> currentHealth
-    {
-        get
-        {
-            return _currentHealth;
-        }
-        set
-        {
-            _currentHealth = value;
-        }
-    }
+    // public NetworkVariable<float> currentHealth
+    // {
+    //     get
+    //     {
+    //         return _currentHealth;
+    //     }
+    //     set
+    //     {
+    //         _currentHealth = value;
+    //     }
+    // }
 
-    private void DestroyAllChildObjects(GameObject parentGameObject)
-    {
-        // Check if the parent GameObject has any children
-        if (parentGameObject.transform.childCount > 0)
-        {
-            // Loop through all child objects and destroy them
-            foreach (Transform child in parentGameObject.transform)
-            {
-                Destroy(child.gameObject);
-            }
-        }
-    }
+    // private void DestroyAllChildObjects(GameObject parentGameObject)
+    // {
+    //     // Check if the parent GameObject has any children
+    //     if (parentGameObject.transform.childCount > 0)
+    //     {
+    //         // Loop through all child objects and destroy them
+    //         foreach (Transform child in parentGameObject.transform)
+    //         {
+    //             Destroy(child.gameObject);
+    //         }
+    //     }
+    // }
 
     // Start is called before the first frame update
     void Start()
@@ -384,5 +480,13 @@ public class PlayerController : NetworkBehaviour
         {
             tr.emitting = false;
         }
+    }
+
+    public enum PlayerState
+    {
+        Idle,
+        Walking,
+        Damaged,
+        Death
     }
 }

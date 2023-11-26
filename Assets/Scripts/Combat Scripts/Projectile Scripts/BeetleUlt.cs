@@ -8,11 +8,6 @@ public class BeetleUlt : Projectile
     // Laser should only hit the Plaeyrs that it pierces through once.
     private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
 
-    public override void CollisionEnter2DLogic(Collision2D collision)
-    {
-        // No Collision Logic as it should "pierce" objects and players
-    }
-
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         if (other.gameObject.tag == "Projectile")
