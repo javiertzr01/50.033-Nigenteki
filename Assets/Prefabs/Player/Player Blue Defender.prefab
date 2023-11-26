@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3255546274460269327}
   - component: {fileID: 1969903448111313722}
   - component: {fileID: 909097052208553394}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 1696759645910555965}
   - component: {fileID: 5022067537694881100}
   - component: {fileID: 3559786782935026323}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ GameObject:
   - component: {fileID: 2940777625078481704}
   - component: {fileID: 7707033610063034363}
   - component: {fileID: 5521825692670072248}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player Blue Defender
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -856,7 +856,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7395281022009032550}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -890,7 +890,7 @@ GameObject:
   m_Component:
   - component: {fileID: 290700381180187028}
   - component: {fileID: 436870612953158045}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Virtual Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}

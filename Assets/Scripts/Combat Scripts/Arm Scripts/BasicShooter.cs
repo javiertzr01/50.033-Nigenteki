@@ -54,6 +54,7 @@ public class BasicShooter : Arm
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            firedBasicProjectileClone.layer = transform.gameObject.layer;
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();

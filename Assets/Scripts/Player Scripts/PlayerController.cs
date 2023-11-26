@@ -76,25 +76,25 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
         
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        //leftArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        leftArmHolderClone.layer = player.layer;
         leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
         leftArmHolder = leftArmHolderClone;
 
         GameObject rightArmHolderClone = Instantiate(rightArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + rightArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        //rightArmHolderClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        rightArmHolderClone.layer = player.layer;
         rightArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         rightArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
         rightArmHolder = rightArmHolderClone;
 
         GameObject leftArmClone = Instantiate(leftArmPrefab, leftArmHolderClone.transform);
-        //leftArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        leftArmClone.layer = player.layer;
         leftArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmClone.transform.GetComponent<NetworkObject>().TrySetParent(leftArmHolderClone.transform);
 
 
         GameObject rightArmClone = Instantiate(rightArmPrefab, rightArmHolderClone.transform);
-        //rightArmClone.transform.GetComponent<NetworkObject>().Spawn(true);
+        rightArmClone.layer = player.layer;
         rightArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         rightArmClone.transform.GetComponent<NetworkObject>().TrySetParent(rightArmHolderClone.transform);
 

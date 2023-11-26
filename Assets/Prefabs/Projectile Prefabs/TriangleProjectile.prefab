@@ -121,7 +121,7 @@ EdgeCollider2D:
   - {x: 0.100313835, y: -0.0577858}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentStartPoint: 1
   m_UseAdjacentEndPoint: 0
 --- !u!68 &69508453811803725
 EdgeCollider2D:
@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileVariable: {fileID: 11400000, guid: 65690966b75dcb74d8b7ec3d2b447119, type: 2}
+  startingPosition: {x: 0, y: 0}
 --- !u!1 &8926034196072178191
 GameObject:
   m_ObjectHideFlags: 0
