@@ -27,10 +27,13 @@ public class SilkRoad : SkillObject
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        // TODO: Team Separation
+
         PlayerController playerController = other.GetComponent<PlayerController>();
         if (playerController != null && !playersToStun.Contains(playerController))
         {
             playerController.MoveSpeed /= 2f; // Halve MoveSpeed
+            playerController.DamageTakenScale *= 2f; // Double Damage Taken
             playersToStun.Add(playerController);
         }
     }
@@ -41,6 +44,7 @@ public class SilkRoad : SkillObject
         if (playerController != null && playersToStun.Contains(playerController))
         {
             playerController.MoveSpeed *= 2f; // Reset MoveSpeed
+            playerController.DamageTakenScale /= 2f; // Reset Damage Taken
             playersToStun.Remove(playerController);
         }
     }

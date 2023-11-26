@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
+// TODO: FIX THIS SCRIPT
 public class SilkWebBehavior : NetworkBehaviour
 {
     private SpriteRenderer spriteRenderer;

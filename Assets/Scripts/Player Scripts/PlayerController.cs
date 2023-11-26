@@ -12,13 +12,12 @@ public class PlayerController : NetworkBehaviour
     public UnityEvent cameraFollow;
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
-    float maxHealth;
+    [System.NonSerialized] public float maxHealth;
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     // NetworkVariable<float> _currentHealth;
-    private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
+    [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
-
     private Rigidbody2D rb;
     private Vector2 moveDir;
     private Vector2 mousePos;
@@ -39,13 +38,10 @@ public class PlayerController : NetworkBehaviour
     private GameObject rightArmHolder;
     private GameObject leftArm;
     private GameObject rightArm;
-
     private bool armsInitialized = false;
-
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
     private NetworkVariable<float> damageTakenScale = new NetworkVariable<float>(); // Reduce/Increase Damage Taken
-    private NetworkVariable<float> damageDealtScale = new NetworkVariable<float>(); // this is for classes to reference for their projectiles
     [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
     private float secondTicker = 0f;
     [System.NonSerialized] public bool interactingWithHoneyComb = false;
@@ -134,16 +130,17 @@ public class PlayerController : NetworkBehaviour
         float calculatedDamage = damage * DamageTakenScale;
         if ((damagedClient.playerHealth.Value - calculatedDamage) <= 0)
         {
-            Debug.Log("Health below 0 - Respawn: " + clientId);
+            Logger.Instance.LogInfo("Health below 0 - Respawn: " + damagedClient);
             damagedClient.playerHealth.Value = 0;
             // RespawnServerRpc(clientId);
         }
         else
         {
             damagedClient.playerHealth.Value -= calculatedDamage;
+            Logger.Instance.LogInfo($"Player {clientId} took {calculatedDamage} damage and has {damagedClient.playerHealth.Value}");
+
         }
 
-        Logger.Instance.LogInfo($"Player {clientId} took {calculatedDamage} damage and has {damagedClient.playerHealth.Value}");
     }
 
     [ClientRpc]
@@ -164,9 +161,8 @@ public class PlayerController : NetworkBehaviour
         else
         {
             healedClient.playerHealth.Value += heal;
+            Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
         }
-
-        Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
     }
 
     [ClientRpc]
@@ -238,16 +234,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public float DamageDealtScale
-    {
-        get => damageDealtScale.Value;
-        set
-        {
-            Logger.Instance.LogInfo($"Adjusted DamageDealtScale to {value} on {OwnerClientId}");
-            damageDealtScale.Value = value;
-        }
-    }
-
     // public NetworkVariable<float> currentHealth
     // {
     //     get
@@ -284,7 +270,6 @@ public class PlayerController : NetworkBehaviour
 
         MoveSpeed = playerVariables.moveSpeed;
         DamageTakenScale = 1f;
-        DamageDealtScale = 1f;
     }
 
 

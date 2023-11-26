@@ -17,6 +17,8 @@ public class BeetleLaser : Projectile
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        // TODO: Team Separation
+
         if (other.gameObject.tag == "Shield")
         {
             DestroyServerRpc();

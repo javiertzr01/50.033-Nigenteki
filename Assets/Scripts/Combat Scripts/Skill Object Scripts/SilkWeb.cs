@@ -8,6 +8,9 @@ public class SilkWeb : SkillObject
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        // TODO: Team Separation
+
+
         // Check if the colliding object has a PlayerController script
         PlayerController playerController = other.GetComponent<PlayerController>();
 

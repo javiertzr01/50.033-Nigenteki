@@ -11,6 +11,8 @@ public class BeetleUlt : Projectile
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        // TODO: Team Separation
+
         if (other.gameObject.tag == "Projectile")
         {
             other.gameObject.GetComponent<Projectile>().DestroyServerRpc();

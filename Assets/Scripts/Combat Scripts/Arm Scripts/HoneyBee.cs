@@ -180,10 +180,11 @@ public class HoneyBee : Arm
             Debug.Log("HONEYBEE ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
 
+
+            // TODO: Team Separation
+
             // Find all game objects with the tag "Player"
             players = GameObject.FindGameObjectsWithTag("Player");
-            // TODO: Add filter for teams
-
             // Iterate through each player
             foreach (var player in players)
             {
@@ -202,11 +203,8 @@ public class HoneyBee : Arm
                     playerController.passiveHealthRegenerationPercentage += 0.05f;
                 }
             }
-
             ulted = true;
             countdownTimer = armVariable.ultimateDuration;
-
-
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
             {

@@ -17,7 +17,6 @@ public class HoneybeeSpray : Projectile
         coll = gameObject.GetComponent<CircleCollider2D>();
         spr = gameObject.GetComponentInChildren<SpriteRenderer>();
         UpdateCollider();
-
     }
 
     protected override void Update()
@@ -28,7 +27,6 @@ public class HoneybeeSpray : Projectile
             currentSprite = spr.sprite;
             UpdateCollider();
         }
-
         // Gradually increase size and decrease opacity
         if (elapsedTime < duration)
         {
@@ -52,24 +50,26 @@ public class HoneybeeSpray : Projectile
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
-        {
-            // Only charge ultimate if HP is less than max and healed up
-
-        }
     }
 
     public override void TriggerStay2DLogic(Collider2D other)
     {
+        // TODO: Team Separation
+
+
         // If friendly player
         // Heal player standing inside
         if (other.gameObject.tag == "Player")
         {
+            if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().maxHealth)
+            {
+                instantiatingArm.ChargeUltimate(Damage, 1);
+
+            }
+
             other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-            instantiatingArm.ChargeUltimate(Damage, 1);
 
         }
-
         // If enemy player
         // Slowly damage enemy players who stand inside with a damage value of 1
     }
