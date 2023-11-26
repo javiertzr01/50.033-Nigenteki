@@ -155,9 +155,9 @@ public class PlayerController : NetworkBehaviour
     {
         var healedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
 
-        if ((healedClient.playerHealth.Value + heal) >= playerVariables.maxHealth)
+        if ((healedClient.playerHealth.Value + heal) >= maxHealth)
         {
-            healedClient.playerHealth.Value = playerVariables.maxHealth;
+            healedClient.playerHealth.Value = maxHealth;
         }
         else
         {
@@ -274,20 +274,39 @@ public class PlayerController : NetworkBehaviour
         LeftArmBasicAttack();
         RightArmBasicAttack();
 
-        if (passiveHealthRegenerationPercentage > 0f || healingPerSecond > 0f)
+
+        if (Time.time >= secondTicker)
         {
-            if (Time.time >= secondTicker)
+            if (passiveHealthRegenerationPercentage > 0f)
             {
-                // TODO: PASSIVE REGEN FUNCTION
                 Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
-                // TODO: HEALING FUNCTION
-                Debug.Log("Healing per second: " + healingPerSecond);
-
-                // Set the next second
-                secondTicker = Time.time + 1f;
+                HealPlayerServerRpc(maxHealth * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
             }
-
+            if (healingPerSecond > 0f)
+            {
+                Debug.Log("Healing per second: " + healingPerSecond);
+                HealPlayerServerRpc(healingPerSecond, GetComponent<NetworkObject>().OwnerClientId);
+            }
+            // Set the next second
+            secondTicker = Time.time + 1f;
         }
+
+        // if (passiveHealthRegenerationPercentage > 0f || healingPerSecond > 0f)
+        // {
+        //     if (Time.time >= secondTicker)
+        //     {
+        //         // TODO: PASSIVE REGEN FUNCTION
+        //         Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
+        //         HealPlayerServerRpc(maxHealth * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
+        //         // TODO: HEALING FUNCTION
+        //         Debug.Log("Healing per second: " + healingPerSecond);
+        //         HealPlayerServerRpc(healingPerSecond, GetComponent<NetworkObject>().OwnerClientId);
+
+        //         // Set the next second
+        //         secondTicker = Time.time + 1f;
+        //     }
+
+        // }
     }
 
     void Movement()
