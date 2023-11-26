@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using System;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -12,11 +13,14 @@ public class PlayerController : NetworkBehaviour
     public UnityEvent cameraFollow;
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
-    float maxHealth;
     private float moveSpeed;
     //NetworkVariable<float> _currentHealth;
 
     private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
+    private NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
+    public UnityEvent<float> playerHealthUpdateEventInvoker;
+    public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
+    //private HealthBar healthBarUI = new HealthBar();
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
 
@@ -61,10 +65,11 @@ public class PlayerController : NetworkBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
-        maxHealth = playerVariables.maxHealth;
+        playerMaxHealth.Value = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
         //_currentHealth = playerVariables.currentHealth;
-        playerHealth.Value = playerVariables.maxHealth;
+
+        playerHealth.Value = playerMaxHealth.Value;
         spawnPosition.Value = transform.position;
     }
 
@@ -158,7 +163,7 @@ public class PlayerController : NetworkBehaviour
 
         respawnClient.transform.position = respawnClient.spawnPosition.Value;
 
-        respawnClient.playerHealth.Value = maxHealth;
+        respawnClient.playerHealth.Value = playerMaxHealth.Value;
 
         RespawnClientRpc(new ClientRpcParams
         {
@@ -224,11 +229,15 @@ public class PlayerController : NetworkBehaviour
         {
             listener.enabled = true;
             vc.Priority = 1;
+            playerHealth.OnValueChanged += OnPlayerHealthChanged;
+            playerMaxHealth.OnValueChanged += OnPlayerMaxHealthChanged;
         }
         else
         {
             vc.Priority = 0;
         }
+
+
     }
 
     // Update is called once per frame
@@ -243,6 +252,17 @@ public class PlayerController : NetworkBehaviour
 
         UpdateAnimator();
     }
+
+    public void OnPlayerHealthChanged(float previous, float current)
+    {
+        playerHealthUpdateEventInvoker.Invoke(current);
+    }
+
+    public void OnPlayerMaxHealthChanged(float previous, float current)
+    {
+        playerMaxHealthUpdateEventInvoker.Invoke(current);
+    }
+
 
     void Movement()
     {

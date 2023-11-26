@@ -836,6 +836,36 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
+  playerHealthUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 26f3de4017c8af948bc14af4a661c6c2, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  playerMaxHealthUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: cd182e9cad4c25c4bb27674218edb9a9, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Single, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   leftArmHolderPrefab: {fileID: 2967011719965532442, guid: 3d10e4d4b3e2b8f4cb9791501cee1ba3,
     type: 3}
   rightArmHolderPrefab: {fileID: 1210991556933272544, guid: 8607eb4bd2ce7ce48bba3298c851eb82,
