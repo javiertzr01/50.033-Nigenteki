@@ -127,6 +127,9 @@ public class Silkworm : Arm
 
             // Instantiate the skill projectile and add it to the active projectiles queue
             GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            skillProjectile.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            skillProjectile.GetComponent<SkillObject>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             activeSpellProjectiles.Add(skillProjectile);
             // Set the instantiatingArm
@@ -173,11 +176,13 @@ public class Silkworm : Arm
             UltimateCharge = 0f; // Reset Ultimate Charge
                                  // Instantiate the ultimate area effect
             GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+            ultimateArea.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            ultimateArea.GetComponent<SkillObject>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             ultimateArea.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             ultimateArea.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+            ultimateArea.GetComponent<SilkRoad>().countdownTimer = armVariable.ultimateDuration;
 
-            // Start a timer to destroy the ultimate area after 15 seconds
-            // StartCoroutine(DestroyUltimateArea(ultimateArea, 15f));
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
@@ -198,31 +203,5 @@ public class Silkworm : Arm
     {
         if (!IsOwner) return;
         Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
-    }
-
-    public void CastUltimate()
-    {
-        if (UltimateCharge >= 100f)
-        {
-            Debug.Log("SILKWORM ULTIMATE: Casting");
-            UltimateCharge = 0f; // Reset Ultimate Charge
-                                 // Instantiate the ultimate area effect
-            GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
-
-
-            // Start a timer to destroy the ultimate area after 15 seconds
-            StartCoroutine(DestroyUltimateArea(ultimateArea, 15f));
-        }
-    }
-
-    private IEnumerator DestroyUltimateArea(GameObject area, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-
-        // Implement logic to apply stun to objects with PlayerController script
-        // Modify moveSpeed and attackSpeed as described
-
-        // Destroy the ultimate area after the specified duration
-        Destroy(area);
     }
 }

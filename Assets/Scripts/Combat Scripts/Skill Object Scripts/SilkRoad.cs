@@ -7,7 +7,7 @@ using UnityEngine;
 public class SilkRoad : SkillObject
 {
     public float stunDuration = 5f; // Duration of stun effect
-    private float countdownTimer = 5f; // Countdown timer
+    public float countdownTimer = 8f; // Countdown timer
 
     private List<PlayerController> playersToStun = new List<PlayerController>();
 

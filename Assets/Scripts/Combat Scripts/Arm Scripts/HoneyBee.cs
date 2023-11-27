@@ -133,7 +133,7 @@ public class HoneyBee : Arm
             GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
             skillProjectile.layer = transform.root.gameObject.layer;
             // Setup teamId
-            skillProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+            skillProjectile.GetComponent<SkillObject>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Set the instantiatingArm
             skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();

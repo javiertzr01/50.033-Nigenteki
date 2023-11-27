@@ -18,16 +18,7 @@ public class HoneyComb : SkillObject
             countdownTimer -= Time.deltaTime;
             if (countdownTimer <= 0f)
             {
-                foreach (PlayerController ally in alliesToHeal)
-                {
-                    ally.interactingWithHoneyComb = false;
-                    ally.healingPerSecond -= healingValue; // Reset Healing Per Second
-                }
-
-                foreach (PlayerController enemy in enemiestoSlow)
-                {
-                    enemy.MoveSpeed *= 2f; // Reset MoveSpeed
-                }
+                Cleanup();
                 DestroyServerRpc();
             }
         }
@@ -52,6 +43,20 @@ public class HoneyComb : SkillObject
         {
             // Reset the timer if there are no allies
             chargeTimer = 0f;
+        }
+    }
+
+    private void Cleanup()
+    {
+        foreach (PlayerController ally in alliesToHeal)
+        {
+            ally.interactingWithHoneyComb = false;
+            ally.healingPerSecond -= healingValue; // Reset Healing Per Second
+        }
+
+        foreach (PlayerController enemy in enemiestoSlow)
+        {
+            enemy.MoveSpeed *= 2f; // Reset MoveSpeed
         }
     }
 

@@ -22,6 +22,6 @@ MonoBehaviour:
   skillMaxInstants: 4
   ultimateForce: 0
   ultimateFireRate: 0
-  ultimateCharge: 0
-  ultimateDuration: 0
+  ultimateCharge: 100
+  ultimateDuration: 8
   shieldMaxHealth: 0
