@@ -17,6 +17,8 @@ public abstract class Projectile : NetworkBehaviour
 
     public Vector2 startingPosition;
 
+    public NetworkVariable<int> teamId = new NetworkVariable<int>();
+
     public float maxDistance
     {
         get

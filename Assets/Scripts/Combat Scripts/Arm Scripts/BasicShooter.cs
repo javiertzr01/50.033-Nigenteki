@@ -51,10 +51,11 @@ public class BasicShooter : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectileClone.layer = transform.gameObject.layer;
+            firedBasicProjectileClone.layer = transform.root.gameObject.layer;
+            firedBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();

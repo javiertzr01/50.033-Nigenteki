@@ -35,6 +35,7 @@ public class PlayerSpawner : NetworkBehaviour
                 var characterInstance = Instantiate(character.CharacterPrefab, spawnPos, Quaternion.identity);
                 characterInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.Value.clientId);
                 characterInstance.GetComponent<NetworkObject>().ChangeOwnership(client.Value.clientId);
+                characterInstance.GetComponent<PlayerController>().teamId.Value = teamId;
                 characterInstance.GetComponent<PlayerController>().leftArmPrefab = leftArm.ArmPrefab;
                 characterInstance.GetComponent<PlayerController>().rightArmPrefab = rightArm.ArmPrefab;
             }
