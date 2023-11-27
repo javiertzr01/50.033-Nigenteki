@@ -69,7 +69,7 @@ public class PlayerController : NetworkBehaviour
     private bool doForce = false;
     private TrailRenderer tr;
     private Vector2 lastDashVelocity;
-    public float dashFactor = 500f; // Arbitrary number chosen that feels right
+    public float dashFactor = 300f; // Arbitrary number chosen that feels right
 
     // Status
     public NetworkVariable<bool> immuneStun = new NetworkVariable<bool>(false);
@@ -492,7 +492,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        Vector2 dashDirection = transform.up; // Calculate the dash direction
+        Vector2 mouseWorldPosition = cam.ScreenToWorldPoint(mousePos);
+        Vector2 dashDirection = (mouseWorldPosition - (Vector2)transform.position).normalized;
+
         Dash(dashDirection);
     }
 
