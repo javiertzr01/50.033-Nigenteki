@@ -512,10 +512,9 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            if (tr != null)
+            if (tr != null && tr.emitting)
             {
                 tr.emitting = false;
-
             }
         }
     }
