@@ -54,24 +54,32 @@ public class HoneybeeSpray : Projectile
 
     public override void TriggerStay2DLogic(Collider2D other)
     {
-        // TODO: Team Separation
-
-
-        // If friendly player
-        // Heal player standing inside
         if (other.gameObject.tag == "Player")
         {
-            if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().maxHealth)
+            // Heal Ally Player Standing Inside
+            if (other.transform.GetComponent<PlayerController>().teamId.Value == teamId.Value)
             {
-                instantiatingArm.ChargeUltimate(Damage, 1);
+                if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().maxHealth)
+                {
+                    instantiatingArm.ChargeUltimate(Damage, 1);
 
+                }
+                other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
             }
 
-            other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-
+            // Slowly Damage Enemy Player Standing Inside
+            else if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
+            {
+                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+                instantiatingArm.ChargeUltimate(Damage, 10);
+            }
         }
-        // If enemy player
-        // Slowly damage enemy players who stand inside with a damage value of 1
+        else if (other.gameObject.tag == "Shield")
+        {
+            // Ignore Shields
+        }
+        else if (other.gameObject.tag == "Projectile") { }
+        else { }
     }
 
     public override void TriggerExit2DLogic(Collider2D other)

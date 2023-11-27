@@ -64,7 +64,6 @@ public class HoneyBee : Arm
                             // Reset damage taken
                             playerController.DamageTakenScale /= 0.75f;
 
-                            // TODO: Deactivate Passive Health Regen
                             playerController.passiveHealthRegenerationPercentage -= 0.05f;
                         }
                     }
@@ -89,6 +88,9 @@ public class HoneyBee : Arm
 
             // Instantiate the Projectile
             GameObject shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            shotBasicProjectileClone.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            shotBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             shotBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Set the instantiatingArm
             shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
@@ -199,7 +201,6 @@ public class HoneyBee : Arm
                     // Reduce damage taken by 25%
                     playerController.DamageTakenScale *= 0.75f;
 
-                    // TODO: Activate Passive Health Regen
                     playerController.passiveHealthRegenerationPercentage += 0.05f;
                 }
             }

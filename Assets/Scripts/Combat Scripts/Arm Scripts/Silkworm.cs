@@ -67,6 +67,9 @@ public class Silkworm : Arm
 
             // Instantiate the Projectile
             GameObject shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            shotBasicProjectileClone.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            shotBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             shotBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Set the instantiatingArm
             shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();

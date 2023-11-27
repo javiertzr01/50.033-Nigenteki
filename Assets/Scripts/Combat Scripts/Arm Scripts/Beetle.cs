@@ -223,6 +223,9 @@ public class Beetle : Arm
             if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
             {
                 GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotUltimateProjectile.layer = transform.root.gameObject.layer;
+                // Setup teamId
+                shotUltimateProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
                 shotUltimateProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 Rigidbody2D rb = shotUltimateProjectile.GetComponent<Rigidbody2D>();
@@ -245,6 +248,9 @@ public class Beetle : Arm
             if (altProjectile != null && Time.time >= nextBasicFireTime)
             {
                 GameObject shotBasicProjectile = Instantiate(altProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotBasicProjectile.layer = transform.root.gameObject.layer;
+                // Setup teamId
+                shotBasicProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
                 shotBasicProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
                 shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
@@ -293,6 +299,7 @@ public class Beetle : Arm
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            // TODO: Shield Team Id
             shotSpellProjectile.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
             shotSpellProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Destroy(shotSpellProjectile, armVariable.skillDuration);

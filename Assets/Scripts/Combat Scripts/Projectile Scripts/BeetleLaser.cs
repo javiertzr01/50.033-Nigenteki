@@ -17,21 +17,23 @@ public class BeetleLaser : Projectile
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        // TODO: Team Separation
-
-        if (other.gameObject.tag == "Shield")
-        {
-            DestroyServerRpc();
-        }
-
         if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))
         {
-            // Damage the players
-            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-            instantiatingArm.ChargeUltimate(Damage, 100);
+            // Damage Enemy Player
+            if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
+            {
+                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+                instantiatingArm.ChargeUltimate(Damage, 100);
 
-            // Add the GameObject to the set of damaged objects to track it
-            damagedObjects.Add(other.gameObject);
+                // Add the GameObject to the set of damaged objects to track it
+                damagedObjects.Add(other.gameObject);
+            }
         }
+        else if (other.gameObject.tag == "Shield")
+        {
+            // Ignore Ally Shields
+        }
+        else if (other.gameObject.tag == "Projectile") { }
+        else { }
     }
 }

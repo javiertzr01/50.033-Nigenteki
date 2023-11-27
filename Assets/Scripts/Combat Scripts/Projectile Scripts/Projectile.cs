@@ -9,7 +9,8 @@ public abstract class Projectile : NetworkBehaviour
     public ProjectileVariables projectileVariable;
     private float _maxDistance;
     private float _damage;
-    private bool isColliding = false;
+    public NetworkVariable<int> teamId = new NetworkVariable<int>();
+    // private bool isColliding = false;
 
     [System.NonSerialized]
     public Arm instantiatingArm;
