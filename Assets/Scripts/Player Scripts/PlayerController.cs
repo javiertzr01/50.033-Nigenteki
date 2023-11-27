@@ -74,8 +74,6 @@ public class PlayerController : NetworkBehaviour
         animator = GetComponent<Animator>();
         maxHealth = playerVariables.maxHealth;
         // _currentHealth = playerVariables.currentHealth;
-        playerHealth.Value = playerVariables.maxHealth;
-        spawnPosition.Value = transform.position;
         tr = GetComponent<TrailRenderer>();
     }
 
@@ -253,6 +251,8 @@ public class PlayerController : NetworkBehaviour
 
         MoveSpeed = playerVariables.moveSpeed;
         DamageTakenScale = 1f;
+        playerHealth.Value = playerVariables.maxHealth;
+        spawnPosition.Value = transform.position;
     }
 
     public override void OnNetworkSpawn()

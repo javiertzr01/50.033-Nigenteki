@@ -31,8 +31,9 @@ public class BasicShooter : Arm
         }
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -52,7 +53,6 @@ public class BasicShooter : Arm
         if (Time.time >= nextBasicFireTime)
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
-
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;

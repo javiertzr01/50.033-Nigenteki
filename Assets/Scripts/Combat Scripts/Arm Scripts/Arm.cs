@@ -24,7 +24,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public AudioClip ultimateSFX;   // Assign this in the Inspector
 
 
-    void Start()
+    protected virtual void Start()
     {
         Initialize();
     }
