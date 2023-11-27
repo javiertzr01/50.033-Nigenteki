@@ -56,14 +56,13 @@ public class HoneyBee : Arm
                         // Access the PlayerController script
                         PlayerController playerController = player.GetComponent<PlayerController>();
 
-                        // Check if the playerController is not null
-                        if (playerController != null)
+                        // Check if the playerController is not null and is an ally
+                        if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
                         {
                             // Reset the MoveSpeed variable
                             playerController.MoveSpeed /= 2;
                             // Reset damage taken
                             playerController.DamageTakenScale /= 0.75f;
-
                             playerController.passiveHealthRegenerationPercentage -= 0.05f;
                         }
                     }
@@ -132,6 +131,9 @@ public class HoneyBee : Arm
             Debug.Log("HONEYBEE SKILL: Casting");
             // Instantiate the skill projectile and add it to the active projectiles queue
             GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            skillProjectile.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            skillProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Set the instantiatingArm
             skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
@@ -182,9 +184,6 @@ public class HoneyBee : Arm
             Debug.Log("HONEYBEE ULTIMATE: Casting");
             UltimateCharge = 0f; // Reset Ultimate Charge
 
-
-            // TODO: Team Separation
-
             // Find all game objects with the tag "Player"
             players = GameObject.FindGameObjectsWithTag("Player");
             // Iterate through each player
@@ -193,8 +192,8 @@ public class HoneyBee : Arm
                 // Access the PlayerController script
                 PlayerController playerController = player.GetComponent<PlayerController>();
 
-                // Check if the playerController is not null
-                if (playerController != null)
+                // Check if the playerController is not null and is an ally
+                if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
                 {
                     // Multiply the MoveSpeed variable by 2
                     playerController.MoveSpeed *= 2;

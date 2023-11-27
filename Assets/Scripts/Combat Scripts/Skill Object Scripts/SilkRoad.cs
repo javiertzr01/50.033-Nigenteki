@@ -27,10 +27,9 @@ public class SilkRoad : SkillObject
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        // TODO: Team Separation
-
+        // Only affect enemies
         PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null && !playersToStun.Contains(playerController))
+        if (playerController != null && !playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
             playerController.MoveSpeed /= 2f; // Halve MoveSpeed
             playerController.DamageTakenScale *= 2f; // Double Damage Taken
@@ -40,8 +39,9 @@ public class SilkRoad : SkillObject
 
     public override void TriggerExit2DLogic(Collider2D other)
     {
+        // Only affect enemies
         PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null && playersToStun.Contains(playerController))
+        if (playerController != null && playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
             playerController.MoveSpeed *= 2f; // Reset MoveSpeed
             playerController.DamageTakenScale /= 2f; // Reset Damage Taken
@@ -56,6 +56,7 @@ public class SilkRoad : SkillObject
             {
                 playerController.RequestStunServerRpc(stunDuration);
                 playerController.MoveSpeed *= 2f; // Reset Movespeed
+                playerController.DamageTakenScale /= 2f; // Reset Damage Taken
             }
         }
 

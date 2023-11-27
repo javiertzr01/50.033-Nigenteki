@@ -18,6 +18,16 @@ public class HoneyComb : SkillObject
             countdownTimer -= Time.deltaTime;
             if (countdownTimer <= 0f)
             {
+                foreach (PlayerController ally in alliesToHeal)
+                {
+                    ally.interactingWithHoneyComb = false;
+                    ally.healingPerSecond -= healingValue; // Reset Healing Per Second
+                }
+
+                foreach (PlayerController enemy in enemiestoSlow)
+                {
+                    enemy.MoveSpeed *= 2f; // Reset MoveSpeed
+                }
                 DestroyServerRpc();
             }
         }
@@ -49,27 +59,23 @@ public class HoneyComb : SkillObject
     {
         if (other.gameObject.tag == "Player")
         {
-            // TODO: Team Separation
-
-            // Friendly Player here
             PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null && !playerController.interactingWithHoneyComb && !alliesToHeal.Contains(playerController))
+            if (playerController != null && playerController.teamId.Value == teamId.Value)
             {
-                alliesToHeal.Add(playerController);
+                if (!playerController.interactingWithHoneyComb && !alliesToHeal.Contains(playerController))
+                    alliesToHeal.Add(playerController);
                 playerController.interactingWithHoneyComb = true;
                 Debug.Log("HoneyComb Trigger Enter: " + playerController.interactingWithHoneyComb);
                 playerController.healingPerSecond += healingValue;
             }
-
-
-            // // Enemy Player here
-            // PlayerController playerController = other.GetComponent<PlayerController>();
-            // if (playerController != null && !enemiestoSlow.Contains(playerController))
-            // {
-            //     playerController.MoveSpeed /= 2f; // Halve MoveSpeed
-            //     enemiestoSlow.Add(playerController);
-            // }
-
+            else if (playerController != null && playerController.teamId.Value != teamId.Value)
+            {
+                if (!enemiestoSlow.Contains(playerController))
+                {
+                    playerController.MoveSpeed /= 2f; // Halve MoveSpeed
+                    enemiestoSlow.Add(playerController);
+                }
+            }
         }
 
     }
@@ -80,26 +86,23 @@ public class HoneyComb : SkillObject
 
     public override void TriggerExit2DLogic(Collider2D other)
     {
-        // TODO: Team Separation
-
-        // Friendly Player
         PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null && playerController.interactingWithHoneyComb && alliesToHeal.Contains(playerController))
+        if (playerController != null && playerController.teamId.Value == teamId.Value)
         {
-            alliesToHeal.Remove(playerController);
-            playerController.interactingWithHoneyComb = false;
+            if (playerController.interactingWithHoneyComb && alliesToHeal.Contains(playerController))
+                alliesToHeal.Remove(playerController);
+            playerController.interactingWithHoneyComb = true;
             Debug.Log("HoneyComb Trigger Enter: " + playerController.interactingWithHoneyComb);
-            playerController.healingPerSecond -= healingValue;
+            playerController.healingPerSecond -= healingValue; // Reset Healing Per Second
         }
-
-
-        // // Enemy Player here
-        // PlayerController playerController = other.GetComponent<PlayerController>();
-        // if (playerController != null && enemiestoSlow.Contains(playerController))
-        // {
-        //     playerController.MoveSpeed *= 2f; // Reset MoveSpeed
-        //     enemiestoSlow.Remove(playerController);
-        // }
+        else if (playerController != null && playerController.teamId.Value != teamId.Value)
+        {
+            if (enemiestoSlow.Contains(playerController))
+            {
+                playerController.MoveSpeed *= 2f; // Reset MoveSpeed
+                enemiestoSlow.Remove(playerController);
+            }
+        }
     }
 
 

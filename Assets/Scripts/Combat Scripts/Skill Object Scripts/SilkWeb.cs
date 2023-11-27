@@ -8,20 +8,14 @@ public class SilkWeb : SkillObject
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        // TODO: Team Separation
-
-
-        // Check if the colliding object has a PlayerController script
+        // Check if the colliding object has an enemy PlayerController script
         PlayerController playerController = other.GetComponent<PlayerController>();
-
-        if (playerController != null)
+        if (playerController != null && playerController.teamId.Value != teamId.Value)
         {
             // Apply the stun effect to the player
             playerController.ApplyStun(3f); // Stun for 3 seconds
             Silkworm arm = (Silkworm)instantiatingArm;
             RemoveAndShift(arm.activeSpellProjectiles, gameObject);
-
-
             // Destroy the SilkWeb object
             DestroyServerRpc();
         }

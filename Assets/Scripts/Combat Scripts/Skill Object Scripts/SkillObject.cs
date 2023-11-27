@@ -6,6 +6,8 @@ public abstract class SkillObject : NetworkBehaviour
 {
     [System.NonSerialized]
     public Arm instantiatingArm;
+    public NetworkVariable<int> teamId = new NetworkVariable<int>();
+
 
 
 
