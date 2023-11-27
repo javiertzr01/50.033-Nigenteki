@@ -247,6 +247,7 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         if (!IsOwner && !IsClient) return;
+        player = transform.gameObject;
         SpawnArmsServerRpc();
         GetCameraFollow();
 
