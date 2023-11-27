@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8409379381123244934}
   - component: {fileID: -6728110245605722714}
   - component: {fileID: 2124277600200226018}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TriangleProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
@@ -189,6 +189,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileVariable: {fileID: 11400000, guid: 65690966b75dcb74d8b7ec3d2b447119, type: 2}
   startingPosition: {x: 0, y: 0}
+  teamId:
+    m_InternalValue: 0
 --- !u!1 &8926034196072178191
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +201,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5391206698893049163}
   - component: {fileID: 5313155311519256093}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

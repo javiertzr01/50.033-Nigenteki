@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Unity.Netcode;
 
 public class PrefabLoader : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class PrefabLoader : MonoBehaviour
             if (item.Substring(Mathf.Max(0, item.Length - 6)) == "Flower")
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(item, new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
+                instantiatedPrefab.GetComponent<NetworkObject>().Spawn(true);
             }
             else
             {

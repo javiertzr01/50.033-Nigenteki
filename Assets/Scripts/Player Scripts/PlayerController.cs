@@ -19,6 +19,10 @@ public class PlayerController : NetworkBehaviour
     private NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     private NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
+    public NetworkVariable<int> redCrystalCount = new NetworkVariable<int>();
+    public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();
+    public NetworkVariable<int> greenCrystalCount = new NetworkVariable<int>();
+
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
     //private HealthBar healthBarUI = new HealthBar();
@@ -69,10 +73,13 @@ public class PlayerController : NetworkBehaviour
         animator = GetComponent<Animator>();
         playerMaxHealth.Value = playerVariables.maxHealth;
         MoveSpeed = playerVariables.moveSpeed;
-        //_currentHealth = playerVariables.currentHealth;
 
         playerHealth.Value = playerMaxHealth.Value;
         spawnPosition.Value = transform.position;
+
+        redCrystalCount.Value = 0;
+        blueCrystalCount.Value = 0;
+        greenCrystalCount.Value = 0;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -81,7 +88,7 @@ public class PlayerController : NetworkBehaviour
         if (armsInitialized) return;
 
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
-        
+
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
@@ -105,7 +112,7 @@ public class PlayerController : NetworkBehaviour
         rightArmClone.layer = player.layer;
 
         armsInitialized = true;
-        
+
         SpawnArmsClientRpc(new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -121,17 +128,6 @@ public class PlayerController : NetworkBehaviour
     public void SpawnArmsClientRpc(ClientRpcParams clientRpcParams = default)
     {
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
-        /*foreach (Transform child in transform)
-        {
-            child.gameObject.layer = transform.gameObject.layer;
-            if (child.childCount > 0)
-            {
-                foreach (Transform nestedChild in child)
-                {
-                    nestedChild.gameObject.layer = transform.gameObject.layer;
-                }
-            }
-        }*/
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -154,7 +150,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -191,6 +187,59 @@ public class PlayerController : NetworkBehaviour
     public void RespawnClientRpc(ClientRpcParams clientRpcParams = default)
     {
         transform.position = spawnPosition.Value;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CollectCrystalServerRpc(Crystal.CrystalType crysalType, ulong clientId)
+    {
+        var collectingClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+
+        if (crysalType == Crystal.CrystalType.Red)
+        {
+            collectingClient.redCrystalCount.Value += 1;
+            foreach (var otherClientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (otherClientId != clientId && NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == collectingClient.teamId.Value)
+                {
+                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+                }
+            }
+        }
+        else if (crysalType == Crystal.CrystalType.Green)
+        {
+            collectingClient.greenCrystalCount.Value += 1;
+            foreach (var otherClientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (otherClientId != clientId && NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == collectingClient.teamId.Value)
+                {
+                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+                }
+            }
+        }
+        else if (crysalType == Crystal.CrystalType.Blue)
+        {
+            collectingClient.blueCrystalCount.Value += 1;
+            foreach (var otherClientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (otherClientId != clientId && NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == collectingClient.teamId.Value)
+                {
+                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+                }
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateTeamCrystalsServerRpc(ulong collectingClientId)
+    {
+        foreach (var otherClientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (otherClientId != collectingClientId && 
+                NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == NetworkManager.Singleton.ConnectedClients[collectingClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value)
+            {
+                NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
