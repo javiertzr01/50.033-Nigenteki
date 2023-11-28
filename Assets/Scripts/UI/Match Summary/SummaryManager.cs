@@ -24,21 +24,21 @@ public class SummaryManager : MonoBehaviour
             blueNames[i] = "Player " + blueId[i].ToString();
 
             // Setting KD
-            int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-            for (int j = 0; j < kd.Length; j++)
-            {
-                blueKD[i,j] = kd[j];
-            }
+            // int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            // for (int j = 0; j < kd.Length; j++)
+            // {
+            //     blueKD[i,j] = kd[j];
+            // }
         }
         for (int i = 0; i < redId.Length; i++)
         {
             redNames[i] = "Player " + redId[i].ToString();
 
-            int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-            for (int j = 0; j < kd.Length; j++)
-            {
-                redKD[i,j] = kd[j];
-            }
+            // int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            // for (int j = 0; j < kd.Length; j++)
+            // {
+            //     redKD[i,j] = kd[j];
+            // }
         }
 
         Text[] texts = GameObject.FindObjectsOfType<Text>();
