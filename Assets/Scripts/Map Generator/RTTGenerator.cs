@@ -121,7 +121,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         Vector2Int blueSpawnPosition = netStore.generatedMapData.Value.BlueSpawnPosition;
         Vector2Int capturePointPosition = netStore.generatedMapData.Value.CapturePointPosition;
 
-        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {floorPositionsArray.Length}");
+        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {obstacleNamesArray.Length}");
 
         tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
         WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);

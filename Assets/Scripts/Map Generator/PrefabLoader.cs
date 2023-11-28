@@ -32,11 +32,12 @@ public class PrefabLoader : MonoBehaviour
             if (item.Substring(Mathf.Max(0, item.Length - 6)) == "Flower")
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(item, new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
-                instantiatedPrefab.GetComponent<NetworkObject>().Spawn(true);
+                instantiatedPrefab.GetComponent<NetworkObject>().Spawn();
             }
             else
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(keys[i], new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
+                instantiatedPrefab.GetComponent<NetworkObject>().Spawn();
             }
             if (instantiatedPrefab != null)
             {
