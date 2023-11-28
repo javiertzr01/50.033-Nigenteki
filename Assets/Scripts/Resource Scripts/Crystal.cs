@@ -17,6 +17,7 @@ public class Crystal : NetworkBehaviour
             isCollecting = true;
             other.transform.GetComponent<PlayerController>().CollectCrystalServerRpc(crystalType, other.transform.GetComponent<NetworkObject>().OwnerClientId);
             DestroyServerRpc();
+            Destroy(gameObject);
         }   
     }
 
