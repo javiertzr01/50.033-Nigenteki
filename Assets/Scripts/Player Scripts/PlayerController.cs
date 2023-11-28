@@ -6,7 +6,6 @@ using Unity.Netcode;
 using UnityEngine.InputSystem;
 using System;
 using Cinemachine;
-using System;
 
 public class PlayerController : NetworkBehaviour
 {
