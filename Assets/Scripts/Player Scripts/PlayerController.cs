@@ -215,7 +215,7 @@ public class PlayerController : NetworkBehaviour
             {
                 if (otherClientId != clientId && NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == collectingClient.teamId.Value)
                 {
-                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().greenCrystalCount.Value += 1;
                 }
             }
         }
@@ -226,21 +226,8 @@ public class PlayerController : NetworkBehaviour
             {
                 if (otherClientId != clientId && NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == collectingClient.teamId.Value)
                 {
-                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
+                    NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().blueCrystalCount.Value += 1;
                 }
-            }
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateTeamCrystalsServerRpc(ulong collectingClientId)
-    {
-        foreach (var otherClientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (otherClientId != collectingClientId && 
-                NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value == NetworkManager.Singleton.ConnectedClients[collectingClientId].PlayerObject.transform.GetComponent<PlayerController>().teamId.Value)
-            {
-                NetworkManager.Singleton.ConnectedClients[otherClientId].PlayerObject.transform.GetComponent<PlayerController>().redCrystalCount.Value += 1;
             }
         }
     }
