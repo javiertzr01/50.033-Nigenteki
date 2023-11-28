@@ -15,7 +15,7 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
-    private NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
+    public NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
     public NetworkVariable<int> redCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();

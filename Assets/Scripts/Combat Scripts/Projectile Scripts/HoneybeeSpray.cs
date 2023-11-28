@@ -59,7 +59,7 @@ public class HoneybeeSpray : Projectile
             // Heal Ally Player Standing Inside
             if (other.transform.GetComponent<PlayerController>().teamId.Value == teamId.Value)
             {
-                if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().maxHealth)
+                if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
                 {
                     instantiatingArm.ChargeUltimate(Damage, 1);
 
