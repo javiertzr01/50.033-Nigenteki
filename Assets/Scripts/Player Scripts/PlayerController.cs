@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> redCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> greenCrystalCount = new NetworkVariable<int>();
+    public NetworkVariable<Vector2Int> KDStats = new NetworkVariable<Vector2Int>();
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
@@ -80,6 +81,8 @@ public class PlayerController : NetworkBehaviour
         redCrystalCount.Value = 0;
         blueCrystalCount.Value = 0;
         greenCrystalCount.Value = 0;
+
+        KDStats.Value = new Vector2Int(0, 0);
     }
 
     [ServerRpc(RequireOwnership = false)]

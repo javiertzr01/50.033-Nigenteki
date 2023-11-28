@@ -17,6 +17,10 @@ public class PrefabLoader : MonoBehaviour
             GameObject prefab = opHandle.Result;
             return Instantiate(prefab, parentTransform, Quaternion.identity);
         }
+        else
+        {
+            Debug.Log("Loading prefab failed");
+        }
 
         return null;
     }
