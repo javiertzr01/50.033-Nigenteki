@@ -16,5 +16,5 @@ MonoBehaviour:
   teamId: 0
   displayName: Red Defender
   icon: {fileID: -922346740, guid: ae633ce554157764a95a0a1dab84abe8, type: 3}
-  characterPrefab: {fileID: 5009592937343648668, guid: 95001c1c5c37fe347a909decfc1b4abe,
+  characterPrefab: {fileID: 5009592937343648668, guid: 7c18958af92fdbe4f934f907ae3646cf,
     type: 3}
