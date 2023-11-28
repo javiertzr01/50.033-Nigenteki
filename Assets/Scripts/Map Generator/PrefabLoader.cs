@@ -37,7 +37,6 @@ public class PrefabLoader : MonoBehaviour
             else
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(keys[i], new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
-                instantiatedPrefab.GetComponent<NetworkObject>().Spawn();
             }
             if (instantiatedPrefab != null)
             {
