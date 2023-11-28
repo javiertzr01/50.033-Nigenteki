@@ -9,17 +9,14 @@ public abstract class Projectile : NetworkBehaviour
     public ProjectileVariables projectileVariable;
     private float _maxDistance;
     private float _damage;
-
-    private bool isColliding = false;
+    public NetworkVariable<int> teamId = new NetworkVariable<int>();
+    // private bool isColliding = false;
 
     [System.NonSerialized]
-    public GameObject instantiatingArm; // References the Arm that instantiated this projectile
-
+    public Arm instantiatingArm;
     public Vector2 startingPosition;
 
-    public NetworkVariable<int> teamId = new NetworkVariable<int>();
-
-    public float maxDistance
+    public float MaxDistance
     {
         get
         {
@@ -47,13 +44,23 @@ public abstract class Projectile : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (isColliding) return;
-
-        isColliding = true;
         TriggerEnter2DLogic(other);
     }
 
+    void OnTriggerStay2D(Collider2D other)
+    {
+        TriggerStay2DLogic(other);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        TriggerExit2DLogic(other);
+    }
+
     public abstract void TriggerEnter2DLogic(Collider2D other);
+    public virtual void TriggerStay2DLogic(Collider2D other) { }
+    public virtual void TriggerExit2DLogic(Collider2D other) { }
+
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -63,11 +70,11 @@ public abstract class Projectile : NetworkBehaviour
 
         if (OwnerClientId != clientId) return;
 
-        if (Vector2.Distance(startingPosition, transform.position) > maxDistance)
+        if (Vector2.Distance(startingPosition, transform.position) > MaxDistance)
         {
             transform.GetComponent<NetworkObject>().Despawn(true);
             Destroy(gameObject); // Destroy the projectile
-        }   
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -75,25 +82,21 @@ public abstract class Projectile : NetworkBehaviour
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
 
-        if (OwnerClientId != clientId) return;
+        // if (OwnerClientId != clientId) return;
 
         transform.GetComponent<NetworkObject>().Despawn(true);
         Destroy(gameObject); // Destroy the projectile
 
     }
 
-    private void Awake()
+    protected virtual void Start()
     {
-        maxDistance = projectileVariable.maxDistance;
+        startingPosition = transform.position;
+        MaxDistance = projectileVariable.maxDistance;
         Damage = projectileVariable.damage;
     }
 
-    void Start()
-    {
-        startingPosition = transform.position;
-    }
-
-    void Update()
+    protected virtual void Update()
     {
         DestroyAfterDistanceServerRpc();
     }

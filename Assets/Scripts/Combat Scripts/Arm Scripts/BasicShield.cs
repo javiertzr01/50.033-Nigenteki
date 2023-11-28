@@ -116,14 +116,14 @@ public class BasicShield : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    public override void CastSkill()
+    public void CastSkill()
     {
         // Implement the BasicArm's skill
         // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + armVariable.skillDamage);
         GameObject shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
     }
 
-    public override void CastUltimate()
+    public void CastUltimate()
     {
         // Implement the BasicArm's ultimate skill
         // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);

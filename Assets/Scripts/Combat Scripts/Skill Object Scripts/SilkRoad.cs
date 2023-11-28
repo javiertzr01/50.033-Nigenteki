@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class SilkRoad : SkillObject
 {
     public float stunDuration = 5f; // Duration of stun effect
-    private float countdownTimer = 15f; // Countdown timer
+    public float countdownTimer = 8f; // Countdown timer
 
     private List<PlayerController> playersToStun = new List<PlayerController>();
 
@@ -18,49 +19,48 @@ public class SilkRoad : SkillObject
             if (countdownTimer <= 0f)
             {
                 ApplyStunToPlayers();
+                DestroyServerRpc();
+
             }
         }
     }
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        // Only affect enemies
         PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null && !playersToStun.Contains(playerController))
+        if (playerController != null && !playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
             playerController.MoveSpeed /= 2f; // Halve MoveSpeed
+            playerController.DamageTakenScale *= 2f; // Double Damage Taken
             playersToStun.Add(playerController);
         }
     }
 
     public override void TriggerExit2DLogic(Collider2D other)
     {
+        // Only affect enemies
         PlayerController playerController = other.GetComponent<PlayerController>();
-        if (playerController != null && playersToStun.Contains(playerController))
+        if (playerController != null && playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
             playerController.MoveSpeed *= 2f; // Reset MoveSpeed
+            playerController.DamageTakenScale /= 2f; // Reset Damage Taken
             playersToStun.Remove(playerController);
         }
     }
-
     private void ApplyStunToPlayers()
     {
         foreach (PlayerController playerController in playersToStun)
         {
-            playerController.MoveSpeed *= 2f; // Reset MoveSpeed
             if (playerController != null)
             {
-                // Apply stun effect by calling ApplyStun from PlayerController
-                playerController.ApplyStun(stunDuration);
+                playerController.RequestStunServerRpc(stunDuration);
+                playerController.MoveSpeed *= 2f; // Reset Movespeed
+                playerController.DamageTakenScale /= 2f; // Reset Damage Taken
             }
         }
 
-        playersToStun.Clear(); // Clear the list of players to prevent duplicate stuns
+        playersToStun.Clear(); // Clear the list after applying stun
     }
-
-    public override void CollisionEnter2DLogic(Collision2D collider)
-    {
-        // throw new System.NotImplementedException();
-    }
-
 
 }

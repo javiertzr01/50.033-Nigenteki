@@ -8,21 +8,30 @@ public class BeetleSkillTrigger : ShieldTrigger
 
     [SerializeField]
     private float shieldHealth;
+    private float countdownTimer; // Countdown timer
 
     void Start()
     {
         arm = instantiatingArm.GetComponent<Beetle>();
+        countdownTimer = arm.armVariable.skillDuration;
     }
 
-    private void DestroyShield()
+    private void Update()
     {
-        Destroy(gameObject);
+        if (countdownTimer > 0f)
+        {
+            countdownTimer -= Time.deltaTime;
+            if (countdownTimer <= 0f)
+            {
+                DestroyServerRpc();
+            }
+        }
     }
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Check if the collision is with a specific object or has specific properties
-        if (other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
         {
             float projectileDamage = projectile.Damage;
 
@@ -32,7 +41,7 @@ public class BeetleSkillTrigger : ShieldTrigger
 
             if (shieldHealth <= 0)
             {
-                DestroyShield();
+                DestroyServerRpc();
             }
         }
     }

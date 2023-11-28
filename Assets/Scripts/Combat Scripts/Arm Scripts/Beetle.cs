@@ -11,15 +11,60 @@ public class Beetle : Arm
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
-    private float _shieldCurrentHealth;
-    private float _skillCoolDown;
-    private float shieldRegenTimer;
-    protected bool activated;
-    protected bool destroyed;
+    // private float _shieldCurrentHealth;
+    // private float shieldRegenTimer;
+    // protected bool activated;
+    // protected bool destroyed;
     protected GameObject currentShield;
+    protected BeetleShieldTrigger beetleShieldTrigger;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
     private float nextBasicFireTime = 0f; // for alt fire
     private bool ulted;
+    private GameObject arm;
+    [SerializeField]
+    private GameObject shieldHolderPrefab;
+    private GameObject shieldHolder;
+    private GameObject shield;
+    private bool shieldInitialized = false;
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnShieldServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (shieldInitialized) return;
+
+        Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
+
+        arm = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
+
+        GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
+        shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        shieldHolderClone.GetComponent<NetworkObject>().TrySetParent(arm.transform);
+        shieldHolder = shieldHolderClone;
+
+        GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
+        shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(shieldHolderClone.transform);
+        shield = shieldClone;
+
+        shieldInitialized = true;
+
+        SpawnShieldClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+
+    }
+
+    [ClientRpc]
+    public void SpawnShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
+    }
+
+
 
 
 
@@ -30,19 +75,26 @@ public class Beetle : Arm
         // E.g. attack power, etc.
 
         // Instantiate the shield but hide it and its collider first
-        currentShield = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation, transform);
-        currentShield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
+        SpawnShieldServerRpc();
+        shield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
+        beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
+        // currentShield = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation, transform);
+        // currentShield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
+        // beetleShieldTrigger = currentShield.GetComponent<BeetleShieldTrigger>();
 
-        ShieldHealth = armVariable.shieldMaxHealth; // Shield Variable
+        // ShieldHealth = armVariable.shieldMaxHealth; // Shield Variable
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
-        shieldRegenTimer = 0f; // Initialize shield regen timer to zero
+        // shieldRegenTimer = 0f; // Initialize shield regen timer to zero
 
         UltimateCharge = armVariable.ultimateCharge;
         ulted = false;
 
-        activated = true;
-        destroyed = false;
-        ToggleShield(); // Switch shield off first
+        // activated = true;
+        // destroyed = false;
+        // ToggleShield(); // Switch shield off first
+
+        beetleShieldTrigger.ToggleShieldServerRpc();
+
 
 
         if (projectiles[1] != null)
@@ -62,32 +114,20 @@ public class Beetle : Arm
 
     }
 
-    public float ShieldHealth
-    {
-        get
-        {
-            return _shieldCurrentHealth;
-        }
-        set
-        {
-            _shieldCurrentHealth = value;
-        }
-    }
+    // public float ShieldHealth
+    // {
+    //     get
+    //     {
+    //         return _shieldCurrentHealth;
+    //     }
+    //     set
+    //     {
+    //         _shieldCurrentHealth = value;
+    //     }
+    // }
 
 
-    public float SkillCoolDown
-    {
-        get
-        {
-            return _skillCoolDown;
-        }
-        set
-        {
-            _skillCoolDown = value;
-        }
-    }
-
-
+    public float ultimateStartTime { get; private set; }
 
     public void Update()
     {
@@ -103,62 +143,71 @@ public class Beetle : Arm
         }
 
 
-        // Shield regeneration
-        if (!activated)
+        // // Shield regeneration
+        // if (!activated)
+        // {
+        //     shieldRegenTimer += Time.deltaTime;
+        //     if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
+        //     {
+        //         if (ShieldHealth < armVariable.shieldMaxHealth)
+        //         {
+        //             ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
+        //             Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
+        //             if (ShieldHealth >= armVariable.shieldMaxHealth)
+        //             {
+        //                 ShieldHealth = armVariable.shieldMaxHealth;
+        //                 destroyed = false; // Reset destroyed flag if the shield is fully regenerated
+        //                 Debug.Log("BEETLE SHIELD: restored");
+        //             }
+        //         }
+        //     }
+        // }
+        // else
+        // {
+        //     shieldRegenTimer = 0f; // Reset the timer if the shield is activated again
+        // }
+
+
+        // // Break shield if shield HP drops to 0 or past 0
+        // if (ShieldHealth < 0 && !destroyed)
+        // {
+        //     destroyed = true;
+        //     Debug.Log("BEETLE SHIELD: destroyed");
+        //     if (activated)
+        //     {
+        //         Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
+        //         SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
+        //         shieldCollider.enabled = false;
+        //         shieldSprite.enabled = false;
+        //         activated = false;
+        //     }
+        // }
+
+
+        // Check if the ultimate ability is active and if the duration has passed
+        if (ulted && (Time.time - ultimateStartTime) >= armVariable.ultimateDuration)
         {
-            shieldRegenTimer += Time.deltaTime;
-            if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
-            {
-                if (ShieldHealth < armVariable.shieldMaxHealth)
-                {
-                    ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
-                    Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
-                    if (ShieldHealth >= armVariable.shieldMaxHealth)
-                    {
-                        ShieldHealth = armVariable.shieldMaxHealth;
-                        destroyed = false; // Reset destroyed flag if the shield is fully regenerated
-                        Debug.Log("BEETLE SHIELD: restored");
-                    }
-                }
-            }
-        }
-        else
-        {
-            shieldRegenTimer = 0f; // Reset the timer if the shield is activated again
-        }
+            ulted = false; // Reset the ulted flag after the ultimate duration
+            Debug.Log("BEETLE ULTIMATE: Expired");
+            Logger.Instance.LogInfo("BEETLE ULTIMATE: Expired");
 
-
-        // Break shield if shield HP drops to 0 or past 0
-        if (ShieldHealth < 0 && !destroyed)
-        {
-            destroyed = true;
-            Debug.Log("BEETLE SHIELD: destroyed");
-            if (activated)
-            {
-                Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
-                SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
-                shieldCollider.enabled = false;
-                shieldSprite.enabled = false;
-                activated = false;
-            }
-        }
-
-    }
-
-
-    private void ToggleShield()
-    {
-        // As long as shield is not destroyed, can keep toggling
-        if (!destroyed)
-        {
-            Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
-            SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
-            // Toggle the shield's collider and sprite renderer
-            shieldCollider.enabled = !activated;
-            shieldSprite.enabled = !activated;
-            activated = !activated;
         }
     }
+
+    // private void ToggleShield()
+    // {
+    //     // As long as shield is not destroyed, can keep toggling
+    //     if (!destroyed)
+    //     {
+    //         Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
+    //         SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
+    //         // Toggle the shield's collider and sprite renderer
+    //         shieldCollider.enabled = !activated;
+    //         shieldSprite.enabled = !activated;
+    //         activated = !activated;
+    //     }
+    // }
+
 
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
@@ -173,12 +222,15 @@ public class Beetle : Arm
             // For example, instantiate ultimate projectiles instead of the regular ones
             if (ultimateProjectile != null && Time.time >= nextBasicFireTime)
             {
-                GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
-                shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
-                shotUltimateProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
+                GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotUltimateProjectile.layer = transform.root.gameObject.layer;
+                // Setup teamId
+                shotUltimateProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+                shotUltimateProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+                shotUltimateProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 Rigidbody2D rb = shotUltimateProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(ultShootPoint.transform.up * armVariable.ultimateForce, ForceMode2D.Impulse);
-                Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack with damage: " + shotUltimateProjectile.GetComponent<Projectile>().Damage);
+                Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack: ");
 
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
@@ -191,17 +243,20 @@ public class Beetle : Arm
                 nextBasicFireTime = Time.time + armVariable.ultimateFireRate;
             }
         }
-        else if (destroyed)
+        else if (beetleShieldTrigger.Destroyed)
         {
             if (altProjectile != null && Time.time >= nextBasicFireTime)
             {
-                GameObject shotBasicProjectile = Instantiate(altProjectile, shootPoint.transform.position, transform.rotation);
-                shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject;
-                shotBasicProjectile.transform.GetComponent<NetworkObject>().Spawn(true);
+                GameObject shotBasicProjectile = Instantiate(altProjectile, ultShootPoint.transform.position, transform.rotation);
+                shotBasicProjectile.layer = transform.root.gameObject.layer;
+                // Setup teamId
+                shotBasicProjectile.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+                shotBasicProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+                shotBasicProjectile.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
                 Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
-                rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
-                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack with damage: " + shotBasicProjectile.GetComponent<Projectile>().Damage);
-                
+                rb.AddForce(ultShootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+                Debug.Log("Casting " + armVariable.armName + "'s Alt Attack");
+
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
@@ -215,11 +270,16 @@ public class Beetle : Arm
         }
         else
         {
-            ToggleShield();
+            if (Time.time >= nextBasicFireTime)
+            {
+                beetleShieldTrigger.ToggleShieldServerRpc();
+                nextBasicFireTime = Time.time + armVariable.baseFireRate;
+            }
         }
-        
+
 
     }
+
 
     [ClientRpc]
     public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
@@ -228,27 +288,58 @@ public class Beetle : Arm
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
-    public override void CastSkill()
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
         if (shotSpellProjectile == null && SkillCoolDown <= 0.0f)
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
+            // TODO: Shield Team Id
             shotSpellProjectile.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
-            Destroy(shotSpellProjectile, armVariable.skillDuration);
+            shotSpellProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            // Destroy(shotSpellProjectile, armVariable.skillDuration);
 
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
+
+            // Cast the Skill ClientRpc
+            CastSkillClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
         }
         else
         {
             Debug.Log("BEETLE SKILL: Cannot cast yet");
+            Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
         }
 
     }
 
-    public override void CastUltimate()
+
+    [ClientRpc]
+    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
     {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+
         if (UltimateCharge >= 100f)
         {
             Debug.Log("BEETLE ULTIMATE: Casting");
@@ -256,27 +347,41 @@ public class Beetle : Arm
             UltimateCharge = 0f; // Reset Ultimate Charge
 
             // Toggle the shield if it is on
-            if (activated)
+            if (beetleShieldTrigger.Activated)
             {
-                ToggleShield();
+                beetleShieldTrigger.ToggleShieldServerRpc();
             }
 
-            // Start a timer for the ultimate's duration
-            StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
+            // Set the start time of the ultimate
+            ultimateStartTime = Time.time;
+
+            // Cast the Ultimate ClientRpc
+            CastUltimateClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
+            // // Start a timer for the ultimate's duration
+            // StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
         }
         else
         {
             Debug.Log("BEETLE ULTIMATE: Not enough Ult Charge");
+            Logger.Instance.LogInfo($"Cast Ult ClientRpc called by {OwnerClientId}: FAIL - Charge");
         }
+
 
     }
 
-    // Coroutine to handle the duration of the ultimate
-    private IEnumerator UltimateDurationTimer(float duration)
+
+    [ClientRpc]
+    public override void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        yield return new WaitForSeconds(duration);
-        ulted = false; // Reset the ulted flag after the ultimate duration
-        Debug.Log("BEETLE ULTIMATE: Expired");
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
     }
 
 }

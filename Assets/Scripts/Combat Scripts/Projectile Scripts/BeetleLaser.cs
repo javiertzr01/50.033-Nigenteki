@@ -1,37 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class BeetleLaser : Projectile
 {
-    // Laser should only hit the Plaeyrs that it pierces through once.
+    // Laser should only hit the Players that it pierces through once.
     private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
-    Beetle arm;
 
-    void Start()
+    // Override the Start method to call the base class's Start first
+    new void Start()
     {
-        arm = instantiatingArm.GetComponent<Beetle>();
+        // Call the base class's Start method
+        base.Start();
     }
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        if (other.gameObject.tag == "Shield")
-        {
-
-            Destroy(gameObject);
-        }
-
         if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))
         {
-            // Damage the player
-            Debug.Log("BeetleLaser: HIT " + other.gameObject.name);
-            arm.ChargeUltimate(Damage, 15);
-            // collision.gameObject.GetComponent<PlayerController>().currentHealth -= _damage;
+            // Damage Enemy Player
+            if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
+            {
+                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+                instantiatingArm.ChargeUltimate(Damage, 100);
 
-            // Add the GameObject to the set of damaged objects to track it
-            damagedObjects.Add(other.gameObject);
+                // Add the GameObject to the set of damaged objects to track it
+                damagedObjects.Add(other.gameObject);
+            }
         }
+        else if (other.gameObject.tag == "Shield")
+        {
+            // Ignore Ally Shields
+        }
+        else if (other.gameObject.tag == "Projectile") { }
+        else { }
     }
-
-
 }
