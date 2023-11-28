@@ -10,11 +10,12 @@ public class BasicProjectile : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
+            isColliding = true;
             // Damage Enemy Player
             if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
                 other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                instantiatingArm.ChargeUltimate(Damage, 100);
+                //instantiatingArm.ChargeUltimate(Damage, 100);
 
                 DestroyServerRpc();
             }

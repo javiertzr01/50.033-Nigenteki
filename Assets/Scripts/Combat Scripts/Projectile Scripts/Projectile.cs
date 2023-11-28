@@ -10,7 +10,7 @@ public abstract class Projectile : NetworkBehaviour
     private float _maxDistance;
     private float _damage;
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
-    // private bool isColliding = false;
+    public bool isColliding = false;
 
     [System.NonSerialized]
     public Arm instantiatingArm;
@@ -44,6 +44,7 @@ public abstract class Projectile : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (isColliding) return;
         TriggerEnter2DLogic(other);
     }
 
