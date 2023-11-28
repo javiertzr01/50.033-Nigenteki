@@ -135,7 +135,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
         WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);
         SpawnPOI(redSpawnPosition, blueSpawnPosition, capturePointPosition);
-        SpawnItems(obstaclePositionsArray, obstacleNamesArray);
+        // SpawnItems(obstaclePositionsArray, obstacleNamesArray);
     }
 
 
