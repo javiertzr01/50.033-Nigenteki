@@ -92,19 +92,14 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
             float panStereo = -Mathf.Sign(relativePosition.x) * Mathf.Pow(Mathf.Clamp(Mathf.Abs(relativePosition.x) / maxPanDistance, 0f, 1f), panExponent);
             audioSource.panStereo = panStereo;
 
-            
-
             // Adjust volume exponentially based on distance
             float distance = Vector2.Distance(transform.position, otherPlayerPosition);
-            Logger.Instance.LogInfo("distance:" + distance);
 
             float volumeRatio = Mathf.Clamp(1 - (distance / maxDistance), 0, 1);
             float volume = Mathf.Pow(volumeRatio, volumeExponent);
-            Logger.Instance.LogInfo("volume:" + volume);
 
             audioSource.PlayOneShot(basicAttackSFX, volume);
 
-            //audioSource.PlayOneShot(basicAttackSFX);
         }
     }
 

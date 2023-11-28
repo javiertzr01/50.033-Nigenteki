@@ -22,6 +22,7 @@ public class BasicProjectile : Projectile
         }
         else if (other.gameObject.tag == "Shield") { }
         else if (other.gameObject.tag == "Projectile") { }
+        else if (other.gameObject.tag == "ControlPoint") { }
         else
         {
             DestroyServerRpc();
