@@ -56,6 +56,7 @@ public class BasicShooter : Arm
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
             firedBasicProjectileClone.layer = transform.root.gameObject.layer;
+            // Setup teamId
             firedBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;

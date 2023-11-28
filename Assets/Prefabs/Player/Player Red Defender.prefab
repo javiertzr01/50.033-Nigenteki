@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 2940777625078481704}
   - component: {fileID: 7707033610063034363}
   - component: {fileID: 5521825692670072248}
+  - component: {fileID: 7985845038173592306}
   m_Layer: 8
   m_Name: Player Red Defender
   m_TagString: Player
@@ -836,6 +837,16 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
+  teamId:
+    m_InternalValue: 0
+  redCrystalCount:
+    m_InternalValue: 0
+  blueCrystalCount:
+    m_InternalValue: 0
+  greenCrystalCount:
+    m_InternalValue: 0
+  KDStats:
+    m_InternalValue: {x: 0, y: 0}
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:
@@ -880,7 +891,7 @@ MonoBehaviour:
   dashFactor: 500
   immuneStun:
     m_InternalValue: 0
---- !u!96 &7810203435576202877
+--- !u!96 &7985845038173592306
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -931,14 +942,14 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.0039901733
-        value: 0.5
+        time: 0
+        value: 0.50214577
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0
+        outWeight: 0
       - serializedVersion: 3
         time: 1
         value: 0
