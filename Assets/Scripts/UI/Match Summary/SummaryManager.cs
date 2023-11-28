@@ -1,34 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SummaryManager : MonoBehaviour
 {
-    ulong[] blueID;   // Blue Team IDs
-    ulong[] redID;    // Red Team IDs
+    ulong[] blueId;   // Blue Team IDs
+    ulong[] redId;    // Red Team IDs
     string[] blueNames = {"shadowlord", "mysticguardian", "pimpmaster"};
     string[] redNames = {"thelegend27", "missmagus", "ladyNagant"};
-    int[] bp1kd = {1,6};    // bp1kd = Blue Player1 KD
-    int[] bp2kd = {2,5};
-    int[] bp3kd = {3,4};
-    int[] rp1kd = {4,3};    // rp1kd = Red Player1 KD
-    int[] rp2kd = {5,2};
-    int[] rp3kd = {6,1};
-    
+    int[,] blueKD;
+    int[,] redKD;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        // Getting all the sprites
-        Sprite defenderBlue = Resources.Load<Sprite>("defender_blue");
-        Sprite defenderRed = Resources.Load<Sprite>("defender_red");
-        Sprite guardianBlue = Resources.Load<Sprite>("guardian_blue");
-        Sprite guardianRed = Resources.Load<Sprite>("guardian_red");
+        for (int i = 0; i < blueId.Length; i++)
+        {
+            // Setting Name
+            blueNames[i] = "Player " + blueId[i].ToString();
 
-        // Some code to get the information from network here
+            // Setting KD
+            int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            for (int j = 0; j < kd.Length; j++)
+            {
+                blueKD[i,j] = kd[j];
+            }
+        }
+        for (int i = 0; i < redId.Length; i++)
+        {
+            redNames[i] = "Player " + redId[i].ToString();
+
+            int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            for (int j = 0; j < kd.Length; j++)
+            {
+                redKD[i,j] = kd[j];
+            }
+        }
 
         Text[] texts = GameObject.FindObjectsOfType<Text>();
         Image[] images = GameObject.FindObjectsOfType<Image>();
@@ -47,11 +58,11 @@ public class SummaryManager : MonoBehaviour
                 string player = text.transform.parent.name;
                 if (team == "Team A")
                 {
-                    AssignText(text, player, bp1kd[0], bp2kd[0], bp3kd[0]);
+                    AssignText(text, player, blueKD, KD.kills);
                 }
                 if (team == "Team B")
                 {
-                    AssignText(text, player, rp1kd[0], rp2kd[0], rp3kd[0]);
+                    AssignText(text, player, redKD, KD.kills);
                 }
             }     
             if (text.name == "Deaths")
@@ -60,11 +71,11 @@ public class SummaryManager : MonoBehaviour
                 string player = text.transform.parent.name;
                 if (team == "Team A")
                 {
-                    AssignText(text, player, bp1kd[1], bp2kd[1], bp3kd[1]);
+                    AssignText(text, player, blueKD, KD.deaths);
                 }
                 if (team == "Team B")
                 {
-                    AssignText(text, player, rp1kd[1], rp2kd[1], rp3kd[1]);
+                    AssignText(text, player, redKD, KD.deaths);
                 }
             }    
             if (text.name == "Name")       
@@ -86,14 +97,14 @@ public class SummaryManager : MonoBehaviour
         {
             if (image.name == "Image" && image.transform.parent.name == "PlayerContainer") // have to check which player
             {
-                image.sprite = defenderBlue;
+                // TODO: image.sprite = defenderBlue;
             }    
         }
     }
 
-    private void AssignText(Text text, string team, string player1, string player2, string player3)
+    private void AssignText(Text text, string player, string player1, string player2, string player3)
     {
-        switch (team)
+        switch (player)
         {
             case "Player1":
                 text.text = player1;
@@ -110,13 +121,24 @@ public class SummaryManager : MonoBehaviour
         }
     }
     
-    private void AssignText(Text text, string team, int player1, int player2, int player3)
+    private void AssignText(Text text, string player, int player1, int player2, int player3)
     {
-        AssignText(text, team, player1.ToString(), player2.ToString(), player3.ToString());
+        AssignText(text, player, player1.ToString(), player2.ToString(), player3.ToString());
+    }
+
+    private void AssignText(Text text, string player, int[,] kd, KD type)
+    {
+        AssignText(text, player, kd[0, (int) type], kd[1, (int) type], kd[2, (int) type]);
     }
 
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }
+}
+
+public enum KD
+{
+    kills = 0,
+    deaths = 1
 }
