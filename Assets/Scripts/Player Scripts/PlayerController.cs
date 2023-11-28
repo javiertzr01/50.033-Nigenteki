@@ -15,8 +15,6 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
-    //NetworkVariable<float> _currentHealth;
-    [System.NonSerialized] public float maxHealth;
     [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     private NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
@@ -27,7 +25,6 @@ public class PlayerController : NetworkBehaviour
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
-    //private HealthBar healthBarUI = new HealthBar();
 
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
@@ -95,8 +92,6 @@ public class PlayerController : NetworkBehaviour
         greenCrystalCount.Value = 0;
 
         KDStats.Value = new Vector2Int(0, 0);
-        maxHealth = playerVariables.maxHealth;
-        // _currentHealth = playerVariables.currentHealth;
         tr = GetComponent<TrailRenderer>();
     }
 
@@ -193,9 +188,9 @@ public class PlayerController : NetworkBehaviour
     {
         var healedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
 
-        if ((healedClient.playerHealth.Value + heal) >= maxHealth)
+        if ((healedClient.playerHealth.Value + heal) >= playerMaxHealth.Value)
         {
-            healedClient.playerHealth.Value = maxHealth;
+            healedClient.playerHealth.Value = playerMaxHealth.Value;
         }
         else
         {
@@ -362,7 +357,7 @@ public class PlayerController : NetworkBehaviour
             if (passiveHealthRegenerationPercentage > 0f)
             {
                 Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
-                HealPlayerServerRpc(maxHealth * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
+                HealPlayerServerRpc(playerMaxHealth.Value * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
             }
 
             if (healingPerSecond > 0f && timeSinceLastDamage)
