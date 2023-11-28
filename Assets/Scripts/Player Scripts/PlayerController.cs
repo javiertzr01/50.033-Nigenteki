@@ -82,7 +82,8 @@ public class PlayerController : NetworkBehaviour
         blueCrystalCount.Value = 0;
         greenCrystalCount.Value = 0;
 
-        KDStats.Value = new int[] { 0, 0 };
+        int[] newKD = new int[] { 0, 0 };
+        KDStats.Value = newKD;
     }
 
     [ServerRpc(RequireOwnership = false)]
