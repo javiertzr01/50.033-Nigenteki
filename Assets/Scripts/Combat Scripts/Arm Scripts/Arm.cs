@@ -3,41 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public abstract class Arm : NetworkBehaviour
+public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
-    public ArmVariables armVariable;
-
+    public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
 
+    // Serialize references by ID or some other network-friendly method, not directly
     [SerializeField]
-    protected List<GameObject> projectiles;
+    protected List<GameObject> projectiles; // Consider serializing relevant state information instead of GameObjects
 
     [SerializeField]
-    protected GameObject shootPoint;
-
+    protected GameObject shootPoint; // Same as above, consider what needs to be synchronized
     [SerializeField]
     private Animator animator;
-
     protected GameObject basicProjectile;
     private float _ultimateCharge;
-
     protected AudioSource audioSource;
     public AudioClip basicAttackSFX;   // Assign this in the Inspector
     public AudioClip skillSFX;   // Assign this in the Inspector
     public AudioClip ultimateSFX;   // Assign this in the Inspector
 
 
-    void Awake()
+    protected virtual void Start()
     {
         Initialize();
     }
 
-    // Initialize the arm with its variable settings
     public virtual void Initialize()
     {
-        // Initialize arm with the variables from armVariable.
-        // E.g., set the arm's sprite, attack power, etc.
         basicProjectile = projectiles[0];
+    }
+
+    private float _skillCoolDown;
+
+    public float SkillCoolDown
+    {
+        get => _skillCoolDown;
+        set => _skillCoolDown = value;
     }
 
     // The basic attack method
@@ -49,38 +51,75 @@ public abstract class Arm : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        if(basicAttackSFX != null && audioSource != null)
+        if (basicAttackSFX != null && audioSource != null)
         {
-            foreach (var player in NetworkManager.Singleton.ConnectedClientsIds)
+            foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                CastBasicAttackSFXClientRpc(new ClientRpcParams
+
+                Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
+
+                //CastBasicAttackSFXClientRpc(new ClientRpcParams
+                CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
                     {
-                        TargetClientIds = new ulong[] { player }
+                        TargetClientIds = new ulong[] { playerClientId }
                     }
                 });
             }
-            audioSource.PlayOneShot(basicAttackSFX);
+            //audioSource.PlayOneShot(basicAttackSFX, 1f);
         }
     }
 
     [ClientRpc]
-    public void CastBasicAttackSFXClientRpc(ClientRpcParams clientRpcParams = default)
+    public void CastBasicAttackSFXClientRpc(Vector3 otherPlayerPosition, ClientRpcParams clientRpcParams = default)
     {
+
+
         if (basicAttackSFX != null && audioSource != null)
         {
-            audioSource.PlayOneShot(basicAttackSFX);
+            // Calculate the distance between this player and the other player
+            Vector2 relativePosition = otherPlayerPosition - transform.position;
+
+            float maxPanDistance = 5f;
+            float panExponent = 2f;     // A quadratic curve for more pronounced panning
+            float volumeExponent = 3f;     // A quadratic curve for more pronounced volume
+            
+            // Define the maximum distance at which the sound can be heard
+            float maxDistance = 100f;
+
+            // Exponential stereo pan based on the horizontal position (left or right)
+            float panStereo = -Mathf.Sign(relativePosition.x) * Mathf.Pow(Mathf.Clamp(Mathf.Abs(relativePosition.x) / maxPanDistance, 0f, 1f), panExponent);
+            audioSource.panStereo = panStereo;
+
+            
+
+            // Adjust volume exponentially based on distance
+            float distance = Vector2.Distance(transform.position, otherPlayerPosition);
+            Logger.Instance.LogInfo("distance:" + distance);
+
+            float volumeRatio = Mathf.Clamp(1 - (distance / maxDistance), 0, 1);
+            float volume = Mathf.Pow(volumeRatio, volumeExponent);
+            Logger.Instance.LogInfo("volume:" + volume);
+
+            audioSource.PlayOneShot(basicAttackSFX, volume);
+
+            //audioSource.PlayOneShot(basicAttackSFX);
         }
     }
 
-    // The skill method
-    public abstract void CastSkill();
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
 
-    // The ultimate skill method
-    public abstract void CastUltimate();
+    [ClientRpc]
+    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) { }
 
-    // Higher the Divisor, the slower the charging rate
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default) { }
+
+    [ClientRpc]
+    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) { }
+
     public void ChargeUltimate(float charge, float divisor)
     {
         if (divisor < 1)
@@ -111,22 +150,13 @@ public abstract class Arm : NetworkBehaviour
 
     public float UltimateCharge
     {
-        get
-        {
-            return _ultimateCharge;
-        }
-        set
-        {
-            if (value >= 100)
-            {
-                _ultimateCharge = 100;
-            }
-            else
-            {
-                _ultimateCharge = value;
-            }
+        get => _ultimateCharge;
+        set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
+    }
 
-        }
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        throw new System.NotImplementedException();
     }
 
     public enum WeaponState
@@ -135,5 +165,5 @@ public abstract class Arm : NetworkBehaviour
         BasicAttack,
         SkillAttack,
         UltimateAttack
-    }    
+    }
 }

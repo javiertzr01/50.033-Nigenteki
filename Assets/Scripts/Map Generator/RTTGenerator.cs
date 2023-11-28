@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -56,6 +57,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     // Prefabs
     private List<GameObject> instantiatedPrefabs = new List<GameObject>();
+    private List<GameObject> flowersPrefabs = new List<GameObject>();
 
     public override void RunProceduralGeneration()
     {
@@ -73,6 +75,13 @@ public class RTTGenerator : AbstractProceduralGenerator
         (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
         SpawnPOI(redSpawnPosition, blueSpawnPosition, capturePointPosition);
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
+        if(IsServer)
+        {
+            foreach(GameObject flower in flowersPrefabs)
+            {
+                flower.GetComponent<NetworkObject>().Spawn(true);
+            }
+        }
     }
 
 
@@ -121,7 +130,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         Vector2Int blueSpawnPosition = netStore.generatedMapData.Value.BlueSpawnPosition;
         Vector2Int capturePointPosition = netStore.generatedMapData.Value.CapturePointPosition;
 
-        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {floorPositionsArray.Length}");
+        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {obstacleNamesArray.Length}");
 
         tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
         WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);
@@ -353,7 +362,7 @@ public class RTTGenerator : AbstractProceduralGenerator
 
     public void SpawnItems(Vector2Int[] positionsArray, string[] namesArray)
     {
-        instantiatedPrefabs = PrefabLoader.LoadAndInstantiatePrefabs(namesArray, positionsArray);
+        (flowersPrefabs, instantiatedPrefabs) = PrefabLoader.LoadAndInstantiatePrefabs(namesArray, positionsArray);
     }
 
 

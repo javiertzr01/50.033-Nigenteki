@@ -6,6 +6,7 @@ public class ClientData : MonoBehaviour
 {
     public ulong clientId;
     public int characterId = -1;
+    public int teamId = -1;
     public int leftArmId = -1;
     public int rightArmId = -1;
 

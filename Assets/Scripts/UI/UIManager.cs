@@ -21,7 +21,7 @@ public class UIManager : NetworkBehaviour
     private TMP_InputField joinCodeInputField;
 
     [SerializeField]
-    private TextMeshProUGUI mainTimerText;
+    private Text mainTimerText;
     
     [SerializeField]
     private TextMeshProUGUI phaseObjectiveText;
@@ -33,10 +33,14 @@ public class UIManager : NetworkBehaviour
     private TextMeshProUGUI team2TimerText;
 
     [SerializeField]
+    private Text team1TimerPercentText;
+
+    [SerializeField]
+    private Text team2TimerPercentText;
+
+    [SerializeField]
     private TextMeshProUGUI gameWinLossText;
 
-    private float team1Percentage;
-    private float team2Percentage;
 
     private void Awake()
     {
@@ -67,11 +71,11 @@ public class UIManager : NetworkBehaviour
     {
         if (phase == 1)
         {
-            phaseObjectiveText.text = $"Resource Collection Phase: Collect Resource & Find Control Point!";
+            phaseObjectiveText.text = $"Collect Resources & Find Control Point!";
         }
         else if (phase == 2)
         {
-            phaseObjectiveText.text = $"Control Point Phase: Capture Control Point!";
+            phaseObjectiveText.text = $"Capture Control Point!";
         }
         else if (phase == 0)
         {
@@ -109,29 +113,26 @@ public class UIManager : NetworkBehaviour
     {
         //team1TimerText.text = $"Team1: {percent.ToString("00.00")}%";
         TimeSpan timeSpan = TimeSpan.FromSeconds(secondsLeft);
-        team1TimerText.text = $"Team 1: {timeSpan.ToString(@"m\:ss")}";
+        team1TimerText.text = $"{timeSpan.ToString(@"m\:ss")}";
         Team1Percentage((secondsLeft / GameManager.teamInitialTimer)*100);
     }
 
     public void Team1Percentage(float percent)
     {
-        //team1TimerText.text = $"Team1: {percent.ToString("00.00")}%";
-        team1Percentage = percent;
-        // todo: update UI
+
+        team1TimerPercentText.text = $"{(100-percent).ToString("00")}%";
     }
 
     public void Team2Percentage(float percent)
     {
-        //team2TimerText.text = $"Team2: {percent.ToString("00.00")}%";
-        team2Percentage = percent;
-        // todo: update UI
+        team2TimerPercentText.text = $"{(100 - percent).ToString("00")}%";
     }
 
     public void Team2TimerText(float secondsLeft)
     {
         //team2TimerText.text = $"Team 2: {percent.ToString("00.00")}";
         TimeSpan timeSpan = TimeSpan.FromSeconds(secondsLeft);
-        team2TimerText.text = $"Team 2: {timeSpan.ToString(@"m\:ss")}";
+        team2TimerText.text = $"{timeSpan.ToString(@"m\:ss")}";
         Team2Percentage((secondsLeft / GameManager.teamInitialTimer) * 100);
     }
 

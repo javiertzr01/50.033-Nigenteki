@@ -10,10 +10,22 @@ public class BasicProjectile : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
-            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-        }
+            // Damage Enemy Player
+            if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
+            {
+                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+                instantiatingArm.ChargeUltimate(Damage, 100);
 
-        DestroyServerRpc();
+                DestroyServerRpc();
+            }
+        }
+        else if (other.gameObject.tag == "Shield") { }
+        else if (other.gameObject.tag == "Projectile") { }
+        else
+        {
+            DestroyServerRpc();
+        }
+        
     }
 
 }

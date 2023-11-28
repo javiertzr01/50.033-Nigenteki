@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Blue Guardian
   m_EditorClassIdentifier: 
   id: 1
+  teamId: 1
   displayName: Blue Guardian
   icon: {fileID: -1349039727, guid: cd281d1b3e0dfa84c96496ba496e3e82, type: 3}
   characterPrefab: {fileID: 5009592937343648668, guid: d32c592614a35f645a6ab5a47fad4331,

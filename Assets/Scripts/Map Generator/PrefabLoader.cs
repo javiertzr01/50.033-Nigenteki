@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Unity.Netcode;
 
 public class PrefabLoader : MonoBehaviour
 {
@@ -16,13 +17,18 @@ public class PrefabLoader : MonoBehaviour
             GameObject prefab = opHandle.Result;
             return Instantiate(prefab, parentTransform, Quaternion.identity);
         }
+        else
+        {
+            Debug.Log("Loading prefab failed");
+        }
 
         return null;
     }
 
-    public static List<GameObject> LoadAndInstantiatePrefabs(string[] keys, Vector2Int[] parentTransform)
+    public static (List<GameObject>, List<GameObject>) LoadAndInstantiatePrefabs(string[] keys, Vector2Int[] parentTransform)
     {
         List<GameObject> instantiatedPrefabs = new List<GameObject>();
+        List<GameObject> flowersPrefabs = new List<GameObject>();
         GameObject instantiatedPrefab;
         for (int i = 0; i < keys.Length; i++)
         {
@@ -31,17 +37,19 @@ public class PrefabLoader : MonoBehaviour
             if (item.Substring(Mathf.Max(0, item.Length - 6)) == "Flower")
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(item, new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
+                flowersPrefabs.Add(instantiatedPrefab);
             }
             else
             {
                 instantiatedPrefab = LoadAndInstantiatePrefab(keys[i], new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
-            }
-            if (instantiatedPrefab != null)
-            {
                 instantiatedPrefabs.Add(instantiatedPrefab);
+            }
+            if (instantiatedPrefab == null)
+            {
+                Debug.Log("No instantiated Prefabs");
             }
         }
 
-        return instantiatedPrefabs;
+        return (flowersPrefabs, instantiatedPrefabs);
     }
 }

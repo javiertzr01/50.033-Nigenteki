@@ -31,8 +31,9 @@ public class BasicShooter : Arm
         }
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -51,11 +52,14 @@ public class BasicShooter : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
+            firedBasicProjectileClone.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            firedBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            firedBasicProjectileClone.GetComponent<Projectile>().maxDistance = 20f;
+            firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 
@@ -78,7 +82,6 @@ public class BasicShooter : Arm
         {
             UpdateWeaponAnimatorServerRpc(WeaponState.Idle);
         }
-        
 
     }
 
@@ -86,18 +89,19 @@ public class BasicShooter : Arm
     public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
+
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
 
-    public override void CastSkill()
+    public void CastSkill()
     {
         // Implement the BasicArm's skill
         // Debug.Log("Casting " + armVariable.armName + "'s Skill with damage: " + spellProjectile.GetComponent<Projectile>().Damage);
         GameObject shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
     }
 
-    public override void CastUltimate()
+    public void CastUltimate()
     {
         // Implement the BasicArm's ultimate skill
         // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);

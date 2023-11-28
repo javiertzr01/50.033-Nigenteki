@@ -74,16 +74,17 @@ public class ServerManager : Singleton<ServerManager>
         }
     }
 
-    public void SetPlayer(ulong clientID, int characterId, int leftArmId, int rightArmId)
+    public void SetPlayer(ulong clientID, int characterId, int teamId, int leftArmId, int rightArmId)
     {
         if (ClientData.TryGetValue(clientID, out ClientData data))
         {
             data.characterId = characterId;
+            data.teamId = teamId;
             data.leftArmId = leftArmId;
             data.rightArmId = rightArmId;
         }
 
-        Logger.Instance.LogInfo($"Set Player {clientID}'s character as {characterId}, left arm as {leftArmId}, right arm as {rightArmId}");
+        Logger.Instance.LogInfo($"Set Player {clientID}'s character as team {teamId}, character as {characterId}, left arm as {leftArmId}, right arm as {rightArmId}");
     }
 
     public void StartGame()

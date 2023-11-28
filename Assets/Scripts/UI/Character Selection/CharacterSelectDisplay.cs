@@ -47,6 +47,19 @@ public class CharacterSelectDisplay : NetworkBehaviour
     }
     public override void OnNetworkSpawn()
     {
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+
+            foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                HandleClientConnected(client.ClientId);
+            }
+
+            hostJoinCodeText.text = RelayManager.Instance.joinCode;
+        }
+
         if (IsClient)
         {
             BuildCharacterVariables[] allCharacters = characterDatabase.GetAllCharacters();
@@ -54,8 +67,11 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
             foreach (var character in allCharacters)
             {
-                var selectButtonInstance = Instantiate(selectCharacterButtonPrefab, charactersHolder);
-                selectButtonInstance.SetCharacter(this, character);
+                if ((int)(NetworkManager.Singleton.LocalClientId % 2) == character.TeamId)
+                {
+                    var selectButtonInstance = Instantiate(selectCharacterButtonPrefab, charactersHolder);
+                    selectButtonInstance.SetCharacter(this, character);
+                }
             }
 
             foreach (var leftArm in allArms)
@@ -77,21 +93,10 @@ public class CharacterSelectDisplay : NetworkBehaviour
             rightArms.OnListChanged += HandleRightArmStateChanged;
             playersReady.OnListChanged += HandlePlayersReadyStateChanged;
 
-            hostJoinCodeText.text = RelayManager.Instance.joinCode;
+            hostJoinCodeText.text = "Join Code: " + RelayManager.Instance.joinCode;
         }
 
-        if (IsServer)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
-
-            foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                HandleClientConnected(client.ClientId);
-            }
-
-            hostJoinCodeText.text = RelayManager.Instance.joinCode;
-        }
+        
     }
 
     public override void OnNetworkDespawn()
@@ -110,7 +115,14 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     private void HandleClientConnected(ulong clientId)
     {
-        players.Add(new CharacterSelectState(clientId));
+        if ((int)clientId % 2 == 0)
+        {
+            players.Add(new CharacterSelectState(clientId, -1, 0));
+        }
+        else
+        {
+            players.Add(new CharacterSelectState(clientId, -1, 1));
+        }
         leftArms.Add(new ArmSelectState(clientId));
         rightArms.Add(new ArmSelectState(clientId));
         playersReady.Add(new PlayerReadyState(clientId));
@@ -261,6 +273,24 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     public void PlayerReadyDisplay(bool isReady)
     {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId == NetworkManager.Singleton.LocalClientId)
+            {
+                if (players[i].CharacterId == -1)
+                    return;
+            }
+            if (leftArms[i].ClientId == NetworkManager.Singleton.LocalClientId)
+            {
+                if (leftArms[i].ArmId == -1)
+                    return;
+            }
+            if (rightArms[i].ClientId == NetworkManager.Singleton.LocalClientId)
+            {
+                if (rightArms[i].ArmId == -1)
+                    return;
+            }
+        }
         PlayerReadyServerRpc(isReady);
     }
 
@@ -285,7 +315,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
         for (int i = 0; i < playersReady.Count; i++)
         {
-            ServerManager.Instance.SetPlayer(playersReady[i].ClientId, players[i].CharacterId, leftArms[i].ArmId, rightArms[i].ArmId);
+            ServerManager.Instance.SetPlayer(playersReady[i].ClientId, players[i].CharacterId, players[i].TeamId, leftArms[i].ArmId, rightArms[i].ArmId);
         }
 
         ServerManager.Instance.StartGame();

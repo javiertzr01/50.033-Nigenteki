@@ -7,6 +7,7 @@ public class ControlPointController : NetworkBehaviour
 {
 
     public GameStateStore gameStateStore;
+    public NetworkStore netStore;
     private ControlPointTeamOccupancyState currentOccupancyState;
     enum ControlPointTeamOccupancyState
     {
@@ -19,6 +20,7 @@ public class ControlPointController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ControlPointPositionServerRpc();
         gameStateStore.isControlPointActive.Value = false;
         gameStateStore.currentTeamOnControlPoint.Value = 0;
         currentOccupancyState = ControlPointTeamOccupancyState.NoPlayers;
@@ -31,6 +33,12 @@ public class ControlPointController : NetworkBehaviour
         EvaluateControlPointOccupancy();
         UpdateControlPointStatus();
 
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ControlPointPositionServerRpc()
+    {
+        transform.position = new Vector3(netStore.generatedMapData.Value.CapturePointPosition[0], netStore.generatedMapData.Value.CapturePointPosition[1], 0);
     }
 
     private void UpdateControlPointStatus()
@@ -82,9 +90,14 @@ public class ControlPointController : NetworkBehaviour
         if (collision.CompareTag("Player"))
         {
             //todo: Check Team of Player
-            gameStateStore.numberOfTeam1PlayersOnControlPoint.Value += 1;
-
-
+            if (collision.transform.GetComponent<PlayerController>().teamId.Value == 0)
+            {
+                gameStateStore.numberOfTeam1PlayersOnControlPoint.Value += 1;
+            }
+            else if (collision.transform.GetComponent<PlayerController>().teamId.Value == 1)
+            {
+                gameStateStore.numberOfTeam2PlayersOnControlPoint.Value += 1;
+            }
         }
     }
 
@@ -93,7 +106,14 @@ public class ControlPointController : NetworkBehaviour
         if (collision.CompareTag("Player"))
         {
             //todo: Check Team of Player
-            gameStateStore.numberOfTeam1PlayersOnControlPoint.Value -= 1;
+            if (collision.transform.GetComponent<PlayerController>().teamId.Value == 0)
+            {
+                gameStateStore.numberOfTeam1PlayersOnControlPoint.Value -= 1;
+            }
+            else if (collision.transform.GetComponent<PlayerController>().teamId.Value == 1)
+            {
+                gameStateStore.numberOfTeam2PlayersOnControlPoint.Value -= 1;
+            }
 
         }
     }
