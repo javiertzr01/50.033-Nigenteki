@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 1, y: 1}
   placementType: 0
+  networkObject: 1
