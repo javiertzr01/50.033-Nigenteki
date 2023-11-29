@@ -35,6 +35,7 @@ public class RTTGenerator : AbstractProceduralGenerator
     public Dictionary<Vector2Int, HashSet<Vector2Int>> biomeZone = null;
     private Dictionary<Vector2Int, Sprites> spriteMap = null;
     private Dictionary<Vector2Int, string> prefabMap = null;
+    private Dictionary<Vector2Int, string> networkPrefabMap = null;
 
     public BiomeInfo green1;
     public BiomeInfo green2;
@@ -71,15 +72,15 @@ public class RTTGenerator : AbstractProceduralGenerator
         ProcessPOI(redSpawnPosition, redSpawnInfo);
         ProcessPOI(blueSpawnPosition, blueSpawnInfo);
         ProcessPOI(capturePointPosition, capturePointInfo);
-        prefabMap = PlaceItems();
+        (prefabMap, networkPrefabMap) = PlaceItems();
         (obstaclePositionsArray, obstacleNamesArray) = MapDictToArray(prefabMap);
         SpawnPOI(redSpawnPosition, blueSpawnPosition, capturePointPosition);
         SpawnItems(obstaclePositionsArray, obstacleNamesArray);
         if(IsServer)
         {
-            foreach(GameObject flower in flowersPrefabs)
+            foreach(var kvp in networkPrefabMap)
             {
-                flower.GetComponent<NetworkObject>().Spawn(true);
+                PrefabLoader.LoadAndInstantiateNetworkPrefab(kvp.Value, kvp.Key);
             }
         }
     }
@@ -309,10 +310,11 @@ public class RTTGenerator : AbstractProceduralGenerator
 
 
 
-    protected Dictionary<Vector2Int, string> PlaceItems()
+    protected (Dictionary<Vector2Int, string>, Dictionary<Vector2Int, string>) PlaceItems()
     {
         // Object placement
         Dictionary<Vector2Int, string> PrefabMap = new Dictionary<Vector2Int, string>();
+        Dictionary<Vector2Int, string> NetworkPrefabMap = new Dictionary<Vector2Int, string>();
         foreach(var kvp in biomeZone)
         {
             HashSet<Vector2Int> floorPositions = kvp.Value;
@@ -352,17 +354,26 @@ public class RTTGenerator : AbstractProceduralGenerator
                 {
                     Vector2Int? position = itemPlacementHelper.GetItemPlacementPosition(item.itemData.placementType, 500, item.itemData.size, true);
                     if (position != null)
-                        PrefabMap[(Vector2Int)position] = biome.ToString()+item.itemData.name;
+                    {
+                        if (item.itemData.networkObject)
+                        {
+                            NetworkPrefabMap[(Vector2Int)position] = item.itemData.name;
+                        }
+                        else
+                        {
+                            PrefabMap[(Vector2Int)position] = biome.ToString()+item.itemData.name;
+                        }
+                    }
                 }
             }
         }
-        return PrefabMap;
+        return (PrefabMap, NetworkPrefabMap);
     }
 
 
     public void SpawnItems(Vector2Int[] positionsArray, string[] namesArray)
     {
-        (flowersPrefabs, instantiatedPrefabs) = PrefabLoader.LoadAndInstantiatePrefabs(namesArray, positionsArray);
+        instantiatedPrefabs = PrefabLoader.LoadAndInstantiatePrefabs(namesArray, positionsArray);
     }
 
 

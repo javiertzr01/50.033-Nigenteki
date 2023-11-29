@@ -25,31 +25,38 @@ public class PrefabLoader : MonoBehaviour
         return null;
     }
 
-    public static (List<GameObject>, List<GameObject>) LoadAndInstantiatePrefabs(string[] keys, Vector2Int[] parentTransform)
+    public static void LoadAndInstantiateNetworkPrefab(string key, Vector2Int parentTransform)
+    {
+        GameObject netObj = LoadAndInstantiatePrefab(key, new Vector3(parentTransform.x, parentTransform.y, 0));
+        netObj.GetComponent<NetworkObject>().Spawn();
+    }
+
+    public static List<GameObject> LoadAndInstantiatePrefabs(string[] keys, Vector2Int[] parentTransform)
     {
         List<GameObject> instantiatedPrefabs = new List<GameObject>();
-        List<GameObject> flowersPrefabs = new List<GameObject>();
+        // List<GameObject> flowersPrefabs = new List<GameObject>();
         GameObject instantiatedPrefab;
         for (int i = 0; i < keys.Length; i++)
         {
             string biome = keys[i].Substring(0,6);
             string item = keys[i].Substring(6);
-            if (item.Substring(Mathf.Max(0, item.Length - 6)) == "Flower")
-            {
-                instantiatedPrefab = LoadAndInstantiatePrefab(item, new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
-                flowersPrefabs.Add(instantiatedPrefab);
-            }
-            else
-            {
-                instantiatedPrefab = LoadAndInstantiatePrefab(keys[i], new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
-                instantiatedPrefabs.Add(instantiatedPrefab);
-            }
+            // if (item.Substring(Mathf.Max(0, item.Length - 6)) == "Flower")
+            // {
+            //     instantiatedPrefab = LoadAndInstantiatePrefab(item, new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
+                // flowersPrefabs.Add(instantiatedPrefab);
+            // }
+            // else
+            // {
+            instantiatedPrefab = LoadAndInstantiatePrefab(keys[i], new Vector3(parentTransform[i].x, parentTransform[i].y, 0));
+            instantiatedPrefabs.Add(instantiatedPrefab);
+            // }
             if (instantiatedPrefab == null)
             {
                 Debug.Log("No instantiated Prefabs");
             }
         }
 
-        return (flowersPrefabs, instantiatedPrefabs);
+        // return (flowersPrefabs, instantiatedPrefabs);
+        return instantiatedPrefabs;
     }
 }

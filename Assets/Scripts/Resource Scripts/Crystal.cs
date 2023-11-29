@@ -17,7 +17,6 @@ public class Crystal : NetworkBehaviour
             isCollecting = true;
             other.transform.GetComponent<PlayerController>().CollectCrystalServerRpc(crystalType, other.transform.GetComponent<NetworkObject>().OwnerClientId);
             DestroyServerRpc();
-            Destroy(gameObject);
         }   
     }
 
@@ -25,7 +24,6 @@ public class Crystal : NetworkBehaviour
     public void DestroyServerRpc(ServerRpcParams serverRpcParams = default)
     {
         transform.GetComponent<NetworkObject>().Despawn(true);
-        Destroy(gameObject);
     }
 
     // Start is called before the first frame update
