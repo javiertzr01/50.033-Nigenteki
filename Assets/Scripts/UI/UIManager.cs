@@ -41,6 +41,9 @@ public class UIManager : NetworkBehaviour
     [SerializeField]
     private TextMeshProUGUI gameWinLossText;
 
+    [SerializeField]
+    private GameObject matchSummary;
+
 
     private void Awake()
     {
@@ -90,6 +93,8 @@ public class UIManager : NetworkBehaviour
 
     public void UpdateGameWinLossText(int winner)
     {
+        matchSummary.SetActive(true);
+        matchSummary.GetComponent<SummaryManager>().GameEnd(winner);
         if (winner == 1)
         {
             gameWinLossText.text = $"Team 1 Has Won!";
