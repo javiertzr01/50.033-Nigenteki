@@ -19,6 +19,7 @@ public class BasicShooter : Arm
         base.Initialize();
         // Initialize arm with the variables from armVariable.
         // E.g. attack power, etc.
+        UltimateCharge = armVariable.ultimateCharge;
 
         if (projectiles[1] != null)
         {
@@ -59,6 +60,7 @@ public class BasicShooter : Arm
             // Setup teamId
             firedBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
             firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            firedBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
             firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
