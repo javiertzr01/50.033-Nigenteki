@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Locust
   m_EditorClassIdentifier: 
   id: 7
-  displayName: Locust
+  displayName: LOCUST
   icon: {fileID: 21300000, guid: 806acf2446c4ed24db21ba26347dc2e0, type: 3}
   armPrefab: {fileID: 1933025567852625395, guid: 5ce05429f4a9c284ba6b4c25f2cad9ed,
     type: 3}
