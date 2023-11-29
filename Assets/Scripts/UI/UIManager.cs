@@ -95,23 +95,6 @@ public class UIManager : NetworkBehaviour
     {
         matchSummary.SetActive(true);
         matchSummary.GetComponent<SummaryManager>().GameEnd(winner);
-        if (winner == 1)
-        {
-            gameWinLossText.text = $"Team 1 Has Won!";
-        }
-        else if (winner == 2)
-        {
-            gameWinLossText.text = $"Team 2 Has Won!";
-        }
-        else if (winner == 0)
-        {
-            gameWinLossText.text = $"Tied Match!";
-        }
-        else
-        {
-            gameWinLossText.text = $"";
-        }
-
     }
 
     public void Team1TimerText(float secondsLeft)
