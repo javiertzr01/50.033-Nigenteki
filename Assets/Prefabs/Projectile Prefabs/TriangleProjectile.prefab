@@ -161,7 +161,7 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &-6728110245605722714
 MonoBehaviour:
@@ -188,9 +188,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileVariable: {fileID: 11400000, guid: 65690966b75dcb74d8b7ec3d2b447119, type: 2}
-  startingPosition: {x: 0, y: 0}
   teamId:
     m_InternalValue: 0
+  isColliding: 0
+  startingPosition: {x: 0, y: 0}
 --- !u!1 &8926034196072178191
 GameObject:
   m_ObjectHideFlags: 0
