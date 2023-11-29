@@ -107,6 +107,12 @@ public class GameManager : NetworkBehaviour
         // Clean up the game, disable components, etc.
     }
 
+    public void MainMenu()
+    {
+        SetTimeScaleClientRpc(1);
+        ServerManager.Instance.ReturnToMainMenu();
+    }
+
     [ClientRpc]
     private void SetTimeScaleClientRpc(float timeScale)
     {

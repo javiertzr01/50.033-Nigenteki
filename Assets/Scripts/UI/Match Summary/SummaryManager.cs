@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SummaryManager : MonoBehaviour
 {
-    ulong[] blueId;   // Blue Team IDs
-    ulong[] redId;    // Red Team IDs
+    public UnityEvent mainMenu;
+
+    [SerializeField]
+    PlayerSpawner players;
+    List<ulong> blueId;   // Blue Team IDs
+    List<ulong> redId;    // Red Team IDs
     string[] blueNames = {"shadowlord", "mysticguardian", "pimpmaster"};
     string[] redNames = {"thelegend27", "missmagus", "ladyNagant"};
     int[,] blueKD;
@@ -17,6 +22,7 @@ public class SummaryManager : MonoBehaviour
     public void GameEnd(int gameWinLoss)
     {
         Debug.Log("Display and Update Match Summary");
+        (blueId, redId) = players.getTeamIds();
         UpdateSummary(gameWinLoss);
     }
 
@@ -27,28 +33,28 @@ public class SummaryManager : MonoBehaviour
 
     private void UpdateSummary(int gameWinLoss)
     {
-        // for (int i = 0; i < blueId.Length; i++)
-        // {
-        //     // Setting Name
-        //     blueNames[i] = "Player " + blueId[i].ToString();
+        for (int i = 0; i < blueId.Count; i++)
+        {
+            // Setting Name
+            blueNames[i] = "Player " + blueId[i].ToString();
 
-        //     // Setting KD
-        //     // int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-        //     // for (int j = 0; j < kd.Length; j++)
-        //     // {
-        //     //     blueKD[i,j] = kd[j];
-        //     // }
-        // }
-        // for (int i = 0; i < redId.Length; i++)
-        // {
-        //     redNames[i] = "Player " + redId[i].ToString();
+            // Setting KD
+            // int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            // for (int j = 0; j < kd.Length; j++)
+            // {
+            //     blueKD[i,j] = kd[j];
+            // }
+        }
+        for (int i = 0; i < redId.Count; i++)
+        {
+            redNames[i] = "Player " + redId[i].ToString();
 
-        //     // int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-        //     // for (int j = 0; j < kd.Length; j++)
-        //     // {
-        //     //     redKD[i,j] = kd[j];
-        //     // }
-        // }
+            // int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
+            // for (int j = 0; j < kd.Length; j++)
+            // {
+            //     redKD[i,j] = kd[j];
+            // }
+        }
 
         Text[] texts = GameObject.FindObjectsOfType<Text>();
         Image[] images = GameObject.FindObjectsOfType<Image>();
@@ -99,19 +105,19 @@ public class SummaryManager : MonoBehaviour
             //         AssignText(text, player, redKD, KD.deaths);
             //     }
             // }    
-            // if (text.name == "Name")       
-            // {
-            //     string team = text.transform.parent.parent.parent.name;     // parent.parent.parent.name = team   
-            //     string player = text.transform.parent.parent.name;          // parent.parent.name = player 
-            //     if (team == "Team A")    
-            //     {
-            //         AssignText(text, player, blueNames[0], blueNames[1], blueNames[2]);    
-            //     }
-            //     if (team == "Team B")       
-            //     {
-            //         AssignText(text, player, redNames[0], redNames[1], redNames[2]);
-            //     }
-            // }      
+            if (text.name == "Name")       
+            {
+                string team = text.transform.parent.parent.parent.name;     // parent.parent.parent.name = team   
+                string player = text.transform.parent.parent.name;          // parent.parent.name = player 
+                if (team == "Team A")    
+                {
+                    AssignText(text, player, blueNames[0], blueNames[1], blueNames[2]);    
+                }
+                if (team == "Team B")       
+                {
+                    AssignText(text, player, redNames[0], redNames[1], redNames[2]);
+                }
+            }      
         }
 
         foreach (Image image in images)
@@ -154,7 +160,7 @@ public class SummaryManager : MonoBehaviour
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        mainMenu.Invoke();
     }
 }
 
