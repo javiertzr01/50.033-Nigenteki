@@ -9,6 +9,7 @@ public class SilkwormBullet : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
+            isColliding = true;
             // Damage Enemy Player
             if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
@@ -23,7 +24,10 @@ public class SilkwormBullet : Projectile
             // Ignore Ally Shields
         }
         else if (other.gameObject.tag == "Projectile") { }
-        else { }
+        else
+        {
+            DestroyServerRpc();
+        }
     }
 
 }

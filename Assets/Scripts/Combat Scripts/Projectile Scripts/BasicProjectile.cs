@@ -10,7 +10,6 @@ public class BasicProjectile : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
-            isColliding = true;
             // Damage Enemy Player
             if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
@@ -27,7 +26,7 @@ public class BasicProjectile : Projectile
         {
             DestroyServerRpc();
         }
-        
+
     }
 
 }
