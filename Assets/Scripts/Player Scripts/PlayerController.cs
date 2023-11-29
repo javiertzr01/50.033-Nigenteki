@@ -125,20 +125,27 @@ public class PlayerController : NetworkBehaviour
 
         armsInitialized = true;
 
-        SpawnArmsClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { OwnerClientId }
-            }
-        });
+        SpawnArmsClientRpc(leftArmHolderClone.GetComponent<NetworkObject>().NetworkObjectId,
+                           rightArmHolderClone.GetComponent<NetworkObject>().NetworkObjectId,
+                           new ClientRpcParams
+                           {
+                               Send = new ClientRpcSendParams
+                               {
+                                   TargetClientIds = new ulong[] { OwnerClientId }
+                               }
+                           });
 
 
     }
 
     [ClientRpc]
-    public void SpawnArmsClientRpc(ClientRpcParams clientRpcParams = default)
+    public void SpawnArmsClientRpc(ulong leftArmHolderId, ulong rightArmHolderId, ClientRpcParams clientRpcParams = default)
     {
+        var leftArmHolderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[leftArmHolderId].gameObject;
+        var rightArmHolderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[rightArmHolderId].gameObject;
+
+        leftArmHolder = leftArmHolderObject;
+        rightArmHolder = rightArmHolderObject;
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
         /*foreach (Transform child in transform)
         {
