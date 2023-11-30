@@ -25,6 +25,8 @@ public class SilkRoad : SkillObject
         }
     }
 
+    // TO FIX: WHY IF PLAYER = TEAMID 1, THEY CREATE A TEAMID = 0 SILK ROAD?
+    // Although it does not stun them.
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Only affect enemies

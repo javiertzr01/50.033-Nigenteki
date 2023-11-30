@@ -9,6 +9,7 @@ TagManager:
   - Obstacle
   - Healing
   - ControlPoint
+  - SkillObject
   layers:
   - Default
   - TransparentFX
