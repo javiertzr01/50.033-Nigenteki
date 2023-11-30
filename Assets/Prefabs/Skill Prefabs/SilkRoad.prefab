@@ -144,7 +144,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a980a8cf91c3a42a5f123aca5395c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamId:
+    m_InternalValue: 0
   stunDuration: 5
+  countdownTimer: 8
 --- !u!1 &4683418114031762622
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,6 +159,9 @@ GameObject:
   - component: {fileID: 2992871585171009014}
   - component: {fileID: -2200875097011110372}
   - component: {fileID: 2009011651801799941}
+  - component: {fileID: -3816172223141532133}
+  - component: {fileID: -6379057550424631349}
+  - component: {fileID: -8913545834770573029}
   m_Layer: 0
   m_Name: SilkRoad
   m_TagString: Untagged
@@ -191,7 +197,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a980a8cf91c3a42a5f123aca5395c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamId:
+    m_InternalValue: 0
   stunDuration: 5
+  countdownTimer: 8
 --- !u!114 &2009011651801799941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +221,72 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!50 &-3816172223141532133
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683418114031762622}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &-6379057550424631349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683418114031762622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &-8913545834770573029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683418114031762622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
