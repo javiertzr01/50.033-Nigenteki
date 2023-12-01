@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -2876530965941203189}
   - component: {fileID: 7462064063018005616}
   - component: {fileID: -3983746947812083632}
+  - component: {fileID: -2845841638480861753}
   m_Layer: 0
   m_Name: BeetleUlt
   m_TagString: Projectile
@@ -176,6 +177,18 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 0
   SlerpPosition: 0
+--- !u!114 &-2845841638480861753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740422706544774022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8115191416214220276
 GameObject:
   m_ObjectHideFlags: 0

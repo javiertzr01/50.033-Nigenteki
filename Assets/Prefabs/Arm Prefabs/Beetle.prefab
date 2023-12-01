@@ -282,13 +282,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armVariable: {fileID: 11400000, guid: 95b163b17d17f5143b5c13136b3c865c, type: 2}
+  networkWeaponState:
+    m_InternalValue: 0
   projectiles:
   - {fileID: 6093875963110399478, guid: 305250e271c47004fa8ca6414636edd9, type: 3}
   - {fileID: 7034513550059083727, guid: 6a746f7a72d6a224dbf385a8e837af72, type: 3}
   - {fileID: 4740422706544774022, guid: f909e3900386d5847af8dd7ff00290f9, type: 3}
   - {fileID: 3866945137309950759, guid: 2aa06897cf9bf7a409e19479b119e9cb, type: 3}
   shootPoint: {fileID: 2578164899720361747}
+  animator: {fileID: 0}
+  basicAttackSFX: {fileID: 0}
+  skillSFX: {fileID: 0}
+  ultimateSFX: {fileID: 0}
   ultShootPoint: {fileID: 1842468663822812149}
+  shieldHolderPrefab: {fileID: 2926113944933858050, guid: d03465e668bc828499c9a0123a939f4d,
+    type: 3}
 --- !u!114 &3470576363740146910
 MonoBehaviour:
   m_ObjectHideFlags: 0

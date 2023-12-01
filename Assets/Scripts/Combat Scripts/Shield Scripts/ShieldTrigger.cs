@@ -6,6 +6,8 @@ public abstract class ShieldTrigger : NetworkBehaviour
 {
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this shield
+    public NetworkVariable<int> teamId = new NetworkVariable<int>();
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -24,4 +26,7 @@ public abstract class ShieldTrigger : NetworkBehaviour
         Destroy(gameObject); // Destroy the projectile
 
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void TakeDamageServerRpc(float damage, ulong clientId) { }
 }

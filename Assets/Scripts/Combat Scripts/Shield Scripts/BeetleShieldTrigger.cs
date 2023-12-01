@@ -6,17 +6,14 @@ public class BeetleShieldTrigger : ShieldTrigger
 {
     Beetle arm;
 
-    private float _shieldCurrentHealth;
-    private float shieldRegenTimer;
-    protected bool _activated;
-    protected bool _destroyed;
-
     [SerializeField]
     private Collider2D shieldCollider;
     [SerializeField]
     private SpriteRenderer shieldSprite;
-
-
+    private float _shieldCurrentHealth;
+    private float shieldRegenTimer;
+    protected bool _activated;
+    protected bool _destroyed;
     public float ShieldHealth
     {
         get
@@ -111,11 +108,13 @@ public class BeetleShieldTrigger : ShieldTrigger
                 if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
                 {
                     ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
+                    Logger.Instance.LogInfo("BEETLE SHIELD: Regenerating: " + ShieldHealth);
                     Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
                     if (ShieldHealth >= instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
                     {
                         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
                         Destroyed = false; // Reset destroyed flag if the shield is fully regenerated
+                        Logger.Instance.LogInfo("BEETLE SHIELD: restored");
                         Debug.Log("BEETLE SHIELD: restored");
                     }
                 }
@@ -131,6 +130,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         {
             ShieldHealth = 0f;
             Destroyed = true;
+            Logger.Instance.LogInfo("BEETLE SHIELD: destroyed");
             Debug.Log("BEETLE SHIELD: destroyed");
             if (Activated)
             {
@@ -144,21 +144,39 @@ public class BeetleShieldTrigger : ShieldTrigger
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        arm = instantiatingArm.GetComponent<Beetle>();
+    }
 
-        // Check if the collision is with a specific object or has specific properties
-        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+    [ServerRpc(RequireOwnership = false)]
+    public override void TakeDamageServerRpc(float damage, ulong clientId)
+    {
+        if (OwnerClientId != clientId) return;
+
+        ShieldHealth -= damage;
+        Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
+        if (ShieldHealth <= 0)
         {
-            float projectileDamage = projectile.Damage;
-
-            // This is for BasicShield
-            Beetle shieldArm = transform.parent.gameObject.GetComponent<Beetle>();
-
-            // Damage the shield
-            ShieldHealth -= projectileDamage;
-            arm.ChargeUltimate(projectileDamage, 15);
-
-
+            Destroyed = true;
+            // Additional logic for destroyed shield
         }
+
+        // Update clients about the shield's status
+        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { clientId }
+            }
+        });
+    }
+
+    [ClientRpc]
+    private void UpdateShieldStatusClientRpc(float health, bool destroyed, ClientRpcParams clientRpcParams = default)
+    {
+        ShieldHealth = health;
+        Destroyed = destroyed;
+
+        // Update the shield's visual or physical state on clients
+        shieldCollider.enabled = !destroyed;
+        shieldSprite.enabled = !destroyed;
     }
 }

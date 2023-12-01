@@ -15,7 +15,7 @@ public class Beetle : Arm
     // private float shieldRegenTimer;
     // protected bool activated;
     // protected bool destroyed;
-    protected GameObject currentShield;
+    public GameObject currentShield;
     protected BeetleShieldTrigger beetleShieldTrigger;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
     private float nextBasicFireTime = 0f; // for alt fire
@@ -34,7 +34,7 @@ public class Beetle : Arm
 
         Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
 
-        arm = NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.gameObject;
+        arm = this.gameObject;
 
         GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
@@ -42,6 +42,8 @@ public class Beetle : Arm
         shieldHolder = shieldHolderClone;
 
         GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
+        shieldClone.layer = transform.root.gameObject.layer;
+        shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
         shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(shieldHolderClone.transform);
         shield = shieldClone;
@@ -299,7 +301,10 @@ public class Beetle : Arm
         {
             Debug.Log("BEETLE SKILL: Casting");
             shotSpellProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-            // TODO: Shield Team Id
+            shotSpellProjectile.layer = transform.root.gameObject.layer;
+            // Setup teamId
+            shotSpellProjectile.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+            shotSpellProjectile.GetComponent<BeetleSkillTrigger>().ShieldHealth = armVariable.skillForce;
             shotSpellProjectile.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
             shotSpellProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
             // Destroy(shotSpellProjectile, armVariable.skillDuration);

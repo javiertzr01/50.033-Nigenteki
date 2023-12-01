@@ -407,6 +407,8 @@ public class PlayerController : NetworkBehaviour
         //transform.up = lookDir;
         transform.GetChild(1).transform.up = lookDir;
         transform.GetChild(2).transform.up = lookDir;
+        UpdateBeetleShieldDirection(transform.GetChild(1), lookDir); // For Left Arm Holder
+        UpdateBeetleShieldDirection(transform.GetChild(2), lookDir); // For Right Arm Holder
 
         float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
         if (rotZ < 89 && rotZ > -89)
@@ -418,6 +420,20 @@ public class PlayerController : NetworkBehaviour
             transform.GetComponent<SpriteRenderer>().flipX = false;
         }
 
+
+
+    }
+
+    void UpdateBeetleShieldDirection(Transform armHolder, Vector2 lookDir)
+    {
+        if (armHolder != null)
+        {
+            Beetle beetle = armHolder.GetComponentInChildren<Beetle>();
+            if (beetle != null && beetle.currentShield != null)
+            {
+                beetle.currentShield.transform.up = lookDir;
+            }
+        }
     }
 
     public void MovementCheck(Vector2 value)

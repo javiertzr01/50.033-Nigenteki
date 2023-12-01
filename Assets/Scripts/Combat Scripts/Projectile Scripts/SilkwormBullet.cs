@@ -21,7 +21,12 @@ public class SilkwormBullet : Projectile
         }
         else if (other.gameObject.tag == "Shield")
         {
-            // Ignore Ally Shields
+            ShieldTrigger shield = other.GetComponent<ShieldTrigger>();
+            if (shield != null && teamId.Value != shield.teamId.Value)
+            {
+                shield.TakeDamageServerRpc(Damage, shield.GetComponent<NetworkObject>().OwnerClientId);
+                DestroyServerRpc();
+            }
         }
         else if (other.gameObject.tag == "Projectile") { }
         else
