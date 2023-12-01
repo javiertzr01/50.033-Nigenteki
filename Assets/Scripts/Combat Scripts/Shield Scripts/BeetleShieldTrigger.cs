@@ -64,43 +64,32 @@ public class BeetleShieldTrigger : ShieldTrigger
     }
 
 
+    // Network variable to keep track of the shield's activation state
+    private NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
+
     [ServerRpc(RequireOwnership = false)]
     public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        var clientId = serverRpcParams.Receive.SenderClientId;
+        // Toggle the shield's activation state
+        isShieldActive.Value = !isShieldActive.Value;
 
-        // if (OwnerClientId != clientId) return;
-        // As long as shield is not destroyed, can keep toggling
-        if (!Destroyed)
-        {
-
-            Activated = !Activated;
-        }
-
-        ToggleShieldClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { clientId }
-            }
-        });
+        // Call the client RPC to update the shield state on all clients
+        ToggleShieldClientRpc(isShieldActive.Value);
     }
 
     [ClientRpc]
-    void ToggleShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    void ToggleShieldClientRpc(bool isActive, ClientRpcParams clientRpcParams = default)
     {
-        // if (!IsOwner) return;
-        Debug.Log("Toggle Shield Client");
-        // Toggle the shield's collider and sprite renderer
-        shieldCollider.enabled = !Activated;
-        shieldSprite.enabled = !Activated;
+        // Update the shield's collider and sprite renderer based on the received state
+        shieldCollider.enabled = isActive;
+        shieldSprite.enabled = isActive;
     }
 
 
     void Update()
     {
         // Shield regeneration
-        if (!Activated)
+        if (!isShieldActive.Value)
         {
             shieldRegenTimer += Time.deltaTime;
             if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
@@ -132,11 +121,11 @@ public class BeetleShieldTrigger : ShieldTrigger
             Destroyed = true;
             Logger.Instance.LogInfo("BEETLE SHIELD: destroyed");
             Debug.Log("BEETLE SHIELD: destroyed");
-            if (Activated)
+            if (isShieldActive.Value)
             {
                 shieldCollider.enabled = false;
                 shieldSprite.enabled = false;
-                Activated = false;
+                isShieldActive.Value = false;
             }
         }
     }
