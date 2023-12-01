@@ -15,7 +15,9 @@ public class BasicProjectile : Projectile
             if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
                 other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                instantiatingArm.ChargeUltimate(Damage, 100);
+                //instantiatingArm.ChargeUltimate(Damage, 100);
+
+                InstantiateDamageNumberServerRpc(other.transform.GetComponent<NetworkObject>().OwnerClientId);
 
                 DestroyServerRpc();
             }

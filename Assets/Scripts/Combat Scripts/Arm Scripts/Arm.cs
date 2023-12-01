@@ -23,6 +23,13 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public AudioClip skillSFX;   // Assign this in the Inspector
     public AudioClip ultimateSFX;   // Assign this in the Inspector
 
+    public float basicAttackCameraShakeIntensity;
+    public float basicAttackCameraShakeDuration;
+    public float skillCameraShakeIntensity;
+    public float skillCameraShakeDuration; 
+    public float ultimateCameraShakeIntensity;
+    public float ultimateCameraShakeDuration;
+
 
     protected virtual void Start()
     {

@@ -54,6 +54,14 @@ public class BasicShooter : Arm
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
+            NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(basicAttackCameraShakeIntensity, basicAttackCameraShakeDuration, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
             GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
             firedBasicProjectileClone.layer = transform.root.gameObject.layer;
             // Setup teamId

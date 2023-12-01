@@ -9,8 +9,6 @@ using Cinemachine;
 
 public class PlayerController : NetworkBehaviour
 {
-
-    public UnityEvent cameraFollow;
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
@@ -41,7 +39,8 @@ public class PlayerController : NetworkBehaviour
     public GameObject rightArmPrefab;
 
     [SerializeField]
-    private CinemachineVirtualCamera vc;
+    public CinemachineVirtualCamera vc;
+    private float shakeTimer;
 
     [SerializeField]
     private Camera cam;
@@ -140,17 +139,6 @@ public class PlayerController : NetworkBehaviour
     public void SpawnArmsClientRpc(ClientRpcParams clientRpcParams = default)
     {
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
-        /*foreach (Transform child in transform)
-        {
-            child.gameObject.layer = transform.gameObject.layer;
-            if (child.childCount > 0)
-            {
-                foreach (Transform nestedChild in child)
-                {
-                    nestedChild.gameObject.layer = transform.gameObject.layer;
-                }
-            }
-        }*/
     }
 
 
@@ -313,7 +301,6 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
-        GetCameraFollow();
 
         MoveSpeed = playerVariables.moveSpeed;
         DamageTakenScale = 1f;
@@ -349,6 +336,18 @@ public class PlayerController : NetworkBehaviour
         LeftArmBasicAttack();
         RightArmBasicAttack();
         UpdateAnimator();
+
+        if (shakeTimer > 0)
+        {
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0)
+            {
+                CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
+                    vc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+                cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0f;
+            }
+        }
 
         bool timeSinceLastDamage = Time.time - lastDamageTime >= 2f;
         if (Time.time >= secondTicker)
@@ -422,13 +421,6 @@ public class PlayerController : NetworkBehaviour
     {
         mousePos = value;
     }
-
-    public void GetCameraFollow()
-    {
-        cameraFollow.Invoke();
-        //cameraController.FollowPlayer(player.transform);
-    }
-
     public void LeftArmBasicAttackCheck(bool value)
     {
         leftArmBasicUse = value;
@@ -601,6 +593,18 @@ public class PlayerController : NetworkBehaviour
                 tr.emitting = false;
             }
         }
+    }
+
+    [ClientRpc]
+    public void ShakeCameraClientRpc(float intensity, float time, ClientRpcParams clientRpcParams = default)
+    {
+        Logger.Instance.LogInfo($"Shaking camera on client {OwnerClientId}");
+
+        CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
+            vc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+        shakeTimer = time;
     }
 
     private void UpdateAnimator()
