@@ -52,6 +52,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     // The basic attack method
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
+
     [ClientRpc]
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
 
