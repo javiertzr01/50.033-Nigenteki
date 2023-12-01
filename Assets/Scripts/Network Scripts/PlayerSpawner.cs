@@ -7,8 +7,6 @@ using UnityEngine.Events;
 public class PlayerSpawner : NetworkBehaviour
 {
     public NetworkStore netStore;
-    private List<ulong> redIds = new List<ulong>();
-    private List<ulong> blueIds = new List<ulong>();
 
     [SerializeField] private CharacterDatabaseVariables characterDatabase;
     [SerializeField] private ArmDatabaseVariables armDatabase;
@@ -41,22 +39,8 @@ public class PlayerSpawner : NetworkBehaviour
                 characterInstance.GetComponent<PlayerController>().teamId.Value = teamId;
                 characterInstance.GetComponent<PlayerController>().leftArmPrefab = leftArm.ArmPrefab;
                 characterInstance.GetComponent<PlayerController>().rightArmPrefab = rightArm.ArmPrefab;
-
-                if (teamId == 0)
-                {
-                    redIds.Add(client.Value.clientId);
-                }
-                if (teamId == 1)
-                {
-                    blueIds.Add(client.Value.clientId);
-                }
             }
 
         }
-    }
-
-    public (List<ulong>, List<ulong>) getTeamIds()
-    {
-        return (blueIds, redIds);
     }
 }

@@ -689,6 +689,7 @@ GameObject:
   - component: {fileID: 107199441}
   - component: {fileID: 107199440}
   - component: {fileID: 107199439}
+  - component: {fileID: 107199444}
   m_Layer: 5
   m_Name: MatchSummary
   m_TagString: Untagged
@@ -723,7 +724,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  players: {fileID: 2052539859}
+  playerSpawner: {fileID: 2052539859}
+  blueId: 
+  redId: 
+  blueNames:
+  - shadowlord
+  - mysticguardian
+  - pimpmaster
+  redNames:
+  - thelegend27
+  - missmagus
+  - ladyNagant
 --- !u!114 &107199440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,13 +811,33 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 149315086}
-  m_Father: {fileID: 1722343506}
+  m_Father: {fileID: 110645628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 960, y: 540}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &107199444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107199438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1355115847
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &108423389
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,7 +960,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 107199443}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &110645629
@@ -3776,6 +3808,7 @@ MonoBehaviour:
         m_CallState: 2
   gameStateStore: {fileID: 288351242}
   _gameInProgress: 0
+  mainMenuSceneName: MainMenu
 --- !u!4 &736876421
 Transform:
   m_ObjectHideFlags: 0
@@ -18653,7 +18686,6 @@ RectTransform:
   m_Children:
   - {fileID: 1652147162}
   - {fileID: 12620478}
-  - {fileID: 107199443}
   - {fileID: 1341681700}
   - {fileID: 78743571}
   - {fileID: 1796964136}

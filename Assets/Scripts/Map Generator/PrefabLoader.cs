@@ -28,7 +28,7 @@ public class PrefabLoader : MonoBehaviour
     public static void LoadAndInstantiateNetworkPrefab(string key, Vector2Int parentTransform)
     {
         GameObject netObj = LoadAndInstantiatePrefab(key, new Vector3(parentTransform.x, parentTransform.y, 0));
-        netObj.GetComponent<NetworkObject>().Spawn(true);
+        netObj.GetComponent<NetworkObject>().Spawn();
     }
 
     public static List<GameObject> LoadAndInstantiatePrefabs(string[] keys, Vector2Int[] parentTransform)

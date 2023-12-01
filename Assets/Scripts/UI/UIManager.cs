@@ -94,7 +94,26 @@ public class UIManager : NetworkBehaviour
     public void UpdateGameWinLossText(int winner)
     {
         matchSummary.SetActive(true);
+        if (IsServer)
+        {
+            foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+            ulong clientId = client.ClientId;
+            PlayerController player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.transform.GetComponent<PlayerController>();
+            TestClientRpc(clientId, player.teamId.Value, player.kills.Value, player.deaths.Value, winner);
+            }
+        }
         matchSummary.GetComponent<SummaryManager>().GameEnd(winner);
+        
+    }
+
+    [ClientRpc]
+    private void TestClientRpc(ulong clientId, int teamId, int killCount, int deathCount, int winner)
+    {
+        
+        matchSummary.GetComponent<SummaryManager>().ProcessPlayer(clientId, teamId, killCount, deathCount);
+        matchSummary.GetComponent<SummaryManager>().GetTeams();
+        
     }
 
     public void Team1TimerText(float secondsLeft)

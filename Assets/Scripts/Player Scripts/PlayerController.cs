@@ -21,6 +21,8 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> greenCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<Vector2Int> KDStats = new NetworkVariable<Vector2Int>();
+    public NetworkVariable<int> kills = new NetworkVariable<int>();
+    public NetworkVariable<int> deaths = new NetworkVariable<int>();
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
@@ -91,6 +93,8 @@ public class PlayerController : NetworkBehaviour
         greenCrystalCount.Value = 0;
 
         KDStats.Value = new Vector2Int(0, 0);
+        kills.Value = 0;
+        deaths.Value = 0;
         tr = GetComponent<TrailRenderer>();
     }
 
@@ -102,24 +106,24 @@ public class PlayerController : NetworkBehaviour
         Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
 
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+        leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
         leftArmHolderClone.layer = player.layer;
         leftArmHolder = leftArmHolderClone;
 
         GameObject rightArmHolderClone = Instantiate(rightArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + rightArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        rightArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+        rightArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         rightArmHolderClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
         rightArmHolderClone.layer = player.layer;
         rightArmHolder = rightArmHolderClone;
 
         GameObject leftArmClone = Instantiate(leftArmPrefab, leftArmHolderClone.transform);
-        leftArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+        leftArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         leftArmClone.transform.GetComponent<NetworkObject>().TrySetParent(leftArmHolderClone.transform);
         leftArmClone.layer = player.layer;
 
         GameObject rightArmClone = Instantiate(rightArmPrefab, rightArmHolderClone.transform);
-        rightArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+        rightArmClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         rightArmClone.transform.GetComponent<NetworkObject>().TrySetParent(rightArmHolderClone.transform);
         rightArmClone.layer = player.layer;
 
