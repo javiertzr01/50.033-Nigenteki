@@ -66,7 +66,6 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
                 Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
 
-                //CastBasicAttackSFXClientRpc(new ClientRpcParams
                 CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams

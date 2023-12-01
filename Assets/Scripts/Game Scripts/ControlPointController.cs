@@ -29,16 +29,24 @@ public class ControlPointController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        // todo: If isControlPointActive==true, Check if players are still alive/not-destroyed
         EvaluateControlPointOccupancy();
-        UpdateControlPointStatus();
+        UpdateControlPointStatusServerRpc();
 
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ControlPointPositionServerRpc()
+    public void ControlPointPositionServerRpc(ServerRpcParams serverRpcParams = default)
     {
         transform.position = new Vector3(netStore.generatedMapData.Value.CapturePointPosition[0], netStore.generatedMapData.Value.CapturePointPosition[1], 0);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateControlPointStatusServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+
+        UpdateControlPointStatus();
     }
 
     private void UpdateControlPointStatus()
@@ -89,32 +97,62 @@ public class ControlPointController : NetworkBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            //todo: Check Team of Player
-            if (collision.transform.GetComponent<PlayerController>().teamId.Value == 0)
-            {
-                gameStateStore.numberOfTeam1PlayersOnControlPoint.Value += 1;
-            }
-            else if (collision.transform.GetComponent<PlayerController>().teamId.Value == 1)
-            {
-                gameStateStore.numberOfTeam2PlayersOnControlPoint.Value += 1;
-            }
+            OnTriggerEnter2DServerRpc(collision.transform.GetComponent<PlayerController>().teamId.Value, collision.transform.GetComponent<PlayerController>().OwnerClientId);
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnTriggerEnter2DServerRpc(int teamId, ulong clientId, ServerRpcParams serverRpcParams = default)
+    {
+
+        if (teamId == 0)
+        {
+            //CHECKS FOR DUPLICATE
+            if (!gameStateStore.team1PlayersIDOnControlPoint.Contains(clientId))
+            {
+                gameStateStore.team1PlayersIDOnControlPoint.Add(clientId);
+            }
+            gameStateStore.numberOfTeam1PlayersOnControlPoint.Value = gameStateStore.team1PlayersIDOnControlPoint.Count;
+        }
+        else if (teamId == 1)
+        {
+            if (!gameStateStore.team2PlayersIDOnControlPoint.Contains(clientId))
+            {
+                gameStateStore.team2PlayersIDOnControlPoint.Add(clientId);
+            }
+            gameStateStore.numberOfTeam2PlayersOnControlPoint.Value = gameStateStore.team2PlayersIDOnControlPoint.Count;
+        }
+
+    }
+
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            //todo: Check Team of Player
-            if (collision.transform.GetComponent<PlayerController>().teamId.Value == 0)
-            {
-                gameStateStore.numberOfTeam1PlayersOnControlPoint.Value -= 1;
-            }
-            else if (collision.transform.GetComponent<PlayerController>().teamId.Value == 1)
-            {
-                gameStateStore.numberOfTeam2PlayersOnControlPoint.Value -= 1;
-            }
-
+            OnTriggerExit2DServerRpc(collision.transform.GetComponent<PlayerController>().teamId.Value, collision.transform.GetComponent<PlayerController>().OwnerClientId);
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnTriggerExit2DServerRpc(int teamId, ulong clientId, ServerRpcParams serverRpcParams = default)
+    {
+        if (teamId == 0)
+        {
+            if (gameStateStore.team1PlayersIDOnControlPoint.Contains(clientId))
+            {
+                gameStateStore.team1PlayersIDOnControlPoint.Remove(clientId);
+            }
+            gameStateStore.numberOfTeam1PlayersOnControlPoint.Value = gameStateStore.team1PlayersIDOnControlPoint.Count;
+        }
+        else if (teamId == 1)
+        {
+            if (gameStateStore.team2PlayersIDOnControlPoint.Contains(clientId))
+            {
+                gameStateStore.team2PlayersIDOnControlPoint.Remove(clientId);
+            }
+            gameStateStore.numberOfTeam2PlayersOnControlPoint.Value = gameStateStore.team2PlayersIDOnControlPoint.Count;
+        }
+
     }
 }

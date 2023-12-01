@@ -9,10 +9,10 @@ public class GameManager : NetworkBehaviour
     public UnityEvent GameEndEvent;
 
     [HideInInspector]
-    private static float phaseOneDuration = 180f; //30.5f; //780.5f // 13mins
+    private static float phaseOneDuration = 120f; //30.5f; //780.5f // 13mins
 
     [HideInInspector]
-    private static float phaseTwoDuration = 180f; //25.5f; //420.5f // 7mins
+    private static float phaseTwoDuration = 360f; //25.5f; //420.5f // 7mins
 
     [HideInInspector]
     public static float winCondition = 0f; // Points needed for a team to win
@@ -44,9 +44,17 @@ public class GameManager : NetworkBehaviour
         {
             // Assuming you call a method to update the timer
             UpdateMainTimerServerRpc();
-            ControlPointGameLogic();
+            ControlPointGameLogicServerRpc();
 
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ControlPointGameLogicServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+        ControlPointGameLogic();
     }
 
     private void ControlPointGameLogic()
@@ -57,14 +65,16 @@ public class GameManager : NetworkBehaviour
             {
                 if ((gameStateStore.phase.Value == 1 && gameStateStore.team1Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
                 {
-                    ReduceTeamTimer(1, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam1PlayersOnControlPoint.Value));
+                    float captureMultiplier = CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam1PlayersOnControlPoint.Value);
+                    ReduceTeamTimer(1, captureMultiplier);
                 }
             }
             else if (gameStateStore.currentTeamOnControlPoint.Value == 2)
             {
                 if ((gameStateStore.phase.Value == 1 && gameStateStore.team2Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
                 {
-                    ReduceTeamTimer(2, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam2PlayersOnControlPoint.Value));
+                    float captureMultiplier = CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam2PlayersOnControlPoint.Value);
+                    ReduceTeamTimer(2, captureMultiplier);
                 }
             }
         }
@@ -78,7 +88,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (numberOfPlayers == 2)
         {
-            return deltaTime * (4 / 3); // for 7.5s of deltaTime, would return 10s
+            return deltaTime * 1.5f; //(4.0f / 3.0f); // for 7.5s of deltaTime, would return 10s
         }
         else if (numberOfPlayers == 3)
         {
@@ -157,6 +167,16 @@ public class GameManager : NetworkBehaviour
 
     private void StartPhaseOne()
     {
+        StartPhaseOneServerRpc();
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StartPhaseOneServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+
         gameStateStore.mainTimer.Value = phaseOneDuration;
         gameStateStore.team1Timer.Value = teamInitialTimer;
         gameStateStore.team2Timer.Value = teamInitialTimer;
