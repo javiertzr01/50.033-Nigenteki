@@ -123,12 +123,12 @@ public class GameManager : NetworkBehaviour
     {
         Time.timeScale = 1;
         NetworkManager.Singleton.Shutdown();
-        Destroy(NetworkManager.gameObject);
         if(IsServer)
         {
             Destroy(ServerManager.Instance.gameObject);
         }
         Destroy(AudioManager.Instance.gameObject);
+        Destroy(NetworkManager.gameObject);
         SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
     }
 
@@ -141,7 +141,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void ForceMainMenuClientRpc()
     {
-        ReturnToMainMenuCleanup();
+        if (!IsHost)
+            ReturnToMainMenuCleanup();
     }
 
     public bool GameInProgress
