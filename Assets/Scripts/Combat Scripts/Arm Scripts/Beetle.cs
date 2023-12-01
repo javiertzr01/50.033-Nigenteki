@@ -352,7 +352,7 @@ public class Beetle : Arm
             UltimateCharge = 0f; // Reset Ultimate Charge
 
             // Toggle the shield if it is on
-            if (beetleShieldTrigger.Activated)
+            if (beetleShieldTrigger.isShieldActive.Value)
             {
                 beetleShieldTrigger.ToggleShieldServerRpc();
             }

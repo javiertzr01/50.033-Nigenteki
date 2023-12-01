@@ -56,16 +56,19 @@ public class BeetleShieldTrigger : ShieldTrigger
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
 
         shieldRegenTimer = 0f;
-        Activated = true;
+        isShieldActive.Value = true;
         Destroyed = false;
         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
 
-        ToggleShieldServerRpc();
+        // Initialize the shield's state based on isShieldActive value
+        shieldCollider.enabled = isShieldActive.Value;
+        shieldSprite.enabled = isShieldActive.Value;
     }
 
 
+
     // Network variable to keep track of the shield's activation state
-    private NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
 
     [ServerRpc(RequireOwnership = false)]
     public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
