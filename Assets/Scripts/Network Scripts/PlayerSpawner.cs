@@ -36,7 +36,7 @@ public class PlayerSpawner : NetworkBehaviour
                     spawnPos = netStore.generatedMapData.Value.BlueSpawnPosition;
                 }
                 var characterInstance = Instantiate(character.CharacterPrefab, spawnPos, Quaternion.identity);
-                characterInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.Value.clientId, true);
+                characterInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(client.Value.clientId);
                 characterInstance.GetComponent<NetworkObject>().ChangeOwnership(client.Value.clientId);
                 characterInstance.GetComponent<PlayerController>().teamId.Value = teamId;
                 characterInstance.GetComponent<PlayerController>().leftArmPrefab = leftArm.ArmPrefab;

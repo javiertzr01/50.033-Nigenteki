@@ -8,7 +8,6 @@ public class ServerManager : Singleton<ServerManager>
 {
     [SerializeField] private string characterSelectScreenSceneName = "CharacterSelect";
     [SerializeField] private string gameplaySceneName = "MultiplayerTest";
-    [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private bool gameStarted;
     public Dictionary<ulong, ClientData> ClientData { get; private set; }
@@ -93,17 +92,5 @@ public class ServerManager : Singleton<ServerManager>
         gameStarted = true;
 
         NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
-    }
-
-    public void ReturnToMainMenu()
-    {
-        gameStarted = false;
-        GameObject oldNetworkManager = GameObject.Find("NetworkManager");
-        Destroy(GameObject.Find("Audio Manager"));
-        NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
-        NetworkManager.Singleton.SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
-        NetworkManager.Singleton.Shutdown();
-        Destroy(oldNetworkManager);
-        Destroy(gameObject);    // Prevent 2 instances of Server Manager
     }
 }

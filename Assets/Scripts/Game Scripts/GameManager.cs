@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -33,6 +34,8 @@ public class GameManager : NetworkBehaviour
     private int team1Deaths = 0;
     private int team2Kills = 0;
     private int team2Deaths = 0;
+
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private void Start()
     {
@@ -96,6 +99,8 @@ public class GameManager : NetworkBehaviour
         GameInProgress = true;
         SetTimeScaleClientRpc(1); // Call the RPC method
         StartPhaseOne();
+        DeclareWinner(1);
+
     }
 
     public void EndGame()
@@ -109,14 +114,36 @@ public class GameManager : NetworkBehaviour
 
     public void MainMenu()
     {
-        SetTimeScaleClientRpc(1);
-        ServerManager.Instance.ReturnToMainMenu();
+        if (IsServer)
+        {
+            ForceMainMenuClientRpc();
+        }
+        ReturnToMainMenuCleanup();
+    }
+
+    private void ReturnToMainMenuCleanup()
+    {
+        Time.timeScale = 1;
+        NetworkManager.Singleton.Shutdown();
+        Destroy(NetworkManager.gameObject);
+        if(IsServer)
+        {
+            Destroy(ServerManager.Instance.gameObject);
+        }
+        Destroy(AudioManager.Instance.gameObject);
+        SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
     }
 
     [ClientRpc]
     private void SetTimeScaleClientRpc(float timeScale)
     {
         Time.timeScale = timeScale;
+    }
+
+    [ClientRpc]
+    private void ForceMainMenuClientRpc()
+    {
+        ReturnToMainMenuCleanup();
     }
 
     public bool GameInProgress
