@@ -99,8 +99,6 @@ public class GameManager : NetworkBehaviour
         GameInProgress = true;
         SetTimeScaleClientRpc(1); // Call the RPC method
         StartPhaseOne();
-        DeclareWinner(1);
-
     }
 
     public void EndGame()
