@@ -16,7 +16,7 @@ public class Beetle : Arm
     // protected bool activated;
     // protected bool destroyed;
     public GameObject currentShield;
-    protected BeetleShieldTrigger beetleShieldTrigger;
+    public BeetleShieldTrigger beetleShieldTrigger;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
     private float nextBasicFireTime = 0f; // for alt fire
     private bool ulted;

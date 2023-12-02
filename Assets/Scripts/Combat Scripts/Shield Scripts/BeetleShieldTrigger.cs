@@ -175,4 +175,20 @@ public class BeetleShieldTrigger : ShieldTrigger
             shieldSprite.enabled = false;
         }
     }
+
+    public void ResetShieldHealth()
+    {
+        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
+        Destroyed = false;
+        isShieldActive.Value = false; // Optionally reset the active state
+        Logger.Instance.LogInfo("Reset Beetle Shield Health to: " + ShieldHealth);
+        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
+            }
+        });
+    }
+
 }
