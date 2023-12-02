@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -32,6 +33,8 @@ public class GameManager : NetworkBehaviour
     private int team1Deaths = 0;
     private int team2Kills = 0;
     private int team2Deaths = 0;
+
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private void Start()
     {
@@ -116,12 +119,39 @@ public class GameManager : NetworkBehaviour
         // Clean up the game, disable components, etc.
     }
 
-    
+    public void MainMenu()
+    {
+        if (IsServer)
+        {
+            ForceMainMenuClientRpc();
+        }
+        ReturnToMainMenuCleanup();
+    }
+
+    private void ReturnToMainMenuCleanup()
+    {
+        Time.timeScale = 1;
+        NetworkManager.Singleton.Shutdown();
+        if(IsServer)
+        {
+            Destroy(ServerManager.Instance.gameObject);
+        }
+        Destroy(AudioManager.Instance.gameObject);
+        Destroy(NetworkManager.gameObject);
+        SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
+    }
 
     [ClientRpc]
     private void SetTimeScaleClientRpc(float timeScale)
     {
         Time.timeScale = timeScale;
+    }
+
+    [ClientRpc]
+    private void ForceMainMenuClientRpc()
+    {
+        if (!IsHost)
+            ReturnToMainMenuCleanup();
     }
 
     public bool GameInProgress

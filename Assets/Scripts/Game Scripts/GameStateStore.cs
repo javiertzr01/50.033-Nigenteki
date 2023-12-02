@@ -79,8 +79,9 @@ public class GameStateStore : NetworkBehaviour
 
     public void OnGameWinnerChanged(int previous, int current)
     {
-        //Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
-        gameWinnerUpdateEventInvoker.Invoke(current);
+        Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
+        if (current != -1)
+            gameWinnerUpdateEventInvoker.Invoke(current);
     }
 
     public void OnPhaseChanged(int previous, int current)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
+using System;
 
 public abstract class Projectile : NetworkBehaviour
 {
@@ -47,6 +48,7 @@ public abstract class Projectile : NetworkBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (isColliding) return;
+        isColliding = true;
         TriggerEnter2DLogic(other);
     }
 
@@ -60,7 +62,101 @@ public abstract class Projectile : NetworkBehaviour
         TriggerExit2DLogic(other);
     }
 
-    public abstract void TriggerEnter2DLogic(Collider2D other);
+    public virtual void TriggerEnter2DLogic(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            OnPlayerTriggerEnter2D(other);
+        }
+        else if (other.gameObject.tag == "Shield") 
+        { 
+            OnShieldTriggerEnter2D(other);
+        }
+        else if (other.gameObject.tag == "Projectile") 
+        { 
+            OnProjectileTriggerEnter2D(other);
+        }
+        else if (other.gameObject.tag == "ControlPoint") 
+        { 
+            OnControlPointTriggerEnter2D(other);
+        }
+        else
+        {
+            DestroyServerRpc();
+        }
+    }
+
+    // Player TriggerEnter2D Logic
+    public virtual void OnPlayerTriggerEnter2D(Collider2D other)
+    {
+        if (GetTeamId(other) != teamId.Value)
+        {
+            OnEnemyPlayerTriggerEnter2D(other);
+        }
+        else
+        {
+            OnTeamPlayerTriggerEnter2D(other);
+        }
+    }
+    public virtual void OnEnemyPlayerTriggerEnter2D(Collider2D other)
+    {
+        ulong sourceClientId = OwnerClientId;
+        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(targetClientId, out var connection))
+        {
+            connection.PlayerObject.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
+
+            // Can be overwritten
+            ChargeUltimateValue(Damage, 100);
+
+            DestroyServerRpc();
+        }
+        else
+        {
+            throw new InvalidOperationException("Damaged client not found in ConnectedClients.");
+        }
+    }
+    public virtual void OnTeamPlayerTriggerEnter2D(Collider2D other){ }
+
+
+
+    // Shield TriggerEnter2D Logic
+    public virtual void OnShieldTriggerEnter2D(Collider2D other)              // Params can be changed here
+    { 
+        if (GetTeamId(other) != teamId.Value)
+        {
+            OnEnemyShieldTriggerEnter2D(other);
+        }
+        else
+        {
+            OnTeamShieldTriggerEnter2D(other);
+        }
+    }           
+    public virtual void OnEnemyShieldTriggerEnter2D(Collider2D other) { }     // Params can be changed here
+    public virtual void OnTeamShieldTriggerEnter2D(Collider2D other) { }      // Params can be changed here
+
+
+
+    // Projectile TriggerEnter2D Logic
+    public virtual void OnProjectileTriggerEnter2D(Collider2D other)          // Params can be changed here
+    {
+        if (GetTeamId(other) != teamId.Value)
+        {
+            OnEnemyProjectileTriggerEnter2D(other);
+        }
+        else
+        {
+            OnTeamProjectileTriggerEnter2D(other);
+        }
+    }
+    public virtual void OnEnemyProjectileTriggerEnter2D(Collider2D other) { }  // Params can be changed here
+    public virtual void OnTeamProjectileTriggerEnter2D(Collider2D other) { }   // Params can be changed here
+
+
+
+    // Control Point TriggerEnter2D Logic
+    public virtual void OnControlPointTriggerEnter2D(Collider2D other) { }     // Params can be changed here
+
     public virtual void TriggerStay2DLogic(Collider2D other) { }
     public virtual void TriggerExit2DLogic(Collider2D other) { }
 
@@ -75,6 +171,11 @@ public abstract class Projectile : NetworkBehaviour
         damageNumberClone.GetComponent<DamageNumber>().Initialize();
         damageNumberClone.GetComponent<NetworkObject>().Spawn();
         damageNumberClone.GetComponent<DamageNumber>().damage.Value = Damage;
+    }
+
+    public virtual void ChargeUltimateValue(float charge, float divisor)
+    {
+        instantiatingArm.ChargeUltimate(charge, divisor);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -113,5 +214,10 @@ public abstract class Projectile : NetworkBehaviour
     protected virtual void Update()
     {
         DestroyAfterDistanceServerRpc();
+    }
+
+    private int GetTeamId(Collider2D other)
+    {
+        return other.transform.GetComponent<PlayerController>().teamId.Value;
     }
 }

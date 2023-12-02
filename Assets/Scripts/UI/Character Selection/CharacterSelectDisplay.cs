@@ -99,7 +99,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
         
     }
 
-    public override void OnNetworkDespawn()
+    public void ProcessSceneChange()
     {
         if (IsClient)
         {
@@ -318,6 +318,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
             ServerManager.Instance.SetPlayer(playersReady[i].ClientId, players[i].CharacterId, players[i].TeamId, leftArms[i].ArmId, rightArms[i].ArmId);
         }
 
+        ProcessSceneChange();
         ServerManager.Instance.StartGame();
     }
 }

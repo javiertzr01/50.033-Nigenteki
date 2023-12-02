@@ -1,45 +1,60 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
-public class SummaryManager : MonoBehaviour
+public class SummaryManager : NetworkBehaviour
 {
-    ulong[] blueId;   // Blue Team IDs
-    ulong[] redId;    // Red Team IDs
-    string[] blueNames = {"shadowlord", "mysticguardian", "pimpmaster"};
-    string[] redNames = {"thelegend27", "missmagus", "ladyNagant"};
-    int[,] blueKD;
-    int[,] redKD;
-    
+    public UnityEvent mainMenu;
 
-    // Start is called before the first frame update
-    void Start()
+    public List<PlayerStats> red = new List<PlayerStats>();
+    public List<PlayerStats> blue = new List<PlayerStats>();
+
+    public void GameEnd(int gameWinLoss)
     {
-        for (int i = 0; i < blueId.Length; i++)
-        {
-            // Setting Name
-            blueNames[i] = "Player " + blueId[i].ToString();
+        Debug.Log("Display and Update Match Summary");
+        UpdateSummary(gameWinLoss);
+    }
 
-            // Setting KD
-            // int[] kd = NetworkManager.Singleton.ConnectedClients[blueId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-            // for (int j = 0; j < kd.Length; j++)
-            // {
-            //     blueKD[i,j] = kd[j];
-            // }
-        }
-        for (int i = 0; i < redId.Length; i++)
+    public void ProcessPlayer(ulong id, int team, int killCount, int deathCount, CharacterSpriteMap characterSpriteName)
+    {
+        PlayerStats cur = new PlayerStats(id, team, killCount, deathCount, characterSpriteName);
+        if (team == 0)
         {
-            redNames[i] = "Player " + redId[i].ToString();
-
-            // int[] kd = NetworkManager.Singleton.ConnectedClients[redId[i]].PlayerObject.GetComponent<PlayerController>().KDStats.Value;
-            // for (int j = 0; j < kd.Length; j++)
-            // {
-            //     redKD[i,j] = kd[j];
-            // }
+            red.Add(cur);
         }
+        if (team == 1)
+        {
+            blue.Add(cur);
+        }
+    }
+
+    public void Start()
+    {
+
+    }
+
+    public void PopulateList(List<PlayerStats> playerList, int teamId)
+    {
+        while (playerList.Count < 3)
+        {
+            PlayerStats stats = new PlayerStats();
+            stats.teamId = teamId;
+            stats.name = "Null";
+            stats.sprite = PlayerStats.GetSprite("defender_blue");
+            playerList.Add(stats);
+        }
+    }
+
+    private void UpdateSummary(int gameWinLoss)
+    {
+        PopulateList(blue, 1);
+        PopulateList(red, 0);
 
         Text[] texts = GameObject.FindObjectsOfType<Text>();
         Image[] images = GameObject.FindObjectsOfType<Image>();
@@ -48,9 +63,21 @@ public class SummaryManager : MonoBehaviour
         {
             if (text.name == "Winner")
             {
-                string winner = "Red";
-                // TODO: Add this
-                text.text = winner + " Wins!";
+                switch (gameWinLoss)
+                {
+                    case 0:
+                        text.text = "Game Tied";
+                        break;
+                    case 1:
+                        text.text = "Red Wins!";
+                        break;
+                    case 2:
+                        text.text = "Blue Wins!";
+                        break;
+                    default:
+                        text.text = $"Value Invoked by GameWinLoss = {gameWinLoss}";
+                        break;
+                }
             }
             if (text.name == "Kills")
             {
@@ -58,11 +85,11 @@ public class SummaryManager : MonoBehaviour
                 string player = text.transform.parent.name;
                 if (team == "Team A")
                 {
-                    AssignText(text, player, blueKD, KD.kills);
+                    AssignText(text, player, blue, "kills");
                 }
                 if (team == "Team B")
                 {
-                    AssignText(text, player, redKD, KD.kills);
+                    AssignText(text, player, red, "kills");
                 }
             }     
             if (text.name == "Deaths")
@@ -71,11 +98,11 @@ public class SummaryManager : MonoBehaviour
                 string player = text.transform.parent.name;
                 if (team == "Team A")
                 {
-                    AssignText(text, player, blueKD, KD.deaths);
+                    AssignText(text, player, blue, "deaths");
                 }
                 if (team == "Team B")
                 {
-                    AssignText(text, player, redKD, KD.deaths);
+                    AssignText(text, player, red, "deaths");
                 }
             }    
             if (text.name == "Name")       
@@ -84,20 +111,29 @@ public class SummaryManager : MonoBehaviour
                 string player = text.transform.parent.parent.name;          // parent.parent.name = player 
                 if (team == "Team A")    
                 {
-                    AssignText(text, player, blueNames[0], blueNames[1], blueNames[2]);    
+                    AssignText(text, player, blue, "names");  
                 }
                 if (team == "Team B")       
                 {
-                    AssignText(text, player, redNames[0], redNames[1], redNames[2]);
+                    AssignText(text, player, red, "names");
                 }
             }      
         }
 
         foreach (Image image in images)
         {
-            if (image.name == "Image" && image.transform.parent.name == "PlayerContainer") // have to check which player
+            if (image.name == "Image" && image.transform.parent.name == "PlayerContainer") 
             {
-                // TODO: image.sprite = defenderBlue;
+                string player = image.transform.parent.parent.name;
+                string team = image.transform.parent.parent.parent.name;
+                if (team == "Team A")
+                {
+                    AssignImage(image, player, blue);
+                }
+                if (team == "Team B")
+                {
+                    AssignImage(image, player, red);
+                }
             }    
         }
     }
@@ -126,14 +162,46 @@ public class SummaryManager : MonoBehaviour
         AssignText(text, player, player1.ToString(), player2.ToString(), player3.ToString());
     }
 
-    private void AssignText(Text text, string player, int[,] kd, KD type)
+    private void AssignText(Text text, string player, List<PlayerStats> playerStats, string type)
     {
-        AssignText(text, player, kd[0, (int) type], kd[1, (int) type], kd[2, (int) type]);
+        if (type == "kills")
+        {
+            AssignText(text, player, playerStats[0].kills, playerStats[1].kills, playerStats[2].kills);
+        }
+        else if (type == "deaths")
+        {
+            AssignText(text, player, playerStats[0].deaths, playerStats[1].deaths, playerStats[2].deaths);
+        }
+        else if (type == "names")
+        {
+            AssignText(text, player, playerStats[0].name, playerStats[1].name, playerStats[2].name);
+        }
     }
+
+    private void AssignImage(Image image, string player, List<PlayerStats> playerStats)
+    {
+        switch (player)
+        {
+            case "Player1":
+                image.sprite = playerStats[0].sprite;
+                break;
+            case "Player2":
+                image.sprite = playerStats[1].sprite;
+                break;
+            case "Player3":
+                image.sprite = playerStats[2].sprite;
+                break;
+            default:
+            Debug.Log("No such UI Element");
+            break;
+        }
+    }
+
+
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        mainMenu.Invoke();
     }
 }
 
@@ -141,4 +209,48 @@ public enum KD
 {
     kills = 0,
     deaths = 1
+}
+
+public enum CharacterSpriteMap
+{
+    defender_blue,
+    defender_red,
+    guardian_blue,
+    guardian_red
+}
+
+public struct PlayerStats
+{
+    public ulong clientId;
+    public int teamId;  // 0 - Red, 1 - Blue
+    public int kills;
+    public int deaths;
+    public string name;
+    public Sprite sprite;
+
+    public PlayerStats(ulong id, int team, int killCount, int deathCount, CharacterSpriteMap characterSpriteName)
+    {
+        this.clientId = id;
+        this.teamId = team;
+        this.name = "Player " + clientId.ToString();
+        this.kills = killCount;
+        this.deaths = deathCount;
+        this.sprite = GetSprite(characterSpriteName.ToString());
+    }
+
+    public static Sprite GetSprite(string name)
+    {
+        AsyncOperationHandle<Sprite> opHandle = Addressables.LoadAssetAsync<Sprite>(name);
+        opHandle.WaitForCompletion();
+
+        if (opHandle.Status == AsyncOperationStatus.Succeeded)
+        {
+            return opHandle.Result;
+        }
+        else
+        {
+            Debug.Log("Loading sprite failed");
+            return null;
+        }
+    }
 }

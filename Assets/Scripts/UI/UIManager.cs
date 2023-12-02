@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using Unity.Netcode;
 using TMPro;
 using System;
+using UnityEditor;
 
 public class UIManager : NetworkBehaviour
 {
@@ -40,6 +41,9 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField]
     private TextMeshProUGUI gameWinLossText;
+
+    [SerializeField]
+    private GameObject matchSummary;
 
 
     private void Awake()
@@ -90,23 +94,26 @@ public class UIManager : NetworkBehaviour
 
     public void UpdateGameWinLossText(int winner)
     {
-        if (winner == 1)
+        matchSummary.SetActive(true);
+        if (IsServer)
         {
-            gameWinLossText.text = $"Team 1 Has Won!";
+            foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+            ulong clientId = client.ClientId;
+            PlayerController player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.transform.GetComponent<PlayerController>();
+            TestClientRpc(clientId, player.teamId.Value, player.kills.Value, player.deaths.Value, player.sprite.Value);
+            }
         }
-        else if (winner == 2)
-        {
-            gameWinLossText.text = $"Team 2 Has Won!";
-        }
-        else if (winner == 0)
-        {
-            gameWinLossText.text = $"Tied Match!";
-        }
-        else
-        {
-            gameWinLossText.text = $"";
-        }
+        matchSummary.GetComponent<SummaryManager>().GameEnd(winner);
+        
+    }
 
+    [ClientRpc]
+    private void TestClientRpc(ulong clientId, int teamId, int killCount, int deathCount, CharacterSpriteMap sprite)
+    {
+        
+        matchSummary.GetComponent<SummaryManager>().ProcessPlayer(clientId, teamId, killCount, deathCount, sprite);
+        
     }
 
     public void Team1TimerText(float secondsLeft)

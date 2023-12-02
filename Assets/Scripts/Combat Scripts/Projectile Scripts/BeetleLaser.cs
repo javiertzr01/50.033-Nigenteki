@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BeetleLaser : Projectile
@@ -15,30 +16,22 @@ public class BeetleLaser : Projectile
         base.Start();
     }
 
-    public override void TriggerEnter2DLogic(Collider2D other)
+    public override void OnEnemyPlayerTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (!damagedObjects.Contains(other.GetComponent<NetworkObject>().NetworkObjectId))
         {
-            // Damage Enemy Player
-            if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value && !damagedObjects.Contains(other.GetComponent<NetworkObject>().NetworkObjectId))
-            {
-                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                instantiatingArm.ChargeUltimate(Damage, 100);
+            base.OnEnemyPlayerTriggerEnter2D(other);
+            damagedObjects.Add(other.GetComponent<NetworkObject>().NetworkObjectId);
+        }
+    }
 
-                // Track the NetworkObjects hit
-                damagedObjects.Add(other.GetComponent<NetworkObject>().NetworkObjectId);
-            }
-        }
-        else if (other.gameObject.tag == "Shield")
+    public override void OnEnemyShieldTriggerEnter2D(Collider2D other)
+    {
+        ShieldTrigger shield = other.GetComponent<ShieldTrigger>();     // TODO: Change this
+        if (shield != null && teamId.Value != shield.teamId.Value)
         {
-            ShieldTrigger shield = other.GetComponent<ShieldTrigger>();
-            if (shield != null && teamId.Value != shield.teamId.Value)
-            {
-                shield.TakeDamageServerRpc(Damage, shield.GetComponent<NetworkObject>().OwnerClientId);
-                DestroyServerRpc();
-            }
+            shield.TakeDamageServerRpc(Damage, shield.GetComponent<NetworkObject>().OwnerClientId);
+            DestroyServerRpc();
         }
-        else if (other.gameObject.tag == "Projectile") { }
-        else { }
     }
 }
