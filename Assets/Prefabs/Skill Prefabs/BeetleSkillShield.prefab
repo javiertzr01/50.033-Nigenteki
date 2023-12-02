@@ -123,7 +123,7 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -0.5001126, y: 0.05148399}
+  - {x: -0.5001126, y: 0.04628676}
   - {x: -0.4986279, y: 0.00010341406}
   - {x: -0.4969113, y: -0.07201183}
   - {x: -0.48253995, y: -0.12645441}
@@ -153,7 +153,8 @@ EdgeCollider2D:
   - {x: -0.33453542, y: 0.37071145}
   - {x: -0.3734401, y: 0.332577}
   - {x: -0.43448907, y: 0.2527871}
-  - {x: -0.48712164, y: 0.12341303}
+  - {x: -0.48264307, y: 0.14235127}
+  - {x: -0.5002406, y: 0.042760372}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
@@ -170,7 +171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa57ce5e6fe8f264d881169163dbb996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldHealth: 200
+  teamId:
+    m_InternalValue: 0
+  countdownTimer: 0
 --- !u!114 &5215591454952065365
 MonoBehaviour:
   m_ObjectHideFlags: 0
