@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 public class BeetleShieldTrigger : ShieldTrigger
@@ -148,15 +149,14 @@ public class BeetleShieldTrigger : ShieldTrigger
         if (ShieldHealth <= 0)
         {
             Destroyed = true;
-            // Additional logic for destroyed shield
         }
 
-        // Update clients about the shield's status
+        // Update clients about the shield's status, including if it's destroyed
         UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
         {
             Send = new ClientRpcSendParams
             {
-                TargetClientIds = new ulong[] { clientId }
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
             }
         });
     }
@@ -168,7 +168,19 @@ public class BeetleShieldTrigger : ShieldTrigger
         Destroyed = destroyed;
 
         // Update the shield's visual or physical state on clients
-        shieldCollider.enabled = !destroyed;
-        shieldSprite.enabled = !destroyed;
+        if (destroyed)
+        {
+            // If the shield is destroyed, disable collider and sprite
+            shieldCollider.enabled = false;
+            shieldSprite.enabled = false;
+        }
+        else
+        {
+            // If the shield is not destroyed, you can update its state as needed
+            // For example, you might want to change the appearance to indicate damage but not disable it completely
+            // Update the shield's visual or physical state on clients
+            shieldCollider.enabled = !destroyed;
+            shieldSprite.enabled = !destroyed;
+        }
     }
 }
