@@ -79,45 +79,45 @@ public class BeetleShieldTrigger : ShieldTrigger
 
     void Update()
     {
-        // Shield regeneration
+        // Check if the shield is not active
         if (!isShieldActive.Value)
         {
             shieldRegenTimer += Time.deltaTime;
-            if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
+
+            // Start regeneration after 3 seconds of inactivity
+            if (shieldRegenTimer >= 3.0f)
             {
-                if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
-                {
-                    ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
-                    Logger.Instance.LogInfo("BEETLE SHIELD: Regenerating: " + ShieldHealth);
-                    Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
-                    if (ShieldHealth >= instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
-                    {
-                        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
-                        Destroyed = false; // Reset destroyed flag if the shield is fully regenerated
-                        Logger.Instance.LogInfo("BEETLE SHIELD: restored");
-                        Debug.Log("BEETLE SHIELD: restored");
-                    }
-                }
+                RegenerateShield();
             }
         }
         else
         {
-            shieldRegenTimer = 0f; // Reset the timer if the shield is activated again
+            // Reset the timer if the shield is active or not destroyed
+            shieldRegenTimer = 0f;
         }
+    }
 
-        // Break shield if shield HP drops to 0 or past 0
-        if (ShieldHealth < 0 && !Destroyed)
+    private void RegenerateShield()
+    {
+        if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
         {
-            ShieldHealth = 0f;
-            Destroyed = true;
-            Logger.Instance.LogInfo("BEETLE SHIELD: destroyed");
-            Debug.Log("BEETLE SHIELD: destroyed");
-            if (isShieldActive.Value)
+            ShieldHealth += 50f * Time.deltaTime; // Regenerate HP per second
+            if (ShieldHealth >= instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
             {
-                shieldCollider.enabled = false;
-                shieldSprite.enabled = false;
-                isShieldActive.Value = false;
+                ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
+                Destroyed = false; // Mark shield as not destroyed
             }
+
+            Logger.Instance.LogInfo("Shield Regen HP: " + ShieldHealth);
+
+            // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
+            UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
+                }
+            });
         }
     }
 
@@ -155,19 +155,19 @@ public class BeetleShieldTrigger : ShieldTrigger
         Destroyed = destroyed;
 
         // Update the shield's visual or physical state on clients
-        if (destroyed)
+        if (isShieldActive.Value && !destroyed)
         {
             // If the shield is destroyed, disable collider and sprite
-            shieldCollider.enabled = false;
-            shieldSprite.enabled = false;
+            shieldCollider.enabled = true;
+            shieldSprite.enabled = true;
         }
         else
         {
             // If the shield is not destroyed, you can update its state as needed
             // For example, you might want to change the appearance to indicate damage but not disable it completely
             // Update the shield's visual or physical state on clients
-            shieldCollider.enabled = !destroyed;
-            shieldSprite.enabled = !destroyed;
+            shieldCollider.enabled = false;
+            shieldSprite.enabled = false;
         }
     }
 }
