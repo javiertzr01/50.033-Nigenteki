@@ -20,7 +20,6 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> redCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> greenCrystalCount = new NetworkVariable<int>();
-    public NetworkVariable<Vector2Int> KDStats = new NetworkVariable<Vector2Int>();
     public NetworkVariable<int> kills = new NetworkVariable<int>();
     public NetworkVariable<int> deaths = new NetworkVariable<int>();
 
@@ -92,7 +91,6 @@ public class PlayerController : NetworkBehaviour
         blueCrystalCount.Value = 0;
         greenCrystalCount.Value = 0;
 
-        KDStats.Value = new Vector2Int(0, 0);
         kills.Value = 0;
         deaths.Value = 0;
         tr = GetComponent<TrailRenderer>();
@@ -159,9 +157,10 @@ public class PlayerController : NetworkBehaviour
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void TakeDamageServerRpc(float damage, ulong clientId)
+    public void TakeDamageServerRpc(float damage, ulong attackerClientId, ulong damagedClientId)
     {
-        var damagedClient = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+        var attackerClient = NetworkManager.Singleton.ConnectedClients[attackerClientId].PlayerObject.GetComponent<PlayerController>();
+        var damagedClient = NetworkManager.Singleton.ConnectedClients[damagedClientId].PlayerObject.GetComponent<PlayerController>();
         // Update the time when damage is taken
         lastDamageTime = Time.time;
 
@@ -170,12 +169,14 @@ public class PlayerController : NetworkBehaviour
         {
             Logger.Instance.LogInfo("Health below 0 - Respawn: " + damagedClient);
             // damagedClient.playerHealth.Value = 0;
-            RespawnServerRpc(clientId);
+            attackerClient.kills.Value += 1;
+            damagedClient.deaths.Value += 1;
+            RespawnServerRpc(damagedClientId);
         }
         else
         {
             damagedClient.playerHealth.Value -= calculatedDamage;
-            Logger.Instance.LogInfo($"Player {clientId} took {calculatedDamage} damage and has {damagedClient.playerHealth.Value}");
+            Logger.Instance.LogInfo($"Player {damagedClientId} took {calculatedDamage} damage from {attackerClientId} and has {damagedClient.playerHealth.Value}");
 
         }
 
@@ -184,6 +185,13 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
     {
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void IncreaseKillCountServerRpc(ulong clientId)
+    {
+        var client = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<PlayerController>();
+        client.kills.Value += 1;
     }
 
     [ServerRpc(RequireOwnership = false)]

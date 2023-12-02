@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BeetleLaser : Projectile
@@ -15,25 +16,16 @@ public class BeetleLaser : Projectile
         base.Start();
     }
 
-    public override void TriggerEnter2DLogic(Collider2D other)
+    public override void OnEnemyTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player" && !damagedObjects.Contains(other.gameObject))
-        {
-            // Damage Enemy Player
-            if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
-            {
-                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                instantiatingArm.ChargeUltimate(Damage, 100);
+        if (!damagedObjects.Contains(other.gameObject))
+            base.OnEnemyTriggerEnter2D(other);
+            damagedObjects.Add(other.gameObject);
+    }
 
-                // Add the GameObject to the set of damaged objects to track it
-                damagedObjects.Add(other.gameObject);
-            }
-        }
-        else if (other.gameObject.tag == "Shield")
-        {
-            // Ignore Ally Shields
-        }
-        else if (other.gameObject.tag == "Projectile") { }
-        else { }
+    public override void OnShieldTriggerEnter2D(Collider2D other)
+    {
+        // TODO: Ignore Ally shields
+        base.OnShieldTriggerEnter2D(other);
     }
 }
