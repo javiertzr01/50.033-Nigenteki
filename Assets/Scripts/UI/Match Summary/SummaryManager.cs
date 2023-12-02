@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 public class SummaryManager : NetworkBehaviour
@@ -20,10 +21,9 @@ public class SummaryManager : NetworkBehaviour
         UpdateSummary(gameWinLoss);
     }
 
-    public void ProcessPlayer(ulong id, int team, int killCount, int deathCount)
+    public void ProcessPlayer(ulong id, int team, int killCount, int deathCount, CharacterSpriteMap characterSpriteName)
     {
-        PlayerStats cur = new PlayerStats(id, team, killCount, deathCount);
-        // cur.sprite = playerSpawner.charSpriteMap[id];
+        PlayerStats cur = new PlayerStats(id, team, killCount, deathCount, characterSpriteName);
         if (team == 0)
         {
             red.Add(cur);
@@ -31,18 +31,6 @@ public class SummaryManager : NetworkBehaviour
         if (team == 1)
         {
             blue.Add(cur);
-        }
-    }
-
-    public void GetTeams()
-    {
-        foreach (var id in red)
-        {
-            Debug.Log($"Got red team name: \n {id.name}");
-        }
-        foreach (var id in blue)
-        {
-            Debug.Log($"Got blue team name: \n {id.name}");
         }
     }
 
@@ -58,6 +46,7 @@ public class SummaryManager : NetworkBehaviour
             PlayerStats stats = new PlayerStats();
             stats.teamId = teamId;
             stats.name = "Null";
+            stats.sprite = PlayerStats.GetSprite("defender_blue");
             playerList.Add(stats);
         }
     }
@@ -131,13 +120,22 @@ public class SummaryManager : NetworkBehaviour
             }      
         }
 
-        // foreach (Image image in images)
-        // {
-        //     if (image.name == "Image" && image.transform.parent.name == "PlayerContainer") // have to check which player
-        //     {
-        //         // TODO: image.sprite = defenderBlue;
-        //     }    
-        // }
+        foreach (Image image in images)
+        {
+            if (image.name == "Image" && image.transform.parent.name == "PlayerContainer") 
+            {
+                string player = image.transform.parent.parent.name;
+                string team = image.transform.parent.parent.parent.name;
+                if (team == "Team A")
+                {
+                    AssignImage(image, player, blue);
+                }
+                if (team == "Team B")
+                {
+                    AssignImage(image, player, red);
+                }
+            }    
+        }
     }
 
     private void AssignText(Text text, string player, string player1, string player2, string player3)
@@ -180,6 +178,27 @@ public class SummaryManager : NetworkBehaviour
         }
     }
 
+    private void AssignImage(Image image, string player, List<PlayerStats> playerStats)
+    {
+        switch (player)
+        {
+            case "Player1":
+                image.sprite = playerStats[0].sprite;
+                break;
+            case "Player2":
+                image.sprite = playerStats[1].sprite;
+                break;
+            case "Player3":
+                image.sprite = playerStats[2].sprite;
+                break;
+            default:
+            Debug.Log("No such UI Element");
+            break;
+        }
+    }
+
+
+
     public void MainMenu()
     {
         mainMenu.Invoke();
@@ -192,6 +211,14 @@ public enum KD
     deaths = 1
 }
 
+public enum CharacterSpriteMap
+{
+    defender_blue,
+    defender_red,
+    guardian_blue,
+    guardian_red
+}
+
 public struct PlayerStats
 {
     public ulong clientId;
@@ -201,13 +228,29 @@ public struct PlayerStats
     public string name;
     public Sprite sprite;
 
-    public PlayerStats(ulong id, int team, int killCount, int deathCount)
+    public PlayerStats(ulong id, int team, int killCount, int deathCount, CharacterSpriteMap characterSpriteName)
     {
         this.clientId = id;
         this.teamId = team;
         this.name = "Player " + clientId.ToString();
         this.kills = killCount;
         this.deaths = deathCount;
-        this.sprite = null;
+        this.sprite = GetSprite(characterSpriteName.ToString());
+    }
+
+    public static Sprite GetSprite(string name)
+    {
+        AsyncOperationHandle<Sprite> opHandle = Addressables.LoadAssetAsync<Sprite>(name);
+        opHandle.WaitForCompletion();
+
+        if (opHandle.Status == AsyncOperationStatus.Succeeded)
+        {
+            return opHandle.Result;
+        }
+        else
+        {
+            Debug.Log("Loading sprite failed");
+            return null;
+        }
     }
 }

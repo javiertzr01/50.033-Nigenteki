@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.Events;
+using Unity.Services.Lobbies.Models;
 
 public class PlayerSpawner : NetworkBehaviour
 {

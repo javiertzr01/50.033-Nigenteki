@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using Unity.Netcode;
 using TMPro;
 using System;
+using UnityEditor;
 
 public class UIManager : NetworkBehaviour
 {
@@ -100,7 +101,7 @@ public class UIManager : NetworkBehaviour
             {
             ulong clientId = client.ClientId;
             PlayerController player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.transform.GetComponent<PlayerController>();
-            TestClientRpc(clientId, player.teamId.Value, player.kills.Value, player.deaths.Value, winner);
+            TestClientRpc(clientId, player.teamId.Value, player.kills.Value, player.deaths.Value, player.sprite.Value);
             }
         }
         matchSummary.GetComponent<SummaryManager>().GameEnd(winner);
@@ -108,11 +109,10 @@ public class UIManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void TestClientRpc(ulong clientId, int teamId, int killCount, int deathCount, int winner)
+    private void TestClientRpc(ulong clientId, int teamId, int killCount, int deathCount, CharacterSpriteMap sprite)
     {
         
-        matchSummary.GetComponent<SummaryManager>().ProcessPlayer(clientId, teamId, killCount, deathCount);
-        matchSummary.GetComponent<SummaryManager>().GetTeams();
+        matchSummary.GetComponent<SummaryManager>().ProcessPlayer(clientId, teamId, killCount, deathCount, sprite);
         
     }
 
