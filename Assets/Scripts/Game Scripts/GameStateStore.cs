@@ -13,7 +13,9 @@ public class GameStateStore : NetworkBehaviour
     public NetworkVariable<int> gameWinner = new NetworkVariable<int>();
 
     public NetworkVariable<bool> isControlPointActive = new NetworkVariable<bool>();
+    public NetworkList<ulong> team1PlayersIDOnControlPoint;
     public NetworkVariable<int> numberOfTeam1PlayersOnControlPoint = new NetworkVariable<int>();
+    public NetworkList<ulong> team2PlayersIDOnControlPoint;
     public NetworkVariable<int> numberOfTeam2PlayersOnControlPoint = new NetworkVariable<int>();
     public NetworkVariable<int> currentTeamOnControlPoint = new NetworkVariable<int>();
 
@@ -29,7 +31,12 @@ public class GameStateStore : NetworkBehaviour
     public UnityEvent<int> numberOfTeam2PlayersOnCPEventInvoker;
     public UnityEvent<int> currentTeamOnCPEventInvoker;
 
-
+    public void Awake()
+    {
+        isControlPointActive.Value = false;
+        team1PlayersIDOnControlPoint = new NetworkList<ulong>();
+        team2PlayersIDOnControlPoint = new NetworkList<ulong>();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -44,42 +51,41 @@ public class GameStateStore : NetworkBehaviour
         numberOfTeam1PlayersOnControlPoint.OnValueChanged += OnNumberOfTeam1PlayersOnControlPointChanged;
         numberOfTeam2PlayersOnControlPoint.OnValueChanged += OnNumberOfTeam2PlayersOnControlPointChanged;
         currentTeamOnControlPoint.OnValueChanged += OnCurrentTeamOnControlPointChanged;
-
     }
 
     public void OnCurrentTeamOnControlPointChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"OnCurrentTeamOnControlPointChanged: {current.ToString()}");
+        //Logger.Instance.LogInfo($"OnCurrentTeamOnControlPointChanged: {current.ToString()}");
         currentTeamOnCPEventInvoker.Invoke(current);
     }
 
     public void OnNumberOfTeam1PlayersOnControlPointChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"OnNumberOfTeam1PlayersOnControlPointChanged: {current.ToString()}");
+        //Logger.Instance.LogInfo($"OnNumberOfTeam1PlayersOnControlPointChanged: {current.ToString()}");
         numberOfTeam1PlayersOnCPEventInvoker.Invoke(current);
     }
 
     public void OnNumberOfTeam2PlayersOnControlPointChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"OnNumberOfTeam2PlayersOnControlPointChanged: {current.ToString()}");
+        //Logger.Instance.LogInfo($"OnNumberOfTeam2PlayersOnControlPointChanged: {current.ToString()}");
         numberOfTeam2PlayersOnCPEventInvoker.Invoke(current);
     }
 
     public void OnControlPointActiveStateChanged(bool previous, bool current)
     {
-        Logger.Instance.LogInfo($"ControlPointActiveState: {current.ToString()}");
+        //Logger.Instance.LogInfo($"ControlPointActiveState: {current.ToString()}");
         activeStateOfCPEventInvoker.Invoke(current);
     }
 
     public void OnGameWinnerChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
+        //Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
         gameWinnerUpdateEventInvoker.Invoke(current);
     }
 
     public void OnPhaseChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"Current Phase: {current.ToString()}");
+        //Logger.Instance.LogInfo($"Current Phase: {current.ToString()}");
         phaseUpdateEventInvoker.Invoke(current);
     }
 

@@ -9,18 +9,17 @@ public class GameManager : NetworkBehaviour
     public UnityEvent GameEndEvent;
 
     [HideInInspector]
-    private static float phaseOneDuration = 390.5f; //30.5f; //780.5f // 13mins
-
+    private static float phaseOneDuration = 120f; //30.5f; //780.5f // 13mins
 
     [HideInInspector]
-    private static float phaseTwoDuration = 210.5f; //25.5f; //420.5f // 7mins
+    private static float phaseTwoDuration = 360f; //25.5f; //420.5f // 7mins
 
     [HideInInspector]
     public static float winCondition = 0f; // Points needed for a team to win
     [HideInInspector]
-    public static float teamInitialTimer = 90.5f; //20.5f; // 180.5f; 
+    public static float teamInitialTimer = 90f; //20.5f; // 180.5f; 
     [HideInInspector]
-    public static float phaseOneMaxCaptureDuration = 30.5f; // 10.5f; // 60.5f; 
+    public static float phaseOneMaxCaptureDuration = 30f; // 10.5f; // 60.5f; 
     [HideInInspector]
     public static float phaseOneMaxCaptureTimer = teamInitialTimer - phaseOneMaxCaptureDuration; // 60.5f; 
 
@@ -44,10 +43,18 @@ public class GameManager : NetworkBehaviour
         if (GameInProgress)
         {
             // Assuming you call a method to update the timer
-            UpdateMainTimer();
-            ControlPointGameLogic();
+            UpdateMainTimerServerRpc();
+            ControlPointGameLogicServerRpc();
 
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ControlPointGameLogicServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+        ControlPointGameLogic();
     }
 
     private void ControlPointGameLogic()
@@ -58,14 +65,16 @@ public class GameManager : NetworkBehaviour
             {
                 if ((gameStateStore.phase.Value == 1 && gameStateStore.team1Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
                 {
-                    ReduceTeamTimer(1, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam1PlayersOnControlPoint.Value));
+                    float captureMultiplier = CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam1PlayersOnControlPoint.Value);
+                    ReduceTeamTimer(1, captureMultiplier);
                 }
             }
             else if (gameStateStore.currentTeamOnControlPoint.Value == 2)
             {
                 if ((gameStateStore.phase.Value == 1 && gameStateStore.team2Timer.Value >= phaseOneMaxCaptureTimer) || gameStateStore.phase.Value == 2)
                 {
-                    ReduceTeamTimer(2, CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam2PlayersOnControlPoint.Value));
+                    float captureMultiplier = CaptureTimeMultiplier(Time.deltaTime, gameStateStore.numberOfTeam2PlayersOnControlPoint.Value);
+                    ReduceTeamTimer(2, captureMultiplier);
                 }
             }
         }
@@ -79,7 +88,7 @@ public class GameManager : NetworkBehaviour
         }
         else if (numberOfPlayers == 2)
         {
-            return deltaTime * (4 / 3); // for 7.5s of deltaTime, would return 10s
+            return deltaTime * 1.5f; //(4.0f / 3.0f); // for 7.5s of deltaTime, would return 10s
         }
         else if (numberOfPlayers == 3)
         {
@@ -107,6 +116,8 @@ public class GameManager : NetworkBehaviour
         // Clean up the game, disable components, etc.
     }
 
+    
+
     [ClientRpc]
     private void SetTimeScaleClientRpc(float timeScale)
     {
@@ -125,10 +136,16 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateMainTimerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+        UpdateMainTimer();
+    }
+
     private void UpdateMainTimer()
     {
-        
-
         if (gameStateStore.mainTimer.Value <= 0f)
         {
             if (gameStateStore.phase.Value == 1)
@@ -150,6 +167,16 @@ public class GameManager : NetworkBehaviour
 
     private void StartPhaseOne()
     {
+        StartPhaseOneServerRpc();
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StartPhaseOneServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (OwnerClientId != clientId) return;
+
         gameStateStore.mainTimer.Value = phaseOneDuration;
         gameStateStore.team1Timer.Value = teamInitialTimer;
         gameStateStore.team2Timer.Value = teamInitialTimer;

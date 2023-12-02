@@ -16,6 +16,8 @@ public abstract class Projectile : NetworkBehaviour
     public Arm instantiatingArm;
     public Vector2 startingPosition;
 
+    public GameObject damageNumber;
+
     public float MaxDistance
     {
         get
@@ -62,7 +64,18 @@ public abstract class Projectile : NetworkBehaviour
     public virtual void TriggerStay2DLogic(Collider2D other) { }
     public virtual void TriggerExit2DLogic(Collider2D other) { }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void InstantiateDamageNumberServerRpc(ulong hitClientId, ServerRpcParams serverRpcParams = default)
+    {
+        if (!IsServer) return;
 
+        Logger.Instance.LogInfo($"Spawning damage number on {hitClientId}");
+
+        GameObject damageNumberClone = Instantiate(damageNumber, NetworkManager.Singleton.ConnectedClients[hitClientId].PlayerObject.transform.position, NetworkManager.Singleton.ConnectedClients[hitClientId].PlayerObject.transform.rotation);
+        damageNumberClone.GetComponent<DamageNumber>().Initialize();
+        damageNumberClone.GetComponent<NetworkObject>().Spawn();
+        damageNumberClone.GetComponent<DamageNumber>().damage.Value = Damage;
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyAfterDistanceServerRpc(ServerRpcParams serverRpcParams = default)

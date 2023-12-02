@@ -23,6 +23,13 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public AudioClip skillSFX;   // Assign this in the Inspector
     public AudioClip ultimateSFX;   // Assign this in the Inspector
 
+    public float basicAttackCameraShakeIntensity;
+    public float basicAttackCameraShakeDuration;
+    public float skillCameraShakeIntensity;
+    public float skillCameraShakeDuration; 
+    public float ultimateCameraShakeIntensity;
+    public float ultimateCameraShakeDuration;
+
 
     protected virtual void Start()
     {
@@ -45,6 +52,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     // The basic attack method
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
+
     [ClientRpc]
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
 
@@ -58,7 +66,6 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
                 Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
 
-                //CastBasicAttackSFXClientRpc(new ClientRpcParams
                 CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams

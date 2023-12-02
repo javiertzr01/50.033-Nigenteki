@@ -291,13 +291,19 @@ MonoBehaviour:
     m_InternalValue: 0
   projectiles:
   - {fileID: 1925523533900438677, guid: 83b9f20461c259a40954dfbe07905cae, type: 3}
-  - {fileID: 6660459748630045391, guid: 282c100d356988441864a0fdcbeb51ff, type: 3}
-  - {fileID: 4697647102691926273, guid: cf2b3ab694978164d936870f150324b4, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   shootPoint: {fileID: 4124140871522216207}
   animator: {fileID: 2100709309205928024}
   basicAttackSFX: {fileID: 8300000, guid: 808151a442cc28c4ba352a31700ce9f8, type: 3}
   skillSFX: {fileID: 0}
   ultimateSFX: {fileID: 0}
+  basicAttackCameraShakeIntensity: 0.5
+  basicAttackCameraShakeDuration: 0.1
+  skillCameraShakeIntensity: 0
+  skillCameraShakeDuration: 0
+  ultimateCameraShakeIntensity: 0
+  ultimateCameraShakeDuration: 0
 --- !u!114 &5686819030250630901
 MonoBehaviour:
   m_ObjectHideFlags: 0
