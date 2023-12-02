@@ -11,32 +11,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     private Collider2D shieldCollider;
     [SerializeField]
     private SpriteRenderer shieldSprite;
-    private float _shieldCurrentHealth;
     private float shieldRegenTimer;
-    protected bool _destroyed;
-    public float ShieldHealth
-    {
-        get
-        {
-            return _shieldCurrentHealth;
-        }
-        set
-        {
-            _shieldCurrentHealth = value;
-        }
-    }
-
-    public bool Destroyed
-    {
-        get
-        {
-            return _destroyed;
-        }
-        set
-        {
-            _destroyed = value;
-        }
-    }
 
     void Start()
     {
