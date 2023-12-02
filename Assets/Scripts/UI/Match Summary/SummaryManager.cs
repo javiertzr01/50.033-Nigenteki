@@ -8,7 +8,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
-public class SummaryManager : NetworkBehaviour
+public class SummaryManager : MonoBehaviour
 {
     public UnityEvent mainMenu;
 

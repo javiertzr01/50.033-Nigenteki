@@ -2,17 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-
+using System;
 public class BasicProjectile : Projectile
+
+/* 
+    Basic Projectile Functionality:
+    When projectile hits a player -> Does Damage to Enemy Player ONLY
+    When projectile hits a shield -> Does Damage to Enemy Shield ONLY
+*/
 {
-    public override void OnEnemyShieldTriggerEnter2D(Collider2D other)      // TODO: Change this
+    public override void OnEnemyPlayerTriggerEnter2D(Collider2D other)
     {
-        base.OnEnemyShieldTriggerEnter2D(other);
+        ulong sourceClientId = OwnerClientId;
+        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
+        other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
+        InstantiateDamageNumberServerRpc(targetClientId);
+        // Can be overwritten
+        ChargeUltimateValue(Damage, 100);
+        DestroyServerRpc();
+    }
+
+    public override void OnEnemyShieldTriggerEnter2D(Collider2D other)         // Params can be changed here
+    { 
         ShieldTrigger shield = other.GetComponent<ShieldTrigger>();
-        if (shield != null && teamId.Value != shield.teamId.Value)
+        if (shield != null)
         {
             shield.TakeDamageServerRpc(Damage, shield.GetComponent<NetworkObject>().OwnerClientId);
             DestroyServerRpc();
         }
-    }
+    }   
 }

@@ -13,6 +13,9 @@ public class BeetleShieldTrigger : ShieldTrigger
     private SpriteRenderer shieldSprite;
     private float shieldRegenTimer;
 
+    // Network variable to keep track of the shield's activation state
+    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
+
     void Start()
     {
         shieldCollider = gameObject.GetComponent<BoxCollider2D>();
@@ -29,10 +32,6 @@ public class BeetleShieldTrigger : ShieldTrigger
     }
 
 
-
-    // Network variable to keep track of the shield's activation state
-    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
-
     [ServerRpc(RequireOwnership = false)]
     public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -40,11 +39,10 @@ public class BeetleShieldTrigger : ShieldTrigger
         isShieldActive.Value = !isShieldActive.Value;
 
         // Call the client RPC to update the shield state on all clients
-        ToggleShieldClientRpc(isShieldActive.Value);
+        ToggleShield(isShieldActive.Value);
     }
 
-    [ClientRpc]
-    void ToggleShieldClientRpc(bool isActive, ClientRpcParams clientRpcParams = default)
+    void ToggleShield(bool isActive)
     {
         // Update the shield's collider and sprite renderer based on the received state
         shieldCollider.enabled = isActive;

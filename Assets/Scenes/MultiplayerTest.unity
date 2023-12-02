@@ -689,7 +689,6 @@ GameObject:
   - component: {fileID: 107199441}
   - component: {fileID: 107199440}
   - component: {fileID: 107199439}
-  - component: {fileID: 107199444}
   m_Layer: 5
   m_Name: MatchSummary
   m_TagString: Untagged
@@ -724,17 +723,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  playerSpawner: {fileID: 2052539859}
-  blueId: 
-  redId: 
-  blueNames:
-  - shadowlord
-  - mysticguardian
-  - pimpmaster
-  redNames:
-  - thelegend27
-  - missmagus
-  - ladyNagant
 --- !u!114 &107199440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,26 +806,6 @@ RectTransform:
   m_AnchoredPosition: {x: 960, y: 540}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &107199444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107199438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1355115847
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &108423389
 GameObject:
   m_ObjectHideFlags: 0

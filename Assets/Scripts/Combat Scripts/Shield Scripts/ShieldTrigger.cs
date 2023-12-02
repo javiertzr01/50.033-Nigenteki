@@ -4,13 +4,14 @@ using Unity.Netcode;
 using UnityEngine;
 public abstract class ShieldTrigger : NetworkBehaviour
 {
+    // Variables
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this shield
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
-
     protected bool _destroyed;
     private float _shieldCurrentHealth;
 
+    // Properties
     public float ShieldHealth
     {
         get
@@ -22,7 +23,6 @@ public abstract class ShieldTrigger : NetworkBehaviour
             _shieldCurrentHealth = value;
         }
     }
-
     public bool Destroyed
     {
         get
@@ -46,11 +46,9 @@ public abstract class ShieldTrigger : NetworkBehaviour
     public void DestroyServerRpc(ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-
-        // if (OwnerClientId != clientId) return;
-
         transform.GetComponent<NetworkObject>().Despawn(true);
-        Destroy(gameObject); // Destroy the projectile
+        // TODO: Test if we need this
+        Destroy(gameObject); // Destroy the projectile 
 
     }
 

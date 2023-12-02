@@ -116,6 +116,7 @@ public class PlayerController : NetworkBehaviour
 
         kills.Value = 0;
         deaths.Value = 0;
+        DamageTakenScale = 1f;
         tr = GetComponent<TrailRenderer>();
     }
 
@@ -360,7 +361,6 @@ public class PlayerController : NetworkBehaviour
         SpawnArmsServerRpc();
 
         MoveSpeed = playerVariables.moveSpeed;
-        DamageTakenScale = 1f;
         playerHealth.Value = playerVariables.maxHealth;
         spawnPosition.Value = transform.position;
         playerMaxHealth.Value = playerVariables.maxHealth;

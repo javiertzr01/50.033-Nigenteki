@@ -11,9 +11,9 @@ public class HoneybeeSpray : Projectile
     SpriteRenderer spr;
     public float duration = 2f;
     private float elapsedTime = 0f;
-    protected override void Start()
+    public override void OnNetworkSpawn()
     {
-        base.Start();
+        base.OnNetworkSpawn();
         coll = gameObject.GetComponent<CircleCollider2D>();
         spr = gameObject.GetComponentInChildren<SpriteRenderer>();
         UpdateCollider();
@@ -48,41 +48,54 @@ public class HoneybeeSpray : Projectile
         coll.radius = spr.sprite.bounds.extents.x / spriteScale; // Assuming your sprite is a circle
     }
 
-    public override void TriggerEnter2DLogic(Collider2D other)
-    {
-    }
-
-    public override void TriggerStay2DLogic(Collider2D other)
+    void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
             // Heal Ally Player Standing Inside
             if (other.transform.GetComponent<PlayerController>().teamId.Value == teamId.Value)
             {
-                if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
-                {
-                    other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                    instantiatingArm.ChargeUltimate(Damage, 1);
-                }
+                OnTeamPlayerTriggerStay2D(other);
             }
 
             // Slowly Damage Enemy Player Standing Inside
             else if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
-                // other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
-                instantiatingArm.ChargeUltimate(Damage, 10);
+                OnEnemyPlayerTriggerStay2D(other);
             }
         }
         else if (other.gameObject.tag == "Shield")
         {
-            // Ignore Shields
+            OnShieldTriggerStay2D(other);           // Does nothing
         }
-        else if (other.gameObject.tag == "Projectile") { }
-        else { }
+        else if (other.gameObject.tag == "Projectile") 
+        { 
+            OnProjectileTriggerStay2D(other);       // Does nothing
+        }
     }
 
-    public override void TriggerExit2DLogic(Collider2D other)
+    public override void OnTeamPlayerTriggerStay2D(Collider2D other)
     {
+        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
+        if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
+        {
+            other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, targetClientId);
+            InstantiateDamageNumberServerRpc(targetClientId);
+            // Can be overwritten
+            ChargeUltimateValue(Damage, 1);
+        }
+    }
+
+    public override void OnEnemyPlayerTriggerStay2D(Collider2D other)
+    {
+        ulong sourceClientId = OwnerClientId;
+        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
+        if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
+        {
+            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
+            // Can be overwritten
+            ChargeUltimateValue(Damage, 10);
+        }
     }
 
 }
