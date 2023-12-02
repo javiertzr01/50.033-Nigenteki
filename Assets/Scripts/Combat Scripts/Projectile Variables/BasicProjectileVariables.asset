@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BasicProjectileVariables
   m_EditorClassIdentifier: 
   projectileName: Basic Projectile
-  damage: 5
+  damage: 300
   maxDistance: 20

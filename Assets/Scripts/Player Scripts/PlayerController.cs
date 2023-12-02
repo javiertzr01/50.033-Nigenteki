@@ -217,6 +217,11 @@ public class PlayerController : NetworkBehaviour
 
         respawnClient.playerHealth.Value = playerMaxHealth.Value;
 
+        // Reset Beetle shield health on both arm holders
+        ResetBeetleShieldHealthIfPresent(respawnClient.transform.GetChild(1)); // Check left arm holder
+        ResetBeetleShieldHealthIfPresent(respawnClient.transform.GetChild(2)); // Check right arm holder
+
+
         RespawnClientRpc(new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -232,6 +237,15 @@ public class PlayerController : NetworkBehaviour
     public void RespawnClientRpc(ClientRpcParams clientRpcParams = default)
     {
         transform.position = spawnPosition.Value;
+    }
+
+    private void ResetBeetleShieldHealthIfPresent(Transform armHolder)
+    {
+        Beetle beetle = armHolder.GetComponentInChildren<Beetle>();
+        if (beetle != null)
+        {
+            beetle.beetleShieldTrigger.ResetShieldHealth();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

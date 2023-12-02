@@ -8,6 +8,33 @@ public abstract class ShieldTrigger : NetworkBehaviour
     public GameObject instantiatingArm; // References the Arm that instantiated this shield
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
 
+    protected bool _destroyed;
+    private float _shieldCurrentHealth;
+
+    public float ShieldHealth
+    {
+        get
+        {
+            return _shieldCurrentHealth;
+        }
+        set
+        {
+            _shieldCurrentHealth = value;
+        }
+    }
+
+    public bool Destroyed
+    {
+        get
+        {
+            return _destroyed;
+        }
+        set
+        {
+            _destroyed = value;
+        }
+    }
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
