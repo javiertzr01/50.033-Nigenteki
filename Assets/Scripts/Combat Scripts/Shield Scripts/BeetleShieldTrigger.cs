@@ -1,22 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 public class BeetleShieldTrigger : ShieldTrigger
 {
     Beetle arm;
 
-    private float _shieldCurrentHealth;
-    private float shieldRegenTimer;
-    protected bool _activated;
-    protected bool _destroyed;
-
     [SerializeField]
     private Collider2D shieldCollider;
     [SerializeField]
     private SpriteRenderer shieldSprite;
-
-
+    private float _shieldCurrentHealth;
+    private float shieldRegenTimer;
+    protected bool _activated;
+    protected bool _destroyed;
     public float ShieldHealth
     {
         get
@@ -59,51 +57,43 @@ public class BeetleShieldTrigger : ShieldTrigger
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
 
         shieldRegenTimer = 0f;
-        Activated = true;
+        isShieldActive.Value = true;
         Destroyed = false;
         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
 
-        ToggleShieldServerRpc();
+        // Initialize the shield's state based on isShieldActive value
+        shieldCollider.enabled = isShieldActive.Value;
+        shieldSprite.enabled = isShieldActive.Value;
     }
 
+
+
+    // Network variable to keep track of the shield's activation state
+    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
 
     [ServerRpc(RequireOwnership = false)]
     public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        var clientId = serverRpcParams.Receive.SenderClientId;
+        // Toggle the shield's activation state
+        isShieldActive.Value = !isShieldActive.Value;
 
-        // if (OwnerClientId != clientId) return;
-        // As long as shield is not destroyed, can keep toggling
-        if (!Destroyed)
-        {
-
-            Activated = !Activated;
-        }
-
-        ToggleShieldClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { clientId }
-            }
-        });
+        // Call the client RPC to update the shield state on all clients
+        ToggleShieldClientRpc(isShieldActive.Value);
     }
 
     [ClientRpc]
-    void ToggleShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    void ToggleShieldClientRpc(bool isActive, ClientRpcParams clientRpcParams = default)
     {
-        // if (!IsOwner) return;
-        Debug.Log("Toggle Shield Client");
-        // Toggle the shield's collider and sprite renderer
-        shieldCollider.enabled = !Activated;
-        shieldSprite.enabled = !Activated;
+        // Update the shield's collider and sprite renderer based on the received state
+        shieldCollider.enabled = isActive;
+        shieldSprite.enabled = isActive;
     }
 
 
     void Update()
     {
         // Shield regeneration
-        if (!Activated)
+        if (!isShieldActive.Value)
         {
             shieldRegenTimer += Time.deltaTime;
             if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
@@ -111,11 +101,13 @@ public class BeetleShieldTrigger : ShieldTrigger
                 if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
                 {
                     ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
+                    Logger.Instance.LogInfo("BEETLE SHIELD: Regenerating: " + ShieldHealth);
                     Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
                     if (ShieldHealth >= instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
                     {
                         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
                         Destroyed = false; // Reset destroyed flag if the shield is fully regenerated
+                        Logger.Instance.LogInfo("BEETLE SHIELD: restored");
                         Debug.Log("BEETLE SHIELD: restored");
                     }
                 }
@@ -131,12 +123,13 @@ public class BeetleShieldTrigger : ShieldTrigger
         {
             ShieldHealth = 0f;
             Destroyed = true;
+            Logger.Instance.LogInfo("BEETLE SHIELD: destroyed");
             Debug.Log("BEETLE SHIELD: destroyed");
-            if (Activated)
+            if (isShieldActive.Value)
             {
                 shieldCollider.enabled = false;
                 shieldSprite.enabled = false;
-                Activated = false;
+                isShieldActive.Value = false;
             }
         }
     }
@@ -144,21 +137,50 @@ public class BeetleShieldTrigger : ShieldTrigger
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        arm = instantiatingArm.GetComponent<Beetle>();
+    }
 
-        // Check if the collision is with a specific object or has specific properties
-        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+    [ServerRpc(RequireOwnership = false)]
+    public override void TakeDamageServerRpc(float damage, ulong clientId)
+    {
+        if (OwnerClientId != clientId) return;
+
+        ShieldHealth -= damage;
+        Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
+        if (ShieldHealth <= 0)
         {
-            float projectileDamage = projectile.Damage;
+            Destroyed = true;
+        }
 
-            // This is for BasicShield
-            Beetle shieldArm = transform.parent.gameObject.GetComponent<Beetle>();
+        // Update clients about the shield's status, including if it's destroyed
+        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
+            }
+        });
+    }
 
-            // Damage the shield
-            ShieldHealth -= projectileDamage;
-            arm.ChargeUltimate(projectileDamage, 15);
+    [ClientRpc]
+    private void UpdateShieldStatusClientRpc(float health, bool destroyed, ClientRpcParams clientRpcParams = default)
+    {
+        ShieldHealth = health;
+        Destroyed = destroyed;
 
-
+        // Update the shield's visual or physical state on clients
+        if (destroyed)
+        {
+            // If the shield is destroyed, disable collider and sprite
+            shieldCollider.enabled = false;
+            shieldSprite.enabled = false;
+        }
+        else
+        {
+            // If the shield is not destroyed, you can update its state as needed
+            // For example, you might want to change the appearance to indicate damage but not disable it completely
+            // Update the shield's visual or physical state on clients
+            shieldCollider.enabled = !destroyed;
+            shieldSprite.enabled = !destroyed;
         }
     }
 }

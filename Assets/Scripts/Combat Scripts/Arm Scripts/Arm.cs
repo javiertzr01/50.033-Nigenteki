@@ -91,7 +91,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
             float maxPanDistance = 5f;
             float panExponent = 2f;     // A quadratic curve for more pronounced panning
             float volumeExponent = 3f;     // A quadratic curve for more pronounced volume
-            
+
             // Define the maximum distance at which the sound can be heard
             float maxDistance = 100f;
 
@@ -154,6 +154,16 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     {
         get => _ultimateCharge;
         set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
+    }
+
+    public virtual bool HaveSkillCharges()
+    {
+        return false; // Default implementation, since Arm doesn't have skill charges
+    }
+
+    public virtual int GetSkillCharges()
+    {
+        return 0; // Default implementation
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

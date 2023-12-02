@@ -37,6 +37,16 @@ public class Silkworm : Arm
 
     }
 
+    public override bool HaveSkillCharges()
+    {
+        return true;
+    }
+
+    public override int GetSkillCharges()
+    {
+        return skillCharges;
+    }
+
     private void Update()
     {
         // Update the skill charge timer

@@ -10,7 +10,6 @@ public class BasicProjectile : Projectile
     {
         if (other.gameObject.tag == "Player")
         {
-            isColliding = true;
             // Damage Enemy Player
             if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
@@ -22,14 +21,22 @@ public class BasicProjectile : Projectile
                 DestroyServerRpc();
             }
         }
-        else if (other.gameObject.tag == "Shield") { }
+        else if (other.gameObject.tag == "Shield")
+        {
+            ShieldTrigger shield = other.GetComponent<ShieldTrigger>();
+            if (shield != null && teamId.Value != shield.teamId.Value)
+            {
+                shield.TakeDamageServerRpc(Damage, shield.GetComponent<NetworkObject>().OwnerClientId);
+                DestroyServerRpc();
+            }
+        }
         else if (other.gameObject.tag == "Projectile") { }
         else if (other.gameObject.tag == "ControlPoint") { }
         else
         {
             DestroyServerRpc();
         }
-        
+
     }
 
 }

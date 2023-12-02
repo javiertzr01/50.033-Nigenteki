@@ -15,7 +15,7 @@ MonoBehaviour:
   armName: Beetle
   baseForce: 5
   baseFireRate: 0.5
-  skillForce: 0
+  skillForce: 200
   skillCoolDown: 13
   skillDuration: 5
   skillMaxCharges: 0
@@ -24,4 +24,4 @@ MonoBehaviour:
   ultimateFireRate: 0.3
   ultimateCharge: 100
   ultimateDuration: 20
-  shieldMaxHealth: 100
+  shieldMaxHealth: 500

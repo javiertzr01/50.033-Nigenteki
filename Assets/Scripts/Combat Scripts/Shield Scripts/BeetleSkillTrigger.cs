@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class BeetleSkillTrigger : ShieldTrigger
@@ -7,8 +8,19 @@ public class BeetleSkillTrigger : ShieldTrigger
     Beetle arm;
 
     [SerializeField]
-    private float shieldHealth;
     private float countdownTimer; // Countdown timer
+    private float _shieldCurrentHealth;
+    public float ShieldHealth
+    {
+        get
+        {
+            return _shieldCurrentHealth;
+        }
+        set
+        {
+            _shieldCurrentHealth = value;
+        }
+    }
 
     void Start()
     {
@@ -30,19 +42,19 @@ public class BeetleSkillTrigger : ShieldTrigger
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        // Check if the collision is with a specific object or has specific properties
-        if (!(other.gameObject.tag == "Healing") && other.gameObject.TryGetComponent<Projectile>(out Projectile projectile))
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void TakeDamageServerRpc(float damage, ulong clientId)
+    {
+        if (OwnerClientId != clientId) return;
+
+        ShieldHealth -= damage;
+        Logger.Instance.LogInfo("BEETLE SKILL HP: " + ShieldHealth);
+        if (ShieldHealth <= 0)
         {
-            float projectileDamage = projectile.Damage;
-
-            // Damage the shield
-            shieldHealth -= projectileDamage;
-            arm.ChargeUltimate(projectileDamage, 15);
-
-            if (shieldHealth <= 0)
-            {
-                DestroyServerRpc();
-            }
+            Logger.Instance.LogInfo("BEETLE SKILL DESTROYED");
+            DestroyServerRpc();
         }
     }
 

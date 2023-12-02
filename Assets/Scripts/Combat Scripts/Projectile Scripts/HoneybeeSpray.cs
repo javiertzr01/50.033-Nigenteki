@@ -61,10 +61,9 @@ public class HoneybeeSpray : Projectile
             {
                 if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
                 {
+                    other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
                     instantiatingArm.ChargeUltimate(Damage, 1);
-
                 }
-                other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
             }
 
             // Slowly Damage Enemy Player Standing Inside

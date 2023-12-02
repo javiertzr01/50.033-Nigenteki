@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Silkworm
   m_EditorClassIdentifier: 
   id: 6
-  displayName: Silkworm
+  displayName: SILKWORM
   icon: {fileID: 21300000, guid: e2da17a323e6ce8468223a265482b7b3, type: 3}
   armPrefab: {fileID: 7798768644038380875, guid: dc5c1816bf16b4f4ab074dd190acf255,
     type: 3}
