@@ -70,7 +70,7 @@ public class HoneybeeSpray : Projectile
             // Slowly Damage Enemy Player Standing Inside
             else if (other.transform.GetComponent<PlayerController>().teamId.Value != teamId.Value)
             {
-                other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
+                // other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, other.transform.GetComponent<NetworkObject>().OwnerClientId);
                 instantiatingArm.ChargeUltimate(Damage, 10);
             }
         }
