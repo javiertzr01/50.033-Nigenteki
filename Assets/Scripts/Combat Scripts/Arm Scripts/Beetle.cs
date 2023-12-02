@@ -80,20 +80,11 @@ public class Beetle : Arm
         SpawnShieldServerRpc();
         shield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
         beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
-        // currentShield = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation, transform);
-        // currentShield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
-        // beetleShieldTrigger = currentShield.GetComponent<BeetleShieldTrigger>();
 
-        // ShieldHealth = armVariable.shieldMaxHealth; // Shield Variable
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
-        // shieldRegenTimer = 0f; // Initialize shield regen timer to zero
 
         UltimateCharge = armVariable.ultimateCharge;
         ulted = false;
-
-        // activated = true;
-        // destroyed = false;
-        // ToggleShield(); // Switch shield off first
 
         beetleShieldTrigger.ToggleShieldServerRpc();
 
@@ -116,18 +107,6 @@ public class Beetle : Arm
 
     }
 
-    // public float ShieldHealth
-    // {
-    //     get
-    //     {
-    //         return _shieldCurrentHealth;
-    //     }
-    //     set
-    //     {
-    //         _shieldCurrentHealth = value;
-    //     }
-    // }
-
 
     public float ultimateStartTime { get; private set; }
 
@@ -144,48 +123,6 @@ public class Beetle : Arm
             SkillCoolDown -= Time.deltaTime;
         }
 
-
-        // // Shield regeneration
-        // if (!activated)
-        // {
-        //     shieldRegenTimer += Time.deltaTime;
-        //     if (shieldRegenTimer >= 3.0f) // Regenerate the shield health after 3 seconds of inactivity
-        //     {
-        //         if (ShieldHealth < armVariable.shieldMaxHealth)
-        //         {
-        //             ShieldHealth += 15f * Time.deltaTime; // Regenerate 15 HP per second
-        //             Debug.Log("BEETLE SHIELD: Regenerating: " + ShieldHealth);
-        //             if (ShieldHealth >= armVariable.shieldMaxHealth)
-        //             {
-        //                 ShieldHealth = armVariable.shieldMaxHealth;
-        //                 destroyed = false; // Reset destroyed flag if the shield is fully regenerated
-        //                 Debug.Log("BEETLE SHIELD: restored");
-        //             }
-        //         }
-        //     }
-        // }
-        // else
-        // {
-        //     shieldRegenTimer = 0f; // Reset the timer if the shield is activated again
-        // }
-
-
-        // // Break shield if shield HP drops to 0 or past 0
-        // if (ShieldHealth < 0 && !destroyed)
-        // {
-        //     destroyed = true;
-        //     Debug.Log("BEETLE SHIELD: destroyed");
-        //     if (activated)
-        //     {
-        //         Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
-        //         SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
-        //         shieldCollider.enabled = false;
-        //         shieldSprite.enabled = false;
-        //         activated = false;
-        //     }
-        // }
-
-
         // Check if the ultimate ability is active and if the duration has passed
         if (ulted && (Time.time - ultimateStartTime) >= armVariable.ultimateDuration)
         {
@@ -195,20 +132,6 @@ public class Beetle : Arm
 
         }
     }
-
-    // private void ToggleShield()
-    // {
-    //     // As long as shield is not destroyed, can keep toggling
-    //     if (!destroyed)
-    //     {
-    //         Collider2D shieldCollider = currentShield.GetComponent<BoxCollider2D>();
-    //         SpriteRenderer shieldSprite = currentShield.GetComponentInChildren<SpriteRenderer>();
-    //         // Toggle the shield's collider and sprite renderer
-    //         shieldCollider.enabled = !activated;
-    //         shieldSprite.enabled = !activated;
-    //         activated = !activated;
-    //     }
-    // }
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -369,8 +292,6 @@ public class Beetle : Arm
                 }
             });
 
-            // // Start a timer for the ultimate's duration
-            // StartCoroutine(UltimateDurationTimer(armVariable.ultimateDuration));
         }
         else
         {
