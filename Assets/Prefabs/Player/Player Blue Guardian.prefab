@@ -368,7 +368,7 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &6655257512332940202
 MonoBehaviour:
@@ -837,6 +837,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
+  playerMaxHealth:
+    m_InternalValue: 0
   teamId:
     m_InternalValue: 0
   redCrystalCount:

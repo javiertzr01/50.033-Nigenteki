@@ -13,7 +13,6 @@ public class BeetleShieldTrigger : ShieldTrigger
     private SpriteRenderer shieldSprite;
     private float _shieldCurrentHealth;
     private float shieldRegenTimer;
-    protected bool _activated;
     protected bool _destroyed;
     public float ShieldHealth
     {
@@ -24,18 +23,6 @@ public class BeetleShieldTrigger : ShieldTrigger
         set
         {
             _shieldCurrentHealth = value;
-        }
-    }
-
-    public bool Activated
-    {
-        get
-        {
-            return _activated;
-        }
-        set
-        {
-            _activated = value;
         }
     }
 

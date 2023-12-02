@@ -36,16 +36,16 @@ public class Beetle : Arm
 
         arm = this.gameObject;
 
-        GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
-        shieldHolderClone.GetComponent<NetworkObject>().TrySetParent(arm.transform);
-        shieldHolder = shieldHolderClone;
+        // GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
+        // shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        // shieldHolderClone.GetComponent<NetworkObject>().TrySetParent(arm.transform);
+        // shieldHolder = shieldHolderClone;
 
         GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
         shieldClone.layer = transform.root.gameObject.layer;
         shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
         shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
-        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(shieldHolderClone.transform);
+        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(arm.transform);
         shield = shieldClone;
 
         shieldInitialized = true;
