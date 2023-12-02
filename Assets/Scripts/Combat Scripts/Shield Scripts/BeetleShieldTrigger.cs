@@ -132,11 +132,13 @@ public class BeetleShieldTrigger : ShieldTrigger
         if (OwnerClientId != clientId) return;
 
         ShieldHealth -= damage;
-        Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
-        if (ShieldHealth <= 0)
+        if (ShieldHealth <= 0f)
         {
+            ShieldHealth = 0f;
             Destroyed = true;
         }
+        Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
+
 
         // Update clients about the shield's status, including if it's destroyed
         UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
@@ -153,19 +155,22 @@ public class BeetleShieldTrigger : ShieldTrigger
     {
         ShieldHealth = health;
         Destroyed = destroyed;
+        isShieldActive.Value = (ShieldHealth > 0) && !destroyed;
+
 
         // Update the shield's visual or physical state on clients
         if (isShieldActive.Value && !destroyed)
         {
-            // If the shield is destroyed, disable collider and sprite
+            // If the shield is not destroyed, you can update its state as needed
+            // For example, you might want to change the appearance to indicate damage but not disable it completely
+            // Update the shield's visual or physical state on clients
             shieldCollider.enabled = true;
             shieldSprite.enabled = true;
         }
         else
         {
-            // If the shield is not destroyed, you can update its state as needed
-            // For example, you might want to change the appearance to indicate damage but not disable it completely
-            // Update the shield's visual or physical state on clients
+
+            // If the shield is destroyed, disable collider and sprite
             shieldCollider.enabled = false;
             shieldSprite.enabled = false;
         }
