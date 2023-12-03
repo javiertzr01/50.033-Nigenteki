@@ -22,6 +22,9 @@ public class PlayerController : NetworkBehaviour
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
+    public UnityEvent<int> redCrystalCountUpdateEventInvoker;
+    public UnityEvent<int> blueCrystalCountUpdateEventInvoker;
+    public UnityEvent<int> greenCrystalCountUpdateEventInvoker;
 
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
@@ -317,6 +320,9 @@ public class PlayerController : NetworkBehaviour
             vc.Priority = 1;
             playerHealth.OnValueChanged += OnPlayerHealthChanged;
             playerMaxHealth.OnValueChanged += OnPlayerMaxHealthChanged;
+            redCrystalCount.OnValueChanged += OnRedCrystalCountChanged;
+            blueCrystalCount.OnValueChanged += OnBlueCrystalCountChanged;
+            greenCrystalCount.OnValueChanged += OnGreenCrystalCountChanged;
         }
         else
         {
@@ -378,6 +384,20 @@ public class PlayerController : NetworkBehaviour
         playerMaxHealthUpdateEventInvoker.Invoke(current);
     }
 
+    public void OnRedCrystalCountChanged(int previous, int current)
+    {
+        redCrystalCountUpdateEventInvoker.Invoke(current);
+    }
+
+    public void OnBlueCrystalCountChanged(int previous, int current)
+    {
+        blueCrystalCountUpdateEventInvoker.Invoke(current);
+    }
+
+    public void OnGreenCrystalCountChanged(int previous, int current)
+    {
+        greenCrystalCountUpdateEventInvoker.Invoke(current);
+    }
 
     void Movement()
     {

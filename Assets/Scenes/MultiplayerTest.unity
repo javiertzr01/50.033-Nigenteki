@@ -15455,6 +15455,8 @@ GameObject:
   - component: {fileID: 1663421606}
   - component: {fileID: 1663421608}
   - component: {fileID: 1663421607}
+  - component: {fileID: 1663421610}
+  - component: {fileID: 1663421609}
   m_Layer: 5
   m_Name: Blue Crystal Count
   m_TagString: Untagged
@@ -15520,6 +15522,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1663421605}
   m_CullTransparentMesh: 1
+--- !u!114 &1663421609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663421605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc5d8666af49144ea3419b259b1690f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1663421610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663421605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2db396dff24cd4295b6e4cc5c6edd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 519b460f84d8c7a44a053383989a888f, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1663421609}
+        m_TargetAssemblyTypeName: CrystalCount, Assembly-CSharp
+        m_MethodName: UpdateCrystalCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1678337424
 GameObject:
   m_ObjectHideFlags: 0
@@ -128208,6 +128250,8 @@ GameObject:
   - component: {fileID: 2029849190}
   - component: {fileID: 2029849192}
   - component: {fileID: 2029849191}
+  - component: {fileID: 2029849193}
+  - component: {fileID: 2029849194}
   m_Layer: 5
   m_Name: Red Crystal Count
   m_TagString: Untagged
@@ -128273,6 +128317,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2029849189}
   m_CullTransparentMesh: 1
+--- !u!114 &2029849193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029849189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2db396dff24cd4295b6e4cc5c6edd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: c63288fc37c299241863027bd1e8aba0, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2029849194}
+        m_TargetAssemblyTypeName: CrystalCount, Assembly-CSharp
+        m_MethodName: UpdateCrystalCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2029849194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029849189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc5d8666af49144ea3419b259b1690f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2052539857
 Transform:
   m_ObjectHideFlags: 0
@@ -128352,6 +128436,8 @@ GameObject:
   - component: {fileID: 2118626373}
   - component: {fileID: 2118626375}
   - component: {fileID: 2118626374}
+  - component: {fileID: 2118626377}
+  - component: {fileID: 2118626376}
   m_Layer: 5
   m_Name: Green Crystal Count
   m_TagString: Untagged
@@ -128417,6 +128503,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2118626372}
   m_CullTransparentMesh: 1
+--- !u!114 &2118626376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118626372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc5d8666af49144ea3419b259b1690f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2118626377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118626372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2db396dff24cd4295b6e4cc5c6edd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 16311ad06aa33bb40b304f3d4f126645, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2118626376}
+        m_TargetAssemblyTypeName: CrystalCount, Assembly-CSharp
+        m_MethodName: UpdateCrystalCount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2120033125
 GameObject:
   m_ObjectHideFlags: 0
