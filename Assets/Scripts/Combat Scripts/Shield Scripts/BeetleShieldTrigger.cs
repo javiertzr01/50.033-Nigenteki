@@ -64,7 +64,7 @@ public class BeetleShieldTrigger : ShieldTrigger
             // Start regeneration after 3 seconds of inactivity
             if (shieldRegenTimer >= 3.0f)
             {
-                RegenerateShield();
+                RegenerateShieldServerRpc();
             }
         }
         else
@@ -74,7 +74,8 @@ public class BeetleShieldTrigger : ShieldTrigger
         }
     }
 
-    private void RegenerateShield()
+    [ServerRpc(RequireOwnership = false)]
+    public void RegenerateShieldServerRpc()
     {
         if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
         {
@@ -84,25 +85,15 @@ public class BeetleShieldTrigger : ShieldTrigger
                 ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
                 Destroyed = false; // Mark shield as not destroyed
             }
-
-            Logger.Instance.LogInfo("Shield Regen HP: " + ShieldHealth);
-
-            RegenerateShieldServerRpc(ShieldHealth, Destroyed);
-            
-        }
-    }
-
-    [ServerRpc]
-    public void RegenerateShieldServerRpc(float health, bool destroyed)
-    {
-        // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
-        UpdateShieldStatusClientRpc(health, destroyed, new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
+            // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
+            UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
                 {
-                    TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
-                }
-            });
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
+                    }
+                });
+        }
     }
 
 
@@ -120,6 +111,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         {
             ShieldHealth = 0f;
             Destroyed = true;
+            isShieldActive.Value = false;
         }
         Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
 
@@ -142,7 +134,7 @@ public class BeetleShieldTrigger : ShieldTrigger
 
 
         // Update the shield's visual or physical state on clients
-        if ((ShieldHealth > 0) && !Destroyed)
+        if (isShieldActive.Value)
         {
             // If the shield is not destroyed, you can update its state as needed
             // For example, you might want to change the appearance to indicate damage but not disable it completely
