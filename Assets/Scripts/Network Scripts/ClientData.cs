@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClientData : MonoBehaviour
+public class ClientData
 {
     public ulong clientId;
     public int characterId = -1;

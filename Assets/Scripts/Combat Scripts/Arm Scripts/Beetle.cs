@@ -11,17 +11,21 @@ public class Beetle : Arm
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
+    // private float _shieldCurrentHealth;
+    // private float shieldRegenTimer;
+    // protected bool activated;
+    // protected bool destroyed;
     public GameObject currentShield;
     public BeetleShieldTrigger beetleShieldTrigger;
     protected GameObject shotSpellProjectile;     // For use in CastSkill()
     private float nextBasicFireTime = 0f; // for alt fire
     private bool ulted;
+    private GameObject arm;
     [SerializeField]
     private GameObject shieldHolderPrefab;
+    private GameObject shieldHolder;
     private GameObject shield;
     private bool shieldInitialized = false;
-
-    public float ultimateStartTime { get; private set; }
 
     [ServerRpc(RequireOwnership = false)]
     private void SpawnShieldServerRpc(ServerRpcParams serverRpcParams = default)
@@ -30,12 +34,19 @@ public class Beetle : Arm
 
         Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
 
-        shield = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
-        shield.layer = transform.root.gameObject.layer;
-        shield.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-        shield.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
-        shield.transform.GetComponent<NetworkObject>().TrySetParent(transform);
-        shield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
+        arm = this.gameObject;
+
+        // GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
+        // shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        // shieldHolderClone.GetComponent<NetworkObject>().TrySetParent(arm.transform);
+        // shieldHolder = shieldHolderClone;
+
+        GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
+        shieldClone.layer = transform.root.gameObject.layer;
+        shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+        shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(arm.transform);
+        shield = shieldClone;
 
         shieldInitialized = true;
 
@@ -67,7 +78,7 @@ public class Beetle : Arm
 
         // Instantiate the shield but hide it and its collider first
         SpawnShieldServerRpc();
-        
+        shield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
         beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
 
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
@@ -95,6 +106,9 @@ public class Beetle : Arm
         }
 
     }
+
+
+    public float ultimateStartTime { get; private set; }
 
     public void Update()
     {
