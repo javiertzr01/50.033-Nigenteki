@@ -7,6 +7,7 @@ public abstract class ShieldTrigger : NetworkBehaviour
     [System.NonSerialized]
     public GameObject instantiatingArm; // References the Arm that instantiated this shield
     public NetworkVariable<int> teamId = new NetworkVariable<int>();
+    public NetworkVariable<ulong> armId = new NetworkVariable<ulong>();
 
     protected bool _destroyed;
     private float _shieldCurrentHealth;
@@ -35,6 +36,10 @@ public abstract class ShieldTrigger : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        instantiatingArm = NetworkManager.Singleton.SpawnManager.SpawnedObjects[armId.Value].gameObject;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {

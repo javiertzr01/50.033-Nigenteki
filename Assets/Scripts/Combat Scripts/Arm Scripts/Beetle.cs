@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class Beetle : Arm
 {
@@ -104,25 +105,20 @@ public class Beetle : Arm
         GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
         shieldClone.layer = transform.root.gameObject.layer;
         shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+        shieldClone.GetComponent<ShieldTrigger>().armId.Value = gameObject.GetComponent<NetworkObject>().NetworkObjectId;
         shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(arm.transform);
-        shield = shieldClone;
 
         shieldInitialized = true;
 
-        SpawnShieldClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { OwnerClientId }
-            }
-        });
+        SpawnShieldClientRpc(shieldClone.GetComponent<NetworkObject>().NetworkObjectId);
 
     }
 
     [ClientRpc]
-    public void SpawnShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    public void SpawnShieldClientRpc(ulong shieldId, ClientRpcParams clientRpcParams = default)
     {
+        shield = NetworkManager.Singleton.SpawnManager.SpawnedObjects[shieldId].gameObject;
         Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
     }
 

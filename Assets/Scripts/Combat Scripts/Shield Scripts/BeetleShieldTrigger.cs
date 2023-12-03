@@ -13,11 +13,14 @@ public class BeetleShieldTrigger : ShieldTrigger
     private SpriteRenderer shieldSprite;
     private float shieldRegenTimer;
 
-    void Start()
+    void Awake()
     {
         shieldCollider = gameObject.GetComponent<BoxCollider2D>();
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+    }
 
+    void Start()
+    {
         shieldRegenTimer = 0f;
         isShieldActive.Value = true;
         Destroyed = false;
