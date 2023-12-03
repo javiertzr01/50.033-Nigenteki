@@ -9,18 +9,6 @@ public class BeetleSkillTrigger : ShieldTrigger
 
     [SerializeField]
     private float countdownTimer; // Countdown timer
-    private float _shieldCurrentHealth;
-    public float ShieldHealth
-    {
-        get
-        {
-            return _shieldCurrentHealth;
-        }
-        set
-        {
-            _shieldCurrentHealth = value;
-        }
-    }
 
     void Start()
     {
