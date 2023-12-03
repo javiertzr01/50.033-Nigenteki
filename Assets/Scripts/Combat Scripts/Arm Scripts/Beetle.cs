@@ -6,68 +6,27 @@ using Unity.Netcode;
 
 public class Beetle : Arm
 {
+    // Variables
+    private GameObject arm;
+    [SerializeField]
+    private GameObject shield;
+
+    // Variables (Combat)
+    public GameObject currentShield;
+    public BeetleShieldTrigger beetleShieldTrigger;
     [SerializeField]
     protected GameObject ultShootPoint;
     protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
-    // private float _shieldCurrentHealth;
-    // private float shieldRegenTimer;
-    // protected bool activated;
-    // protected bool destroyed;
-    public GameObject currentShield;
-    public BeetleShieldTrigger beetleShieldTrigger;
-    protected GameObject shotSpellProjectile;     // For use in CastSkill()
-    private float nextBasicFireTime = 0f; // for alt fire
+    protected GameObject shotSpellProjectile;       // For use in CastSkill()
     private bool ulted;
-    private GameObject arm;
-    [SerializeField]
-    private GameObject shieldHolderPrefab;
-    private GameObject shieldHolder;
-    private GameObject shield;
+    private float nextBasicFireTime = 0f;           // for alt fire
     private bool shieldInitialized = false;
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SpawnShieldServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        if (shieldInitialized) return;
-
-        Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
-
-        arm = this.gameObject;
-
-        // GameObject shieldHolderClone = Instantiate(shieldHolderPrefab, arm.transform.GetComponent<NetworkObject>().transform.position + shieldHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
-        // shieldHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
-        // shieldHolderClone.GetComponent<NetworkObject>().TrySetParent(arm.transform);
-        // shieldHolder = shieldHolderClone;
-
-        GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
-        shieldClone.layer = transform.root.gameObject.layer;
-        shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-        shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
-        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(arm.transform);
-        shield = shieldClone;
-
-        shieldInitialized = true;
-
-        SpawnShieldClientRpc(new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { OwnerClientId }
-            }
-        });
-
-    }
-
-    [ClientRpc]
-    public void SpawnShieldClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
-    }
-
-
-
+    // Properties
+    public float ultimateStartTime { get; private set; }
+    
 
 
     public override void Initialize()
@@ -107,9 +66,6 @@ public class Beetle : Arm
 
     }
 
-
-    public float ultimateStartTime { get; private set; }
-
     public void Update()
     {
         if (currentShield != null)
@@ -134,6 +90,45 @@ public class Beetle : Arm
     }
 
 
+
+// SPAWNING
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnShieldServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        if (shieldInitialized) return;
+
+        Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
+
+        arm = this.gameObject;
+
+        GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
+        shieldClone.layer = transform.root.gameObject.layer;
+        shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+        shieldClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        shieldClone.transform.GetComponent<NetworkObject>().TrySetParent(arm.transform);
+        shield = shieldClone;
+
+        shieldInitialized = true;
+
+        SpawnShieldClientRpc(new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+
+    }
+
+    [ClientRpc]
+    public void SpawnShieldClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
+    }
+
+
+
+// COMBAT
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -205,7 +200,6 @@ public class Beetle : Arm
 
     }
 
-
     [ClientRpc]
     public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
@@ -251,7 +245,6 @@ public class Beetle : Arm
         }
 
     }
-
 
     [ClientRpc]
     public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
@@ -301,7 +294,6 @@ public class Beetle : Arm
 
 
     }
-
 
     [ClientRpc]
     public override void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)

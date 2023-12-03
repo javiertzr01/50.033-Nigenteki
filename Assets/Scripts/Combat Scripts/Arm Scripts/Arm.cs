@@ -5,30 +5,47 @@ using Unity.Netcode;
 
 public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
+    // Variables
     public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
 
-    // Serialize references by ID or some other network-friendly method, not directly
+    // Variables (Combat)
     [SerializeField]
     protected List<GameObject> projectiles; // Consider serializing relevant state information instead of GameObjects
-
     [SerializeField]
     protected GameObject shootPoint; // Same as above, consider what needs to be synchronized
+    protected GameObject basicProjectile;
+    private float _skillCoolDown;
+    private float _ultimateCharge;
+
+    // Variables (Audio)
+    protected AudioSource audioSource;
+    public AudioClip basicAttackSFX;    // Assign this in the Inspector
+    public AudioClip skillSFX;          // Assign this in the Inspector
+    public AudioClip ultimateSFX;       // Assign this in the Inspector
+
+    // Variables (Visual)
     [SerializeField]
     private Animator animator;
-    protected GameObject basicProjectile;
-    private float _ultimateCharge;
-    protected AudioSource audioSource;
-    public AudioClip basicAttackSFX;   // Assign this in the Inspector
-    public AudioClip skillSFX;   // Assign this in the Inspector
-    public AudioClip ultimateSFX;   // Assign this in the Inspector
-
     public float basicAttackCameraShakeIntensity;
     public float basicAttackCameraShakeDuration;
     public float skillCameraShakeIntensity;
     public float skillCameraShakeDuration; 
     public float ultimateCameraShakeIntensity;
     public float ultimateCameraShakeDuration;
+
+    // Properties (Combat)
+    public float SkillCoolDown
+    {
+        get => _skillCoolDown;
+        set => _skillCoolDown = value;
+    }
+    public float UltimateCharge
+    {
+        get => _ultimateCharge;
+        set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
+    }
+
 
 
     protected virtual void Start()
@@ -41,21 +58,9 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         basicProjectile = projectiles[0];
     }
 
-    private float _skillCoolDown;
+    
 
-    public float SkillCoolDown
-    {
-        get => _skillCoolDown;
-        set => _skillCoolDown = value;
-    }
-
-    // The basic attack method
-    [ServerRpc(RequireOwnership = false)]
-    public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
-
-    [ClientRpc]
-    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
-
+// SOUND EFFECTS
     [ServerRpc(RequireOwnership = false)]
     public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -63,7 +68,6 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         {
             foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-
                 Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
 
                 CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
@@ -74,15 +78,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
                     }
                 });
             }
-            //audioSource.PlayOneShot(basicAttackSFX, 1f);
         }
     }
 
     [ClientRpc]
     public void CastBasicAttackSFXClientRpc(Vector3 otherPlayerPosition, ClientRpcParams clientRpcParams = default)
     {
-
-
         if (basicAttackSFX != null && audioSource != null)
         {
             // Calculate the distance between this player and the other player
@@ -106,10 +107,29 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
             float volume = Mathf.Pow(volumeRatio, volumeExponent);
 
             audioSource.PlayOneShot(basicAttackSFX, volume);
-
         }
     }
 
+
+
+// COMBAT
+    // The basic attack method
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
+
+    [ClientRpc]
+    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
+
+    public virtual bool HaveSkillCharges()
+    {
+        return false; // Default implementation, since Arm doesn't have skill charges
+    }
+
+    public virtual int GetSkillCharges()
+    {
+        return 0; // Default implementation
+    }
+    
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
 
@@ -132,6 +152,9 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
     }
 
+
+
+// ANIMATION
     [ServerRpc(RequireOwnership = false)]
     public void UpdateWeaponAnimatorServerRpc(WeaponState newState)
     {
@@ -150,22 +173,9 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         }
     }
 
-    public float UltimateCharge
-    {
-        get => _ultimateCharge;
-        set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
-    }
 
-    public virtual bool HaveSkillCharges()
-    {
-        return false; // Default implementation, since Arm doesn't have skill charges
-    }
 
-    public virtual int GetSkillCharges()
-    {
-        return 0; // Default implementation
-    }
-
+// MISCELLANEOUS
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         throw new System.NotImplementedException();
