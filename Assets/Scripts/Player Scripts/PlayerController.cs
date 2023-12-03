@@ -386,7 +386,7 @@ public class PlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner && !IsClient) return;
+        if (!IsOwner || !IsClient) return;
 
         Movement();
         Look();

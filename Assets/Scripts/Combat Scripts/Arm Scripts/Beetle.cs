@@ -102,6 +102,9 @@ public class Beetle : Arm
         arm = this.gameObject;
 
         GameObject shieldClone = Instantiate(basicProjectile, shootPoint.transform.position, shootPoint.transform.rotation);
+
+        // Helpful for if the shield spawns wrongly for client side again
+        // Logger.Instance.LogInfo($"Parent Transform {transform.parent.parent.transform.position} + Shield Transform {shieldClone.transform.position}");
         shieldClone.layer = transform.root.gameObject.layer;
         shieldClone.GetComponent<ShieldTrigger>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
         shieldClone.GetComponent<ShieldTrigger>().armId.Value = gameObject.GetComponent<NetworkObject>().NetworkObjectId;
