@@ -13,12 +13,7 @@ MonoBehaviour:
   m_Name: Basic Arm
   m_EditorClassIdentifier: 
   id: 1
-<<<<<<< HEAD
   displayName: BASIC SHOOTER
-  icon: {fileID: 21300000, guid: 4fcf290de5f8c7e4fbf015c3c551946d, type: 3}
-=======
-  displayName: Basic Shooter
   icon: {fileID: 21300000, guid: 9f5ee4aa31573f84ca9741937686de48, type: 3}
->>>>>>> a2d15b8613694b8cec1b085e2df716bbfbc04c6c
   armPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f,
     type: 3}

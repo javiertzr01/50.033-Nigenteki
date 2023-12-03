@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   displayName: HONEYBEE
-  icon: {fileID: 21300000, guid: 1e38eec65c2e4654aad224536dcbe33b, type: 3}
+  icon: {fileID: 1800038449, guid: b8e3a22209629684c98748f59508846f, type: 3}
   armPrefab: {fileID: 6667246287810797203, guid: 2bb099ac156b6d44fa6d8aacd5b0462b,
     type: 3}
