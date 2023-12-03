@@ -92,6 +92,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         }
     }
 
+    [ServerRpc]
     public void RegenerateShieldServerRpc(float health, bool destroyed)
     {
         // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
