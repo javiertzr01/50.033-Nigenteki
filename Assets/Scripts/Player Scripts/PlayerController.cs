@@ -454,6 +454,10 @@ public class PlayerController : NetworkBehaviour
         Vector2 worldMousePos = cam.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
         //transform.up = lookDir;
+        if (transform.childCount < 2)
+        {
+            return;
+        }
         transform.GetChild(1).transform.up = lookDir;
         transform.GetChild(2).transform.up = lookDir;
         UpdateBeetleShieldDirection(transform.GetChild(1), lookDir); // For Left Arm Holder

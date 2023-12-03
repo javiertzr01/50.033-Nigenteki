@@ -139,11 +139,10 @@ public class BeetleShieldTrigger : ShieldTrigger
     {
         ShieldHealth = health;
         Destroyed = destroyed;
-        isShieldActive.Value = (ShieldHealth > 0) && !destroyed;
 
 
         // Update the shield's visual or physical state on clients
-        if (isShieldActive.Value && !destroyed)
+        if ((ShieldHealth > 0) && !Destroyed)
         {
             // If the shield is not destroyed, you can update its state as needed
             // For example, you might want to change the appearance to indicate damage but not disable it completely
@@ -153,7 +152,6 @@ public class BeetleShieldTrigger : ShieldTrigger
         }
         else
         {
-
             // If the shield is destroyed, disable collider and sprite
             shieldCollider.enabled = false;
             shieldSprite.enabled = false;
