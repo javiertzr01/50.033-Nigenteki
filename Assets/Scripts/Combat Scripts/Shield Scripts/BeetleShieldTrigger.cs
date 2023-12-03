@@ -22,7 +22,6 @@ public class BeetleShieldTrigger : ShieldTrigger
     void Start()
     {
         shieldRegenTimer = 0f;
-        isShieldActive.Value = true;
         Destroyed = false;
         ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
 
@@ -88,15 +87,21 @@ public class BeetleShieldTrigger : ShieldTrigger
 
             Logger.Instance.LogInfo("Shield Regen HP: " + ShieldHealth);
 
-            // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
-            UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+            RegenerateShieldServerRpc(ShieldHealth, Destroyed);
+            
+        }
+    }
+
+    public void RegenerateShieldServerRpc(float health, bool destroyed)
+    {
+        // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
+        UpdateShieldStatusClientRpc(health, destroyed, new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
                 {
                     TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
                 }
             });
-        }
     }
 
 
