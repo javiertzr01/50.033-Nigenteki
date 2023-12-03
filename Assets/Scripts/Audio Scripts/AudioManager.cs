@@ -7,6 +7,8 @@ public class AudioManager : Singleton<AudioManager>
 {
     public AudioClip menuMusic;
     public AudioClip gameMusic;
+    public AudioClip buttonPointerEnter;
+    public AudioClip buttonPointerClick;
     private AudioSource audioSource;
 
     void Awake()
@@ -44,6 +46,16 @@ public class AudioManager : Singleton<AudioManager>
             audioSource.clip = clip;
             audioSource.Play();
         }
+    }
+
+    public void PlayPointerEnter()
+    {
+        audioSource.PlayOneShot(buttonPointerEnter);
+    }
+
+    public void PlayPointerClick()
+    {
+        audioSource.PlayOneShot(buttonPointerClick);
     }
 }
 
