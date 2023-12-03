@@ -38,15 +38,14 @@ public class Beetle : Arm
 
         // Instantiate the shield but hide it and its collider first
         SpawnShieldServerRpc();
-        shield.GetComponent<ShieldTrigger>().instantiatingArm = gameObject;
-        beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
+        // beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
 
         SkillCoolDown = 0f; // Set skill cooldown to zero initially
 
         UltimateCharge = armVariable.ultimateCharge;
         ulted = false;
 
-        beetleShieldTrigger.ToggleShieldServerRpc();
+        // beetleShieldTrigger.ToggleShieldServerRpc();
 
 
 
@@ -119,6 +118,7 @@ public class Beetle : Arm
     public void SpawnShieldClientRpc(ulong shieldId, ClientRpcParams clientRpcParams = default)
     {
         shield = NetworkManager.Singleton.SpawnManager.SpawnedObjects[shieldId].gameObject;
+        beetleShieldTrigger = shield.GetComponent<BeetleShieldTrigger>();
         Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
     }
 
