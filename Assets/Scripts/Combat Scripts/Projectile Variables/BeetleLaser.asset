@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BeetleLaser
   m_EditorClassIdentifier: 
   projectileName: Beetle Laser
-  damage: 15
+  damage: 5
   maxDistance: 15
