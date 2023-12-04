@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2e44b33b70589964ba6abf1347663d4c, type: 3}
-  m_Color: {r: 1, g: 0.77485, b: 0.5990566, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a7863b8d64c123142a094e2d9d61848e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -201,8 +201,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3860908937262707956}
   - {fileID: 3713237503344762194}
@@ -299,6 +299,7 @@ MonoBehaviour:
   startingPosition: {x: 0, y: 0}
   damageNumber: {fileID: 6714799550899306158, guid: 5a4f2903c1acec7459f76a1295bf855c,
     type: 3}
+  damageNumberAddressableName: DamageNumber
 --- !u!114 &5975986745601317477
 MonoBehaviour:
   m_ObjectHideFlags: 0
