@@ -9,6 +9,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     // Variables
     public ArmVariables armVariable;        // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
+    public NetworkVariable<ArmLevel> armLevel = new NetworkVariable<ArmLevel>(ArmLevel.Default);
 
     // Variables (Combat)
     [SerializeField]
@@ -296,6 +297,30 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         throw new System.NotImplementedException();
     }
 
+    public void UpgradeArm()            // SERVER ONLY      TODO: Add cost of upgrade
+    {
+        if (armLevel.Value == ArmLevel.Default) 
+        {
+            armLevel.Value = ArmLevel.Upgraded;
+            OnUpgraded();
+        }
+        else if (armLevel.Value == ArmLevel.Upgraded) 
+        {
+            armLevel.Value = ArmLevel.Max;
+            OnMax();
+        }
+        else {Debug.Log("Arm Not Upgradable");}
+    }
+
+    public virtual void OnUpgraded() { }
+    public virtual void OnMax() { }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpgradeArmServerRpc()
+    {
+        UpgradeArm();
+    }
+
     public enum WeaponState
     {
         Idle,
@@ -304,3 +329,10 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         UltimateAttack
     }
 }
+
+public enum ArmLevel
+    {
+        Default,
+        Upgraded,
+        Max
+    }

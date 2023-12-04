@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 public class BeetleShieldTrigger : ShieldTrigger
 {
     Beetle arm;
@@ -15,6 +16,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     [SerializeField]
     private SpriteRenderer shieldSprite;
     private float shieldRegenTimer;
+    private ArmLevel currentArmLevel;
 
     void Awake()
     {
@@ -22,12 +24,13 @@ public class BeetleShieldTrigger : ShieldTrigger
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         shieldRegenTimer = 0f;
         Destroyed = false;
         arm = transform.GetComponentInParent<Beetle>();
-        ShieldHealth = arm.armVariable.shieldMaxHealth;
+        currentArmLevel = arm.armLevel.Value;
 
         // Initialize the shield's state based on isShieldActive value
         shieldCollider.enabled = isShieldActive.Value;
@@ -80,15 +83,15 @@ public class BeetleShieldTrigger : ShieldTrigger
     [ServerRpc(RequireOwnership = false)]
     public void RegenerateShieldServerRpc()
     {
-        if (ShieldHealth < arm.armVariable.shieldMaxHealth)
+        if (ShieldHealth < shieldMaxHealth)
         {
             ShieldHealth += 50f * Time.deltaTime; // Regenerate HP per second
-            if (ShieldHealth >= arm.armVariable.shieldMaxHealth)
+            if (ShieldHealth >= shieldMaxHealth)
             {
-                ShieldHealth = arm.armVariable.shieldMaxHealth;   
+                ShieldHealth = shieldMaxHealth;   
             }
 
-            if (ShieldHealth >= 0.5 * arm.armVariable.shieldMaxHealth)
+            if (ShieldHealth >= 0.5 * shieldMaxHealth)
             {
                 Destroyed = false; // Mark shield as not destroyed
             }
@@ -130,11 +133,10 @@ public class BeetleShieldTrigger : ShieldTrigger
 
     public void ResetShieldHealth()
     {
-        ShieldHealth = arm.armVariable.shieldMaxHealth;
+        ShieldHealth = shieldMaxHealth;
         Destroyed = false;
         isShieldActive.Value = false; // Optionally reset the active state
         Logger.Instance.LogInfo("Reset Beetle Shield Health to: " + ShieldHealth);
         UpdateShieldStatusClientRpc(ShieldHealth, Destroyed);
     }
-
 }

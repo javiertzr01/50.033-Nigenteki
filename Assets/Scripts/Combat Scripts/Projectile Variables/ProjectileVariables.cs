@@ -7,6 +7,8 @@ public class ProjectileVariables : ScriptableObject
 {
     public string projectileName;
     public float damage;
+    public float damageUpgraded;
+    public float damageMax;
     public float maxDistance;
-
+    public float maxDistanceUpgraded;
 }

@@ -291,9 +291,26 @@ public abstract class Projectile : Spawnables
     public override void OnNetworkSpawn()
     {
         startingPosition = transform.position;
-        MaxDistance = projectileVariable.maxDistance;
-        Damage = projectileVariable.damage;
         AssignDamageNumberPrefab(damageNumberAddressableName);
+    }
+
+    public void Start()
+    {
+        switch (instantiatingArm.armLevel.Value)
+        {
+            case(ArmLevel.Default):
+                MaxDistance = projectileVariable.maxDistance;
+                Damage = projectileVariable.damage;
+                break;
+            case(ArmLevel.Upgraded):
+                MaxDistance = projectileVariable.maxDistanceUpgraded;
+                Damage = projectileVariable.damageUpgraded;
+                break;
+            case(ArmLevel.Max):
+                MaxDistance = projectileVariable.maxDistanceUpgraded;       // Intentional. Only default and upgraded values
+                Damage = projectileVariable.damageMax;
+                break;
+        }
     }
 
     public void AssignDamageNumberPrefab(string name)   // Call this function to change the DamageNumber prefab with an addressable name (Overwrite it in OnNetworkSpawn after base.OnNetworkSpawn())

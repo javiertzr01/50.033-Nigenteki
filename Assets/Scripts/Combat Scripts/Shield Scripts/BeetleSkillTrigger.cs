@@ -9,8 +9,9 @@ public class BeetleSkillTrigger : ShieldTrigger
     [SerializeField]
     private float skillDurationTimer; // Countdown timer
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         skillDurationTimer = instantiatingArm.armVariable.skillDuration;
     }
 
@@ -28,6 +29,7 @@ public class BeetleSkillTrigger : ShieldTrigger
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
+        TakeDamageServerRpc(other.gameObject.GetComponent<Projectile>().Damage, OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -9,6 +9,7 @@ public abstract class ShieldTrigger : Spawnables
     protected bool _destroyed;
     [SerializeField]
     private float _shieldCurrentHealth;
+    public float shieldMaxHealth;
 
     public float ShieldHealth
     {
@@ -32,6 +33,23 @@ public abstract class ShieldTrigger : Spawnables
         {
             _destroyed = value;
         }
+    }
+
+    public virtual void Start()
+    {
+        switch (instantiatingArm.armLevel.Value)
+        {
+            case(ArmLevel.Default):
+                ShieldHealth = instantiatingArm.armVariable.shieldMaxHealth;
+                break;
+            case(ArmLevel.Upgraded):
+                ShieldHealth = instantiatingArm.armVariable.shieldMaxHealthUpgraded;
+                break;
+            case(ArmLevel.Max):
+                ShieldHealth = instantiatingArm.armVariable.shieldMaxHealthUpgraded;    // Intentional. Only default and upgraded values
+                break;
+        }
+        shieldMaxHealth = ShieldHealth;
     }
 
     void OnTriggerEnter2D(Collider2D other)
