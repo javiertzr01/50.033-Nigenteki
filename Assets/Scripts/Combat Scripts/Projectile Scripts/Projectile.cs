@@ -258,7 +258,7 @@ public abstract class Projectile : Spawnables
     public virtual void ChargeUltimateValue(float charge, float divisor)
     {
         Debug.Log("Projectile Script: " + instantiatingArm.ToString());
-        instantiatingArm.ChargeUltimate(charge, divisor);
+        instantiatingArm.ChargeUltimateServerRpc(charge, divisor);
     }
 
     [ServerRpc(RequireOwnership = false)]

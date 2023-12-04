@@ -33,7 +33,7 @@ public class HoneyComb : SkillObject
             if (chargeTimer >= 1f)
             {
                 // Charge the ultimate
-                instantiatingArm.ChargeUltimate(healingValue, 5);
+                instantiatingArm.ChargeUltimateServerRpc(healingValue, 5);
 
                 // Reset the timer
                 chargeTimer = 0f;

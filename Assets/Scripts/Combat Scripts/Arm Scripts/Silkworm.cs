@@ -112,8 +112,9 @@ public class Silkworm : Arm
             Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("SILKWORM ULTIMATE: Casting");
-            UltimateCharge = 0f; // Reset Ultimate Charge
-                                 // Instantiate the ultimate area effect
+            AdjustUltimateCharge(0f);   // Reset Ultimate Charge
+            AdjustUltimateChargeClientRpc(0f);
+            // Instantiate the ultimate area effect
             GameObject ultimateArea = SpawnProjectile<SkillObject>(clientId, ultimateProjectile, ultShootPoint);
             ultimateArea.GetComponent<SilkRoad>().countdownTimer = armVariable.ultimateDuration;
 

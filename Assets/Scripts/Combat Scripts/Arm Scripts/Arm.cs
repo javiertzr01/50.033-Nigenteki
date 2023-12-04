@@ -19,8 +19,10 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     protected GameObject ultimateProjectile;
     protected int maxSkillCharges;
     protected int maxSkillInstantiations;
+    [SerializeField]
     private float _skillCoolDown;
     private int _skillCharges;
+    [SerializeField]
     private float _ultimateCharge;
 
     protected float nextBasicFireTime;
@@ -174,14 +176,33 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
     }
 
-    public void ChargeUltimate(float charge, float divisor)
+    [ServerRpc(RequireOwnership = false)]
+    public void ChargeUltimateServerRpc(float charge, float divisor)
     {
         if (divisor < 1)
         {
             divisor = 1;
         }
-        UltimateCharge += (charge / divisor);
+        AdjustUltimateCharge(UltimateCharge + (charge / divisor));
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
+    }
+
+    public void AdjustUltimateCharge(float charge)  // SERVER ONLY
+    {
+        UltimateCharge = charge;
+        AdjustUltimateChargeClientRpc(charge);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AdjustUltimateChargeServerRpc(float charge)
+    {
+        AdjustUltimateCharge(charge);
+    }
+
+    [ClientRpc]
+    public void AdjustUltimateChargeClientRpc(float charge)
+    {
+        UltimateCharge = charge;
     }
 
     public GameObject SpawnProjectile<T>(ulong ownerId, GameObject projectilePrefab, GameObject shootPointPrefab) where T : Spawnables   // SERVER ONLY

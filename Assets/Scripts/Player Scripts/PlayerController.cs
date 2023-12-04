@@ -11,6 +11,9 @@ public class PlayerController : NetworkBehaviour
 {
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
+    public float defaultMoveSpeed;
+    public float defaultDamageTakenScale;
+    [SerializeField]
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     public NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
@@ -82,6 +85,7 @@ public class PlayerController : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         playerMaxHealth.Value = playerVariables.maxHealth;
+        defaultMoveSpeed = playerVariables.moveSpeed;
         MoveSpeed = playerVariables.moveSpeed;
 
         playerHealth.Value = playerMaxHealth.Value;
@@ -116,6 +120,7 @@ public class PlayerController : NetworkBehaviour
 
         kills.Value = 0;
         deaths.Value = 0;
+        defaultDamageTakenScale = 1f;
         DamageTakenScale = 1f;
         tr = GetComponent<TrailRenderer>();
     }
