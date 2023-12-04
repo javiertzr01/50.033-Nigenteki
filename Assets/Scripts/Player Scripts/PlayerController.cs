@@ -21,12 +21,16 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> kills = new NetworkVariable<int>();
     public NetworkVariable<int> deaths = new NetworkVariable<int>();
     public NetworkVariable<CharacterSpriteMap> sprite = new NetworkVariable<CharacterSpriteMap>();
+    public NetworkVariable<int> rightArmIndex = new NetworkVariable<int>();
+    public NetworkVariable<int> leftArmIndex = new NetworkVariable<int>();
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
     public UnityEvent<int> redCrystalCountUpdateEventInvoker;
     public UnityEvent<int> blueCrystalCountUpdateEventInvoker;
     public UnityEvent<int> greenCrystalCountUpdateEventInvoker;
+    public UnityEvent<int> rightArmImageUpdateEventInvoker;
+    public UnityEvent<int> leftArmImageUpdateEventInvoker;
 
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
@@ -69,6 +73,9 @@ public class PlayerController : NetworkBehaviour
     [System.NonSerialized] public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
     private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
+    private int upgradeThreshold = 50;
+
+    private bool inSpawn;
 
     // Implemented for Dash Function
     private bool doForce = false;
@@ -100,12 +107,20 @@ public class PlayerController : NetworkBehaviour
             sprite.Value = CharacterSpriteMap.guardian_red;
             break;
 
-            case("Player Blue Defender(Clone)"):
+            case ("Player Red Syndicate(Clone)"):
+            sprite.Value = CharacterSpriteMap.syndicate_red;
+            break;
+
+            case ("Player Blue Defender(Clone)"):
             sprite.Value = CharacterSpriteMap.defender_blue;
             break;
 
             case("Player Blue Guardian(Clone)"):
             sprite.Value = CharacterSpriteMap.guardian_blue;
+            break;
+
+            case ("Player Blue Syndicate(Clone)"):
+            sprite.Value = CharacterSpriteMap.syndicate_blue;
             break;
 
             default:
@@ -163,8 +178,6 @@ public class PlayerController : NetworkBehaviour
                                    TargetClientIds = new ulong[] { OwnerClientId }
                                }
                            });
-
-
     }
 
     [ClientRpc]
@@ -362,6 +375,8 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
+        UpdateRightArmImage(rightArmPrefab.name);
+        UpdateLeftArmImage(leftArmPrefab.name);
 
         MoveSpeed = playerVariables.moveSpeed;
         playerHealth.Value = playerVariables.maxHealth;
@@ -380,6 +395,8 @@ public class PlayerController : NetworkBehaviour
             redCrystalCount.OnValueChanged += OnRedCrystalCountChanged;
             blueCrystalCount.OnValueChanged += OnBlueCrystalCountChanged;
             greenCrystalCount.OnValueChanged += OnGreenCrystalCountChanged;
+            rightArmIndex.OnValueChanged += OnRightArmIndexChanged;
+            leftArmIndex.OnValueChanged += OnLeftArmIndexChanged;
         }
         else
         {
@@ -399,6 +416,7 @@ public class PlayerController : NetworkBehaviour
         LeftArmBasicAttack();
         RightArmBasicAttack();
         UpdateAnimator();
+        InSpawnCheck();
 
         if (shakeTimer > 0)
         {
@@ -456,6 +474,68 @@ public class PlayerController : NetworkBehaviour
         greenCrystalCountUpdateEventInvoker.Invoke(current);
     }
 
+    public void OnRightArmIndexChanged(int previous, int current)
+    {
+        rightArmImageUpdateEventInvoker.Invoke(current);
+    }
+
+    public void OnLeftArmIndexChanged(int previous, int current)
+    {
+        leftArmImageUpdateEventInvoker.Invoke(current);
+    }
+
+    public void UpdateRightArmImage(string armName)
+    {
+        switch (armName)
+        {
+            case ("BasicShooter"):
+                rightArmIndex.Value = 0;
+                break;
+
+            case ("Beetle"):
+                rightArmIndex.Value = 1;
+                break;
+
+            case ("Silkworm"):
+                rightArmIndex.Value = 2;
+                break;
+
+            case ("HoneyBee"):
+                rightArmIndex.Value = 3;
+                break;
+
+            case ("Locust"):
+                rightArmIndex.Value = 4;
+                break;
+        }
+    }
+
+    public void UpdateLeftArmImage(string armName)
+    {
+        switch (armName)
+        {
+            case ("BasicShooter"):
+                leftArmIndex.Value = 0;
+                break;
+
+            case ("Beetle"):
+                leftArmIndex.Value = 1;
+                break;
+
+            case ("Silkworm"):
+                leftArmIndex.Value = 2;
+                break;
+
+            case ("HoneyBee"):
+                leftArmIndex.Value = 3;
+                break;
+
+            case ("Locust"):
+                leftArmIndex.Value = 4;
+                break;
+        }
+    }
+
     void Movement()
     {
         rb.velocity = moveDir * MoveSpeed;
@@ -488,8 +568,6 @@ public class PlayerController : NetworkBehaviour
         {
             transform.GetComponent<SpriteRenderer>().flipX = false;
         }
-
-
 
     }
 
@@ -570,6 +648,51 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void RightArmUpgradeCheck(bool value)
+    {
+        if (value && inSpawn)
+        {
+            Arm.ArmType armType = rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                redCrystalCount.Value -= upgradeThreshold;
+            }
+            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                blueCrystalCount.Value -= upgradeThreshold;
+            }
+            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                greenCrystalCount.Value -= upgradeThreshold;
+            }
+        }
+    }
+
+    public void LeftArmUpgradeCheck(bool value)
+    {
+        if (value && inSpawn)
+        {
+            Arm.ArmType armType = leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                redCrystalCount.Value -= upgradeThreshold;
+            }
+            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                blueCrystalCount.Value -= upgradeThreshold;
+            }
+            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                greenCrystalCount.Value -= upgradeThreshold;
+            }
+        }
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
@@ -665,6 +788,18 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void InSpawnCheck()
+    {
+        if ((transform.position.x >= (spawnPosition.Value.x - 2f) && transform.position.x <= (spawnPosition.Value.x + 2f)) &&
+            (transform.position.y >= (spawnPosition.Value.y - 2f) && transform.position.y <= (spawnPosition.Value.y + 2f)))
+        {
+            inSpawn = true;
+        }
+        else
+        {
+            inSpawn = false;
+        }
+    }
 
     private void FixedUpdate()
     {

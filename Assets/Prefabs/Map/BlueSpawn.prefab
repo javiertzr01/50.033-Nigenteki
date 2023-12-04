@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4190429022437570138}
   - component: {fileID: 1341948451640198192}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnBottomLeftHead
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4623737386704116952}
   - component: {fileID: 5060563561925838026}
   - component: {fileID: 6091437278319580321}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnTopRightBase
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4839989479605490780}
   - component: {fileID: 4038028670831140670}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnTopLeftHead
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3993008922637026533}
   - component: {fileID: 3050532770915618035}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnArch
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 1818479421835497491}
   - component: {fileID: 8996359317638952677}
   - component: {fileID: 8882198139782206867}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnTopLeftBase
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -522,7 +522,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3189072836258613925}
   - component: {fileID: 2400527269006117613}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnBottomRIghtHead
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -608,7 +608,7 @@ GameObject:
   - component: {fileID: 89764514613868753}
   - component: {fileID: 803963638673151692}
   - component: {fileID: 4057961429014079361}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnBase
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -783,7 +783,7 @@ GameObject:
   - component: {fileID: 7760673054014803283}
   - component: {fileID: 5323996691463439355}
   - component: {fileID: 3158585528478039324}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnBottomLeftBase
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -911,7 +911,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7320736889795440830}
-  m_Layer: 0
+  - component: {fileID: 4240099586286087888}
+  m_Layer: 9
   m_Name: BlueSpawn
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -943,6 +944,51 @@ Transform:
   - {fileID: 2446184396333907948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &4240099586286087888
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804966583983567202}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.20992397}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.44725046}
+  m_EdgeRadius: 0
 --- !u!1 &7568271005473918278
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,7 +1000,7 @@ GameObject:
   - component: {fileID: 2441813297506719873}
   - component: {fileID: 7733900711763666665}
   - component: {fileID: 8232139106830540006}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnBottomRightBase
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -1083,7 +1129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2446184396333907948}
   - component: {fileID: 3484125792608200965}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnTopRightHead
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

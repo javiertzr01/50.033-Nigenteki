@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 5521825692670072248}
   - component: {fileID: -5346276910130242891}
   m_Layer: 9
-  m_Name: Player Blue Guardian
+  m_Name: Player Blue Syndicate
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,7 +424,7 @@ Animator:
   m_GameObject: {fileID: 5009592937343648668}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3e82f6f30f111484cb3c742309343289, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6035c7c16bedc794daf42744eb9aaae7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -710,7 +710,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7707033610063034363}
         m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: OnLeftArmUpgradeAction
+        m_MethodName: OnLeftArmUseAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -917,7 +917,7 @@ MonoBehaviour:
   deaths:
     m_InternalValue: 0
   sprite:
-    m_InternalValue: 0
+    m_InternalValue: 4
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:

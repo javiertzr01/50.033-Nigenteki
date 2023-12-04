@@ -7,6 +7,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
     public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
+    public ArmType armType;
 
     // Serialize references by ID or some other network-friendly method, not directly
     [SerializeField]
@@ -177,5 +178,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         BasicAttack,
         SkillAttack,
         UltimateAttack
+    }
+
+    public enum ArmType
+    {
+        Offense,
+        Defense,
+        Support
     }
 }

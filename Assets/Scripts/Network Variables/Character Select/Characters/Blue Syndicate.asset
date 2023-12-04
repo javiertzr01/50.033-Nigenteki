@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070640390523326428bc2883adab0f07, type: 3}
+  m_Name: Blue Syndicate
+  m_EditorClassIdentifier: 
+  id: 5
+  teamId: 1
+  displayName: Blue Syndicate
+  icon: {fileID: 68032437, guid: 74d74ba0b36e1734db8d4e843201e0aa, type: 3}
+  characterPrefab: {fileID: 5009592937343648668, guid: c72be0294048969468ef791a51f56ce4,
+    type: 3}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3255546274460269327}
   - component: {fileID: 1969903448111313722}
   - component: {fileID: 909097052208553394}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,8 +139,8 @@ GameObject:
   - component: {fileID: 1696759645910555965}
   - component: {fileID: 5022067537694881100}
   - component: {fileID: 3559786782935026323}
-  - component: {fileID: 8680391777965194734}
-  m_Layer: 9
+  - component: {fileID: 7168921279230702556}
+  m_Layer: 8
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
---- !u!114 &8680391777965194734
+--- !u!114 &7168921279230702556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,9 +261,9 @@ GameObject:
   - component: {fileID: 2940777625078481704}
   - component: {fileID: 7707033610063034363}
   - component: {fileID: 5521825692670072248}
-  - component: {fileID: -5346276910130242891}
-  m_Layer: 9
-  m_Name: Player Blue Guardian
+  - component: {fileID: 3581358199864440669}
+  m_Layer: 8
+  m_Name: Player Red Syndicate
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,7 +424,7 @@ Animator:
   m_GameObject: {fileID: 5009592937343648668}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3e82f6f30f111484cb3c742309343289, type: 2}
+  m_Controller: {fileID: 9100000, guid: 59c1b4df16a3f414ca89ea71abe6d7bf, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -917,7 +917,7 @@ MonoBehaviour:
   deaths:
     m_InternalValue: 0
   sprite:
-    m_InternalValue: 0
+    m_InternalValue: 5
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:
@@ -1037,7 +1037,7 @@ MonoBehaviour:
   dashFactor: 500
   immuneStun:
     m_InternalValue: 0
---- !u!96 &-5346276910130242891
+--- !u!96 &3581358199864440669
 TrailRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -1159,7 +1159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7395281022009032550}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1193,8 +1193,8 @@ GameObject:
   m_Component:
   - component: {fileID: 290700381180187028}
   - component: {fileID: 436870612953158045}
-  - component: {fileID: 676475816166136416}
-  m_Layer: 9
+  - component: {fileID: 8022449541348409327}
+  m_Layer: 8
   m_Name: Virtual Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1256,7 +1256,7 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 2275484973831221841}
---- !u!114 &676475816166136416
+--- !u!114 &8022449541348409327
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -216,7 +216,9 @@ public enum CharacterSpriteMap
     defender_blue,
     defender_red,
     guardian_blue,
-    guardian_red
+    guardian_red,
+    syndicate_blue,
+    syndicate_red
 }
 
 public struct PlayerStats
