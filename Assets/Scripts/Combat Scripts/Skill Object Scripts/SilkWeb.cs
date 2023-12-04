@@ -14,8 +14,8 @@ public class SilkWeb : SkillObject
         {
             // Apply the stun effect to the player
             playerController.ApplyStun(3f); // Stun for 3 seconds
-            Silkworm arm = (Silkworm)instantiatingArm;
-            RemoveAndShift(arm.activeSpellProjectiles, gameObject);
+            Debug.Log(OwnerClientId);
+            RemoveAndShiftServerRpc(NetworkObjectId);
             // Destroy the SilkWeb object
             DestroyServerRpc();
         }
@@ -26,17 +26,38 @@ public class SilkWeb : SkillObject
         // throw new System.NotImplementedException();
     }
 
-    private void RemoveAndShift(List<GameObject> list, GameObject itemToRemove)
+    private int RemoveAndShift(GameObject itemToRemove)
     {
+        Silkworm arm = (Silkworm)instantiatingArm;
         // Find the index of the item to remove
-        int indexToRemove = list.IndexOf(itemToRemove);
+        int indexToRemove = arm.activeSpellProjectiles.IndexOf(itemToRemove);
 
         // If the item is found, remove it and shift the remaining elements
         if (indexToRemove != -1)
         {
             // Debug.Log("Index to Remove: " + indexToRemove);
-            list.RemoveAt(indexToRemove);
+            arm.activeSpellProjectiles.RemoveAt(indexToRemove);
         }
+        return indexToRemove;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveAndShiftServerRpc(ulong id)
+    {
+        GameObject itemToRemove = NetworkManager.Singleton.SpawnManager.SpawnedObjects[id].gameObject;
+        int indexToRemove = RemoveAndShift(itemToRemove);
+        RemoveAndShiftClientRpc(indexToRemove);
+    }
+
+    [ClientRpc]
+    public void RemoveAndShiftClientRpc(int index)
+    {
+        Silkworm arm = (Silkworm) instantiatingArm;
+        Debug.Log(OwnerClientId);
+        Debug.Log($"Instantiating Arm: {instantiatingArm}");
+        Debug.Log($"ActiveSpellProjectilesList: {arm.activeSpellProjectiles}");
+
+        arm.activeSpellProjectiles.RemoveAt(index);
     }
 
 }

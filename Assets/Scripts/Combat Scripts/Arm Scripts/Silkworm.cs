@@ -6,62 +6,33 @@ using Unity.Netcode;
 public class Silkworm : Arm
 {
     [SerializeField] private GameObject ultShootPoint;
-    private GameObject spellProjectile;
-    private GameObject ultimateProjectile;
-    private float nextBasicFireTime = 0f;
-    private int skillCharges;
-    private int maxSkillCharges;
-    private float skillChargeTimer;
-    private int maxSkillInstantiations;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-        maxSkillCharges = armVariable.skillMaxCharges;
-        skillChargeTimer = armVariable.skillCoolDown;
-        maxSkillInstantiations = armVariable.skillMaxInstants;
-
-        skillCharges = maxSkillCharges; // Initialize Arm with the maximum skill Charges first
-
-        UltimateCharge = armVariable.ultimateCharge;
-
-        if (projectiles[1] != null)
-        {
-            spellProjectile = projectiles[1];
-        }
-
-        if (projectiles[2] != null)
-        {
-            ultimateProjectile = projectiles[2];
-        }
-
-    }
-
-    public override bool HaveSkillCharges()
-    {
-        return true;
-    }
-
-    public override int GetSkillCharges()
-    {
-        return skillCharges;
-    }
+    // Declare a Queue to track active spellProjectiles
+    [SerializeField]
+    public List<GameObject> activeSpellProjectiles = new List<GameObject>();
 
     private void Update()
     {
         // Update the skill charge timer
-        if (skillCharges < maxSkillCharges)
+        if (SkillCharges < maxSkillCharges)
         {
-            skillChargeTimer -= Time.deltaTime;
-            if (skillChargeTimer <= 0)
+            SkillCoolDown -= Time.deltaTime;
+            if (SkillCoolDown <= 0)
             {
                 // Increment skillCharges when the timer reaches 0
-                skillCharges++;
-                Debug.Log("Increment Silkworm Skill Charge: " + skillCharges);
+                SkillCharges++;
+                Debug.Log("Increment Silkworm Skill Charge: " + SkillCharges);
                 // Reset the skill charge timer
-                skillChargeTimer = armVariable.skillCoolDown;
+                SkillCoolDown = armVariable.skillCoolDown;
             }
         }
+    }
+
+    public override void SetProjectiles()
+    {
+        basicProjectile = projectiles[0];
+        spellProjectile = projectiles[1];
+        ultimateProjectile = projectiles[2];
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -75,48 +46,23 @@ public class Silkworm : Arm
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
-            // Instantiate the Projectile
-            GameObject shotBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            shotBasicProjectileClone.layer = transform.root.gameObject.layer;
-            // Setup teamId
-            shotBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-            shotBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            // Set the instantiatingArm
-            shotBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
-            // Set max distance and apply force
-            // shotBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
-            Rigidbody2D rb = shotBasicProjectileClone.GetComponent<Rigidbody2D>();
-            rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+            GameObject basicProjectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
+            FireProjectile(basicProjectileClone, armVariable.baseForce);
 
-            //Audio Player
-            int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
-            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+            // Set the nextBasicFireTime
+            nextBasicFireTime = Time.time + armVariable.baseFireRate;
+
 
             // Cast the Basic Attack ClientRpc
-            CastBasicAttackClientRpc(new ClientRpcParams
+            CastBasicAttackClientRpc(new ClientRpcParams        // REMOVE : This just notifies the client
             {
                 Send = new ClientRpcSendParams
                 {
                     TargetClientIds = new ulong[] { clientId }
                 }
             });
-            // Set the nextBasicFireTime
-            nextBasicFireTime = Time.time + armVariable.baseFireRate;
         }
     }
-
-
-    [ClientRpc]
-    public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
-    }
-
-
-    // Declare a Queue to track active spellProjectiles
-    [System.NonSerialized]
-    public List<GameObject> activeSpellProjectiles = new List<GameObject>();
 
     [ServerRpc(RequireOwnership = false)]
     public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
@@ -126,7 +72,7 @@ public class Silkworm : Arm
         if (OwnerClientId != clientId) return;
 
 
-        if (skillCharges > 0)
+        if (SkillCharges > 0)
         {
             // Check if the number of skill instantiations exceeds the maximum
             if (activeSpellProjectiles.Count >= maxSkillInstantiations)
@@ -136,31 +82,21 @@ public class Silkworm : Arm
                 oldestProjectile.transform.GetComponent<NetworkObject>().Despawn(true);
                 Destroy(oldestProjectile);
 
-                activeSpellProjectiles.RemoveAt(0);
+                ProjectileListRemoveAt(activeSpellProjectiles, 0);
                 Debug.Log("Removed oldest Silkworm skillProjectile");
             }
 
             // Instantiate the skill projectile and add it to the active projectiles queue
-            GameObject skillProjectile = Instantiate(spellProjectile, shootPoint.transform.position, transform.rotation);
-            skillProjectile.layer = transform.root.gameObject.layer;
-            // Setup teamId
-            skillProjectile.GetComponent<SkillObject>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-            skillProjectile.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            activeSpellProjectiles.Add(skillProjectile);
-            // Set the instantiatingArm
-            skillProjectile.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+            GameObject skillProjectile = SpawnProjectile<SkillObject>(clientId, spellProjectile, shootPoint);
+            ProjectileListAdd(activeSpellProjectiles, skillProjectile);
 
             // Decrease the number of available skill charges
-            skillCharges--;
-            Debug.Log("Decrease Silkworm Skill Charge: " + skillCharges);
+            SkillCharges--;
+            Debug.Log("Decrease Silkworm Skill Charge: " + SkillCharges);
         }
 
-        //Audio Player
-        int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
-        CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
-
         // Cast the Skill ClientRpc
-        CastSkillClientRpc(new ClientRpcParams
+        CastSkillClientRpc(new ClientRpcParams              // REMOVE :This just notifies the client
         {
             Send = new ClientRpcSendParams
             {
@@ -168,15 +104,6 @@ public class Silkworm : Arm
             }
         });
     }
-
-
-    [ClientRpc]
-    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
-    }
-
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -192,22 +119,14 @@ public class Silkworm : Arm
             Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("SILKWORM ULTIMATE: Casting");
-            UltimateCharge = 0f; // Reset Ultimate Charge
-                                 // Instantiate the ultimate area effect
-            GameObject ultimateArea = Instantiate(ultimateProjectile, ultShootPoint.transform.position, transform.rotation);
-            ultimateArea.layer = transform.root.gameObject.layer;
-            // Setup teamId
-            ultimateArea.GetComponent<SkillObject>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-            ultimateArea.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            ultimateArea.GetComponent<SkillObject>().instantiatingArm = gameObject.GetComponent<Arm>();
+            ResetUltimateCharge();
+            // Instantiate the ultimate area effect
+            GameObject ultimateArea = SpawnProjectile<SkillObject>(clientId, ultimateProjectile, ultShootPoint);
             ultimateArea.GetComponent<SilkRoad>().countdownTimer = armVariable.ultimateDuration;
 
-            //Audio Player
-            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
-            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Ultimate ClientRpc
-            CastUltimateClientRpc(new ClientRpcParams
+            CastUltimateClientRpc(new ClientRpcParams       // REMOVE :This just notifies the client
             {
                 Send = new ClientRpcSendParams
                 {
@@ -215,15 +134,29 @@ public class Silkworm : Arm
                 }
             });
         }
-
-
     }
 
+    public void ProjectileListAdd(List<GameObject> projectileList, GameObject gameObject)   // SERVER ONLY
+    {
+        projectileList.Add(gameObject);
+        ProjectileListAddClientRpc(gameObject.GetComponent<NetworkObject>().NetworkObjectId);
+    }
 
     [ClientRpc]
-    public override void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
+    public void ProjectileListAddClientRpc(ulong objectId)
     {
-        if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
+        activeSpellProjectiles.Add(NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId].gameObject);
+    }
+
+    public void ProjectileListRemoveAt(List<GameObject> projectileList, int index)  // SERVER ONLY
+    {
+        projectileList.RemoveAt(index);
+        ProjectileListRemoveClientRpc(index);
+    }
+
+    [ClientRpc]
+    public void ProjectileListRemoveClientRpc(int index)
+    {
+        activeSpellProjectiles.RemoveAt(index);
     }
 }
