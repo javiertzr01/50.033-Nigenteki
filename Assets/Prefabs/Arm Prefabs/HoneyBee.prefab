@@ -279,9 +279,15 @@ MonoBehaviour:
   - {fileID: 3242705092520560973, guid: c7effcb066bee2e45a21f2476d47d97d, type: 3}
   shootPoint: {fileID: 2799670470222651373}
   animator: {fileID: 0}
-  basicAttackSFX: {fileID: 0}
-  skillSFX: {fileID: 0}
-  ultimateSFX: {fileID: 0}
+  basicAttackSFX: {fileID: 8300000, guid: c3102e9504d10f341998c789c615ad5f, type: 3}
+  skillSFX: {fileID: 8300000, guid: 9f69eacb19cedb24fbd82b6270c9af20, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: 3c6153fd172776540b59dbb8e4a979b1, type: 3}
+  basicAttackCameraShakeIntensity: 0
+  basicAttackCameraShakeDuration: 0
+  skillCameraShakeIntensity: 0
+  skillCameraShakeDuration: 0
+  ultimateCameraShakeIntensity: 0
+  ultimateCameraShakeDuration: 0
 --- !u!1 &7298340726231015127
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +400,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
