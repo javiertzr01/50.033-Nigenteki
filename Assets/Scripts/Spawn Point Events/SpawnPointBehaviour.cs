@@ -17,7 +17,7 @@ public class SpawnPointBehaviour : MonoBehaviour
     {
         if (!NetworkManager.Singleton.IsServer)
         {
-            Logger.Instance.LogInfo("Not running on the server.");
+            // Logger.Instance.LogInfo("Not running on the server.");
             return;
         }
 
@@ -27,12 +27,12 @@ public class SpawnPointBehaviour : MonoBehaviour
         {
             if (player.teamId.Value == this.teamId)
             {
-                Logger.Instance.LogInfo($"Healing player {player.gameObject.name}");
+                // Logger.Instance.LogInfo($"Healing player {player.gameObject.name}");
                 player.HealPlayerServerRpc(spawnHealingValue * Time.deltaTime, player.GetComponent<NetworkObject>().OwnerClientId);
             }
             else
             {
-                Logger.Instance.LogInfo($"Player {player.gameObject.name} is from a different team.");
+                // Logger.Instance.LogInfo($"Player {player.gameObject.name} is from a different team.");
             }
         }
 
