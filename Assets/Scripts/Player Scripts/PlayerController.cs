@@ -505,7 +505,11 @@ public class PlayerController : NetworkBehaviour
 
     void LeftArmBasicAttack()
     {
-        if (!leftArmBasicUse) return;
+        if (!leftArmBasicUse) 
+        {
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().AnimationReset();
+            return;
+        }
 
         //transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
         transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
@@ -533,7 +537,12 @@ public class PlayerController : NetworkBehaviour
     }
     void RightArmBasicAttack()
     {
-        if (!rightArmBasicUse) return;
+        if (!rightArmBasicUse)
+        {
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().AnimationReset();
+            return;
+        }
+        
 
         transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }

@@ -6,23 +6,25 @@ using Unity.Netcode;
 public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
     // Variables
-    public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
+    public ArmVariables armVariable;        // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
 
     // Variables (Combat)
     [SerializeField]
     protected List<GameObject> projectiles; // Consider serializing relevant state information instead of GameObjects
     [SerializeField]
-    protected GameObject shootPoint; // Same as above, consider what needs to be synchronized
-    protected GameObject basicProjectile;
+    protected GameObject shootPoint;        // Same as above, consider what needs to be synchronized
+    protected GameObject basicProjectile;   
+    protected GameObject spellProjectile;   
+    protected GameObject ultimateProjectile;
     private float _skillCoolDown;
     private float _ultimateCharge;
 
     // Variables (Audio)
     protected AudioSource audioSource;
-    public AudioClip basicAttackSFX;    // Assign this in the Inspector
-    public AudioClip skillSFX;          // Assign this in the Inspector
-    public AudioClip ultimateSFX;       // Assign this in the Inspector
+    public AudioClip basicAttackSFX;        // Assign this in the Inspector
+    public AudioClip skillSFX;              // Assign this in the Inspector
+    public AudioClip ultimateSFX;           // Assign this in the Inspector
 
     // Variables (Visual)
     [SerializeField]
@@ -48,22 +50,27 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
 
 
-    protected virtual void Start()
+    public override void OnNetworkSpawn()
     {
         Initialize();
     }
 
     public virtual void Initialize()
     {
-        basicProjectile = projectiles[0];
+        basicProjectile = projectiles[0] != null ? projectiles[0] : null;
+        spellProjectile = projectiles[1] != null ? projectiles[1] : null;
+        ultimateProjectile = projectiles[2] != null ? projectiles[2] : null;
+
+        audioSource = GetComponent<AudioSource>();
+        UltimateCharge = armVariable.ultimateCharge;
     }
 
     
 
 // SOUND EFFECTS
-    [ServerRpc(RequireOwnership = false)]
-    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    public void CastBasicAttackSFX()    //SERVER ONLY
     {
+        if (!IsServer) return;
         if (basicAttackSFX != null && audioSource != null)
         {
             foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -79,6 +86,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
                 });
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        CastBasicAttackSFX();
     }
 
     [ClientRpc]
@@ -155,22 +168,34 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
 
 // ANIMATION
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateWeaponAnimatorServerRpc(WeaponState newState)
-    {
-        networkWeaponState.Value = newState;
-    }
-
-    public void UpdateWeaponAnimator()
+    public void UpdateWeaponAnimator()  // CLIENT
     {
         if (networkWeaponState.Value == WeaponState.Idle)
         {
-            animator.SetBool("isBasicAttack", true);
+            animator.SetBool("isBasicAttack", false);
         }
         else if (networkWeaponState.Value == WeaponState.BasicAttack)
         {
-            animator.SetBool("isBasicAttack", false);
+            animator.SetBool("isBasicAttack", true);
         }
+    }
+
+    public void UpdateWeaponState(WeaponState newState) //SERVER ONLY
+    {
+        if (!IsServer) return;
+        if (networkWeaponState.Value == newState) return;
+        networkWeaponState.Value = newState;
+    }
+
+    [ServerRpc]
+    public void UpdateWeaponStateServerRpc(WeaponState newState)
+    {
+        UpdateWeaponState(newState);
+    }
+
+    public void AnimationReset()
+    {
+        UpdateWeaponStateServerRpc(WeaponState.Idle);
     }
 
 

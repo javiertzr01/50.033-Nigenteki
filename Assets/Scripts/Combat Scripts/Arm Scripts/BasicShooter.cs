@@ -5,38 +5,7 @@ using Unity.Netcode;
 
 public class BasicShooter : Arm
 {
-    protected GameObject spellProjectile;
-    protected GameObject ultimateProjectile;
-
-    //public AudioClip basicAttackSFX;   // Assign this in the Inspector
-    //public AudioClip skillSFX;   // Assign this in the Inspector
-    //public AudioClip ultimateSFX;   // Assign this in the Inspector
-
     private float nextBasicFireTime = 0f;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-        // Initialize arm with the variables from armVariable.
-        // E.g. attack power, etc.
-        UltimateCharge = armVariable.ultimateCharge;
-
-        if (projectiles[1] != null)
-        {
-            spellProjectile = projectiles[1];
-        }
-
-        if (projectiles[2] != null)
-        {
-            ultimateProjectile = projectiles[2];
-        }
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-        audioSource = GetComponent<AudioSource>();
-    }
 
     private void Update()
     {
@@ -74,9 +43,9 @@ public class BasicShooter : Arm
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
 
             //Audio Player
-            CastBasicAttackSFXServerRpc(serverRpcParams);
+            CastBasicAttackSFX();
 
-            UpdateWeaponAnimatorServerRpc(WeaponState.BasicAttack);
+            UpdateWeaponState(WeaponState.BasicAttack);
 
             CastBasicAttackClientRpc(new ClientRpcParams
             {
@@ -90,7 +59,8 @@ public class BasicShooter : Arm
         }
         else
         {
-            UpdateWeaponAnimatorServerRpc(WeaponState.Idle);
+            // This should be like indication if Player can shoot
+            // UpdateWeaponState(WeaponState.Idle);
         }
 
     }
