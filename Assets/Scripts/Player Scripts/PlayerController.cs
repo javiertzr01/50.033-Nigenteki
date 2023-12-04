@@ -13,6 +13,8 @@ public class PlayerController : NetworkBehaviour
     public PlayerVariables playerVariables;
     public float defaultMoveSpeed;
     public float defaultDamageTakenScale;
+    public float defaultPassiveHealthRegenerationPercentage;
+    public float defaultHealingPerSecond;
     [SerializeField]
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
@@ -64,9 +66,9 @@ public class PlayerController : NetworkBehaviour
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
     private NetworkVariable<float> damageTakenScale = new NetworkVariable<float>(); // Reduce/Increase Damage Taken
-    [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
+    public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
     private float secondTicker = 0f;
-    [System.NonSerialized] public bool interactingWithHoneyComb = false;
+    public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
     private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
 
@@ -85,7 +87,6 @@ public class PlayerController : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         playerMaxHealth.Value = playerVariables.maxHealth;
-        defaultMoveSpeed = playerVariables.moveSpeed;
         MoveSpeed = playerVariables.moveSpeed;
 
         playerHealth.Value = playerMaxHealth.Value;
@@ -120,9 +121,13 @@ public class PlayerController : NetworkBehaviour
 
         kills.Value = 0;
         deaths.Value = 0;
-        defaultDamageTakenScale = 1f;
         DamageTakenScale = 1f;
         tr = GetComponent<TrailRenderer>();
+
+        defaultMoveSpeed = MoveSpeed;
+        defaultDamageTakenScale = DamageTakenScale;
+        defaultPassiveHealthRegenerationPercentage = passiveHealthRegenerationPercentage;
+        defaultHealingPerSecond = healingPerSecond;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -207,11 +212,6 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-    [ClientRpc]
-    public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void IncreaseKillCountServerRpc(ulong clientId)
     {
@@ -233,11 +233,6 @@ public class PlayerController : NetworkBehaviour
             healedClient.playerHealth.Value += heal;
             Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
         }
-    }
-
-    [ClientRpc]
-    public void HealPlayerClientRpc(ClientRpcParams clientRpcParams = default)
-    {
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -470,15 +465,25 @@ public class PlayerController : NetworkBehaviour
         float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
         if (rotZ < 89 && rotZ > -89)
         {
-            transform.GetComponent<SpriteRenderer>().flipX = true;
+            SpriteDirectionServerRpc(true);
         }
         else
         {
-            transform.GetComponent<SpriteRenderer>().flipX = false;
+            SpriteDirectionServerRpc(false);
         }
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SpriteDirectionServerRpc(bool value)
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = value;
+        SpriteDirectionClientRpc(value);
+    }
 
-
+    [ClientRpc]
+    public void SpriteDirectionClientRpc(bool value)
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = value;
     }
 
     void UpdateBeetleShieldDirection(Transform armHolder, Vector2 lookDir)

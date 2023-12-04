@@ -10,6 +10,10 @@ public class BasicShooter : Arm
         UpdateWeaponAnimator();
     }
 
+    public override void SetProjectiles()
+    {
+        basicProjectile = projectiles[0];
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)

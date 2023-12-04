@@ -7,14 +7,7 @@ public class Locust : Arm
 {
     GameObject ProjectileSpawned;
     [SerializeField]
-    private bool ulted;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        ulted = false;
-    }
+    private bool ulted = false;
 
     private void Update()
     {
@@ -43,6 +36,12 @@ public class Locust : Arm
                 countdownTimer = armVariable.ultimateDuration; // Reset the timer for the next ultimate
             }
         }
+    }
+
+    public override void SetProjectiles()
+    {
+        basicProjectile = projectiles[0];
+        ultimateProjectile = projectiles[1];
     }
 
     [ServerRpc(RequireOwnership = false)]

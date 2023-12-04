@@ -80,7 +80,6 @@ public class HoneybeeSpray : Projectile
         if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
         {
             other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, targetClientId);
-            InstantiateDamageNumberServerRpc(targetClientId);
             // Can be overwritten
             ChargeUltimateValue(Damage, 1);
         }
@@ -90,9 +89,10 @@ public class HoneybeeSpray : Projectile
     {
         ulong sourceClientId = OwnerClientId;
         ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
-        if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
+        if (other.transform.GetComponent<PlayerController>().playerHealth.Value > 0)
         {
             other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
+            InstantiateDamageNumberServerRpc(targetClientId);
             // Can be overwritten
             ChargeUltimateValue(Damage, 10);
         }

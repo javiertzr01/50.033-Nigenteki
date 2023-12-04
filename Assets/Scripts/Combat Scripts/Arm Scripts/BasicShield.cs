@@ -129,4 +129,9 @@ public class BasicShield : Arm
         // Debug.Log("Casting " + armVariable.armName + "'s Ultimate with damage: " + armVariable.ultimateDamage);
         GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
     }
+
+    public override void SetProjectiles()
+    {
+        throw new System.NotImplementedException();
+    }
 }

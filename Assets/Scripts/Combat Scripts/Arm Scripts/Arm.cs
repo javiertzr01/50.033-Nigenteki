@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Mathematics;
 
 public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
@@ -72,19 +73,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
     public virtual void Initialize()
     {
-        if (projectiles.Count == 2)
-        {
-            basicProjectile = projectiles[0] != null ? projectiles[0] : null;
-            ultimateProjectile = projectiles[1] != null ? projectiles[1] : null;
-
-        }
-        else
-        {
-            basicProjectile = projectiles[0] != null ? projectiles[0] : null;
-            spellProjectile = projectiles[1] != null ? projectiles[1] : null;
-            ultimateProjectile = projectiles[2] != null ? projectiles[2] : null;
-        }
-        
+        SetProjectiles();   
 
         audioSource = GetComponent<AudioSource>();
 
@@ -159,6 +148,8 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
 
 // COMBAT
+    public abstract void SetProjectiles();
+
     // The basic attack method
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
@@ -277,7 +268,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         networkWeaponState.Value = newState;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void UpdateWeaponStateServerRpc(WeaponState newState)
     {
         UpdateWeaponState(newState);

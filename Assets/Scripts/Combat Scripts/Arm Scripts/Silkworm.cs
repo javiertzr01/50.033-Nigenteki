@@ -28,6 +28,13 @@ public class Silkworm : Arm
         }
     }
 
+    public override void SetProjectiles()
+    {
+        basicProjectile = projectiles[0];
+        spellProjectile = projectiles[1];
+        ultimateProjectile = projectiles[2];
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {

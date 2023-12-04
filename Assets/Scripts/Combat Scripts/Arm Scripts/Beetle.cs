@@ -89,7 +89,12 @@ public class Beetle : Arm
         }
     }
 
-
+    public override void SetProjectiles()
+    {
+        // basicProjectile = projectiles[0];
+        // spellProjectile = projectiles[1];
+        // ultimateProjectile = projectiles[2];
+    }
 
 // SPAWNING
     [ServerRpc(RequireOwnership = false)]
