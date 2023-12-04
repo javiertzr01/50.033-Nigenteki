@@ -17,10 +17,13 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     protected GameObject basicProjectile;   
     protected GameObject spellProjectile;   
     protected GameObject ultimateProjectile;
+    [SerializeField]
     protected int maxSkillCharges;
     protected int maxSkillInstantiations;
+    protected float countdownTimer;
     [SerializeField]
     private float _skillCoolDown;
+    [SerializeField]
     private int _skillCharges;
     [SerializeField]
     private float _ultimateCharge;
@@ -69,9 +72,19 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
     public virtual void Initialize()
     {
-        basicProjectile = projectiles[0] != null ? projectiles[0] : null;
-        spellProjectile = projectiles[1] != null ? projectiles[1] : null;
-        ultimateProjectile = projectiles[2] != null ? projectiles[2] : null;
+        if (projectiles.Count == 2)
+        {
+            basicProjectile = projectiles[0] != null ? projectiles[0] : null;
+            ultimateProjectile = projectiles[1] != null ? projectiles[1] : null;
+
+        }
+        else
+        {
+            basicProjectile = projectiles[0] != null ? projectiles[0] : null;
+            spellProjectile = projectiles[1] != null ? projectiles[1] : null;
+            ultimateProjectile = projectiles[2] != null ? projectiles[2] : null;
+        }
+        
 
         audioSource = GetComponent<AudioSource>();
 
@@ -80,6 +93,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         SkillCharges = maxSkillCharges;
         SkillCoolDown = armVariable.skillCoolDown;
         UltimateCharge = armVariable.ultimateCharge;
+        countdownTimer = armVariable.ultimateDuration;
 
         nextBasicFireTime = 0f;
     }
@@ -185,6 +199,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         }
         AdjustUltimateCharge(UltimateCharge + (charge / divisor));
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
+    }
+
+    public void ResetUltimateCharge()
+    {
+        AdjustUltimateCharge(0f);   // Reset Ultimate Charge
+        AdjustUltimateChargeClientRpc(0f);
     }
 
     public void AdjustUltimateCharge(float charge)  // SERVER ONLY

@@ -28,8 +28,8 @@ public class BasicShooter : Arm
             basicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             FireProjectile(basicProjectileClone);
 
-            CastBasicAttackSFX();
-            UpdateWeaponState(WeaponState.BasicAttack);
+            CastBasicAttackSFX();                           // TODO: Add this in Arms so that everyone has
+            UpdateWeaponState(WeaponState.BasicAttack);     // TODO: Add this to Arms so that everyone has
 
             CastBasicAttackClientRpc(new ClientRpcParams    // REMOVE :This just notifies the client
             {

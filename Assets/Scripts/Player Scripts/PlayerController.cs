@@ -638,7 +638,6 @@ public class PlayerController : NetworkBehaviour
     public void TriggerDashClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-
         Vector2 mouseWorldPosition = cam.ScreenToWorldPoint(mousePos);
         Vector2 dashDirection = (mouseWorldPosition - (Vector2)transform.position).normalized;
 
@@ -707,6 +706,12 @@ public class PlayerController : NetworkBehaviour
     public void AdjustDamageTakenScaleServerRpc(float scale)
     {
         DamageTakenScale = scale;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void ToggleImmuneStunServerRpc(bool value)
+    {
+        immuneStun.Value = value;
     }
 
     private void UpdateAnimator()
