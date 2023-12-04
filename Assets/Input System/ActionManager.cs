@@ -15,8 +15,6 @@ public class ActionManager : MonoBehaviour
     public UnityEvent<bool> leftArmSkill;
     public UnityEvent<bool> rightArmUlt;
     public UnityEvent<bool> leftArmUlt;
-    public UnityEvent<bool> rightArmUpgrade;
-    public UnityEvent<bool> leftArmUpgrade;
 
 
     public void OnMovementAction(InputAction.CallbackContext context)
@@ -186,38 +184,6 @@ public class ActionManager : MonoBehaviour
             leftArmUlt.Invoke(false);
 
             // Debug.Log("STOP USING LEFT ARM");
-        }
-    }
-
-    public void OnRightArmUpgradeAction(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-
-        }
-        else if (context.performed)
-        {
-            rightArmUpgrade.Invoke(true);
-        }
-        else if (context.canceled)
-        {
-            rightArmUpgrade.Invoke(false);
-        }
-    }
-
-    public void OnLeftArmUpgradeAction(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-
-        }
-        else if (context.performed)
-        {
-            leftArmUpgrade.Invoke(true);
-        }
-        else if (context.canceled)
-        {
-            leftArmUpgrade.Invoke(false);
         }
     }
 

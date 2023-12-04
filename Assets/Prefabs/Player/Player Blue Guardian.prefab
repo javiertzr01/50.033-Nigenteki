@@ -690,38 +690,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 33b9326e-ca90-43bf-9625-01ae7981e14c
     m_ActionName: Stunned/New action
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7707033610063034363}
-        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: OnRightArmUpgradeAction
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 8dc8e52f-31db-4ffd-96f5-0594e9eae84e
-    m_ActionName: Player/Upgrade Right Arm[/Keyboard/z]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7707033610063034363}
-        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: OnLeftArmUpgradeAction
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: f2d8f355-25f3-408f-94d1-d749b53c4821
-    m_ActionName: Player/Upgrade Left Arm[/Keyboard/c]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -859,36 +827,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  rightArmUpgrade:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5521825692670072248}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: RightArmUpgradeCheck
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  leftArmUpgrade:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5521825692670072248}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: LeftArmUpgradeCheck
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &5521825692670072248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,36 +920,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11400000, guid: 16311ad06aa33bb40b304f3d4f126645, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  rightArmImageUpdateEventInvoker:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 626ae1a9d36d23e429a1decbbb4cd6d2, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
-        m_MethodName: Raise
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  leftArmImageUpdateEventInvoker:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: 0c134d7d37febc94fb1b06f254ded765, type: 2}
         m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
         m_MethodName: Raise
         m_Mode: 0

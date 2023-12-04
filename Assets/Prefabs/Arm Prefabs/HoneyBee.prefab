@@ -274,7 +274,6 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: d83b4791ea65c2949b39c93d5f2978b3, type: 2}
   networkWeaponState:
     m_InternalValue: 0
-  armType: 2
   projectiles:
   - {fileID: 471298558335439096, guid: 152e138680dbd49419045a721979fa1c, type: 3}
   - {fileID: 3242705092520560973, guid: c7effcb066bee2e45a21f2476d47d97d, type: 3}

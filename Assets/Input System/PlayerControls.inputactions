@@ -76,24 +76,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Upgrade Right Arm",
-                    "type": "Button",
-                    "id": "8dc8e52f-31db-4ffd-96f5-0594e9eae84e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Upgrade Left Arm",
-                    "type": "Button",
-                    "id": "f2d8f355-25f3-408f-94d1-d749b53c4821",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -226,28 +208,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Right Arm Ultimate Use",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7b8e44aa-d2f8-4008-9d4d-dd45aaab3e8d",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Upgrade Right Arm",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bf4b6f85-3089-4281-92ce-0802b7050309",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Upgrade Left Arm",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

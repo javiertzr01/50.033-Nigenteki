@@ -11,6 +11,11 @@ public class PlayerController : NetworkBehaviour
 {
     private PlayerInput playerInput;
     public PlayerVariables playerVariables;
+    public float defaultMoveSpeed;
+    public float defaultDamageTakenScale;
+    public float defaultPassiveHealthRegenerationPercentage;
+    public float defaultHealingPerSecond;
+    [SerializeField]
     private NetworkVariable<float> moveSpeed = new NetworkVariable<float>();
     [System.NonSerialized] public NetworkVariable<float> playerHealth = new NetworkVariable<float>();
     public NetworkVariable<float> playerMaxHealth = new NetworkVariable<float>();
@@ -21,16 +26,12 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> kills = new NetworkVariable<int>();
     public NetworkVariable<int> deaths = new NetworkVariable<int>();
     public NetworkVariable<CharacterSpriteMap> sprite = new NetworkVariable<CharacterSpriteMap>();
-    public NetworkVariable<int> rightArmIndex = new NetworkVariable<int>();
-    public NetworkVariable<int> leftArmIndex = new NetworkVariable<int>();
 
     public UnityEvent<float> playerHealthUpdateEventInvoker;
     public UnityEvent<float> playerMaxHealthUpdateEventInvoker;
     public UnityEvent<int> redCrystalCountUpdateEventInvoker;
     public UnityEvent<int> blueCrystalCountUpdateEventInvoker;
     public UnityEvent<int> greenCrystalCountUpdateEventInvoker;
-    public UnityEvent<int> rightArmImageUpdateEventInvoker;
-    public UnityEvent<int> leftArmImageUpdateEventInvoker;
 
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
@@ -68,14 +69,11 @@ public class PlayerController : NetworkBehaviour
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
     private NetworkVariable<float> damageTakenScale = new NetworkVariable<float>(); // Reduce/Increase Damage Taken
-    [System.NonSerialized] public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
+    public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
     private float secondTicker = 0f;
-    [System.NonSerialized] public bool interactingWithHoneyComb = false;
+    public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
     private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
-    private int upgradeThreshold = 50;
-
-    private bool inSpawn;
 
     // Implemented for Dash Function
     private bool doForce = false;
@@ -97,35 +95,27 @@ public class PlayerController : NetworkBehaviour
         playerHealth.Value = playerMaxHealth.Value;
         spawnPosition.Value = transform.position;
 
-        switch(transform.name)
+        switch (transform.name)
         {
-            case("Player Red Defender(Clone)"):
-            sprite.Value = CharacterSpriteMap.defender_red;
-            break;
+            case ("Player Red Defender(Clone)"):
+                sprite.Value = CharacterSpriteMap.defender_red;
+                break;
 
-            case("Player Red Guardian(Clone)"):
-            sprite.Value = CharacterSpriteMap.guardian_red;
-            break;
-
-            case ("Player Red Syndicate(Clone)"):
-            sprite.Value = CharacterSpriteMap.syndicate_red;
-            break;
+            case ("Player Red Guardian(Clone)"):
+                sprite.Value = CharacterSpriteMap.guardian_red;
+                break;
 
             case ("Player Blue Defender(Clone)"):
-            sprite.Value = CharacterSpriteMap.defender_blue;
-            break;
+                sprite.Value = CharacterSpriteMap.defender_blue;
+                break;
 
-            case("Player Blue Guardian(Clone)"):
-            sprite.Value = CharacterSpriteMap.guardian_blue;
-            break;
-
-            case ("Player Blue Syndicate(Clone)"):
-            sprite.Value = CharacterSpriteMap.syndicate_blue;
-            break;
+            case ("Player Blue Guardian(Clone)"):
+                sprite.Value = CharacterSpriteMap.guardian_blue;
+                break;
 
             default:
-            Debug.Log("No character chosen");
-            break;
+                Debug.Log("No character chosen");
+                break;
         }
 
         redCrystalCount.Value = 0;
@@ -136,6 +126,11 @@ public class PlayerController : NetworkBehaviour
         deaths.Value = 0;
         DamageTakenScale = 1f;
         tr = GetComponent<TrailRenderer>();
+
+        defaultMoveSpeed = MoveSpeed;
+        defaultDamageTakenScale = DamageTakenScale;
+        defaultPassiveHealthRegenerationPercentage = passiveHealthRegenerationPercentage;
+        defaultHealingPerSecond = healingPerSecond;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -178,6 +173,8 @@ public class PlayerController : NetworkBehaviour
                                    TargetClientIds = new ulong[] { OwnerClientId }
                                }
                            });
+
+
     }
 
     [ClientRpc]
@@ -218,11 +215,6 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-    [ClientRpc]
-    public void TakeDamageClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void IncreaseKillCountServerRpc(ulong clientId)
     {
@@ -244,11 +236,6 @@ public class PlayerController : NetworkBehaviour
             healedClient.playerHealth.Value += heal;
             Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
         }
-    }
-
-    [ClientRpc]
-    public void HealPlayerClientRpc(ClientRpcParams clientRpcParams = default)
-    {
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -375,8 +362,6 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
-        UpdateRightArmImage(rightArmPrefab.name);
-        UpdateLeftArmImage(leftArmPrefab.name);
 
         MoveSpeed = playerVariables.moveSpeed;
         playerHealth.Value = playerVariables.maxHealth;
@@ -395,8 +380,6 @@ public class PlayerController : NetworkBehaviour
             redCrystalCount.OnValueChanged += OnRedCrystalCountChanged;
             blueCrystalCount.OnValueChanged += OnBlueCrystalCountChanged;
             greenCrystalCount.OnValueChanged += OnGreenCrystalCountChanged;
-            rightArmIndex.OnValueChanged += OnRightArmIndexChanged;
-            leftArmIndex.OnValueChanged += OnLeftArmIndexChanged;
         }
         else
         {
@@ -409,14 +392,16 @@ public class PlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner && !IsClient) return;
-
+        if (!IsOwner || !IsClient) return;
+        if (transform.childCount < 2)
+        {
+            return;
+        }
         Movement();
         Look();
         LeftArmBasicAttack();
         RightArmBasicAttack();
         UpdateAnimator();
-        InSpawnCheck();
 
         if (shakeTimer > 0)
         {
@@ -474,68 +459,6 @@ public class PlayerController : NetworkBehaviour
         greenCrystalCountUpdateEventInvoker.Invoke(current);
     }
 
-    public void OnRightArmIndexChanged(int previous, int current)
-    {
-        rightArmImageUpdateEventInvoker.Invoke(current);
-    }
-
-    public void OnLeftArmIndexChanged(int previous, int current)
-    {
-        leftArmImageUpdateEventInvoker.Invoke(current);
-    }
-
-    public void UpdateRightArmImage(string armName)
-    {
-        switch (armName)
-        {
-            case ("BasicShooter"):
-                rightArmIndex.Value = 0;
-                break;
-
-            case ("Beetle"):
-                rightArmIndex.Value = 1;
-                break;
-
-            case ("Silkworm"):
-                rightArmIndex.Value = 2;
-                break;
-
-            case ("HoneyBee"):
-                rightArmIndex.Value = 3;
-                break;
-
-            case ("Locust"):
-                rightArmIndex.Value = 4;
-                break;
-        }
-    }
-
-    public void UpdateLeftArmImage(string armName)
-    {
-        switch (armName)
-        {
-            case ("BasicShooter"):
-                leftArmIndex.Value = 0;
-                break;
-
-            case ("Beetle"):
-                leftArmIndex.Value = 1;
-                break;
-
-            case ("Silkworm"):
-                leftArmIndex.Value = 2;
-                break;
-
-            case ("HoneyBee"):
-                leftArmIndex.Value = 3;
-                break;
-
-            case ("Locust"):
-                leftArmIndex.Value = 4;
-                break;
-        }
-    }
-
     void Movement()
     {
         rb.velocity = moveDir * MoveSpeed;
@@ -562,13 +485,25 @@ public class PlayerController : NetworkBehaviour
         float rotZ = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
         if (rotZ < 89 && rotZ > -89)
         {
-            transform.GetComponent<SpriteRenderer>().flipX = true;
+            SpriteDirectionServerRpc(true);
         }
         else
         {
-            transform.GetComponent<SpriteRenderer>().flipX = false;
+            SpriteDirectionServerRpc(false);
         }
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SpriteDirectionServerRpc(bool value)
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = value;
+        SpriteDirectionClientRpc(value);
+    }
+
+    [ClientRpc]
+    public void SpriteDirectionClientRpc(bool value)
+    {
+        transform.GetComponent<SpriteRenderer>().flipX = value;
     }
 
     void UpdateBeetleShieldDirection(Transform armHolder, Vector2 lookDir)
@@ -599,7 +534,11 @@ public class PlayerController : NetworkBehaviour
 
     void LeftArmBasicAttack()
     {
-        if (!leftArmBasicUse) return;
+        if (!leftArmBasicUse) 
+        {
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().AnimationReset();
+            return;
+        }
 
         //transform.GetChild(0).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
         transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
@@ -609,7 +548,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -617,7 +556,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
@@ -627,7 +566,12 @@ public class PlayerController : NetworkBehaviour
     }
     void RightArmBasicAttack()
     {
-        if (!rightArmBasicUse) return;
+        if (!rightArmBasicUse)
+        {
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().AnimationReset();
+            return;
+        }
+        
 
         transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
@@ -636,7 +580,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -644,55 +588,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
-    public void RightArmUpgradeCheck(bool value)
-    {
-        if (value && inSpawn)
-        {
-            Arm.ArmType armType = rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
-            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                redCrystalCount.Value -= upgradeThreshold;
-            }
-            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                blueCrystalCount.Value -= upgradeThreshold;
-            }
-            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                greenCrystalCount.Value -= upgradeThreshold;
-            }
-        }
-    }
-
-    public void LeftArmUpgradeCheck(bool value)
-    {
-        if (value && inSpawn)
-        {
-            Arm.ArmType armType = leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
-            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                redCrystalCount.Value -= upgradeThreshold;
-            }
-            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                blueCrystalCount.Value -= upgradeThreshold;
-            }
-            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
-            {
-                // Call arm upgrade
-                greenCrystalCount.Value -= upgradeThreshold;
-            }
-        }
-    }
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
@@ -764,7 +663,6 @@ public class PlayerController : NetworkBehaviour
     public void TriggerDashClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-
         Vector2 mouseWorldPosition = cam.ScreenToWorldPoint(mousePos);
         Vector2 dashDirection = (mouseWorldPosition - (Vector2)transform.position).normalized;
 
@@ -788,18 +686,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void InSpawnCheck()
-    {
-        if ((transform.position.x >= (spawnPosition.Value.x - 2f) && transform.position.x <= (spawnPosition.Value.x + 2f)) &&
-            (transform.position.y >= (spawnPosition.Value.y - 2f) && transform.position.y <= (spawnPosition.Value.y + 2f)))
-        {
-            inSpawn = true;
-        }
-        else
-        {
-            inSpawn = false;
-        }
-    }
 
     private void FixedUpdate()
     {
@@ -833,6 +719,24 @@ public class PlayerController : NetworkBehaviour
 
         cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
         shakeTimer = time;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void AdjustMovementSpeedServerRpc(float speed)
+    {
+        MoveSpeed = speed;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void AdjustDamageTakenScaleServerRpc(float scale)
+    {
+        DamageTakenScale = scale;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void ToggleImmuneStunServerRpc(bool value)
+    {
+        immuneStun.Value = value;
     }
 
     private void UpdateAnimator()

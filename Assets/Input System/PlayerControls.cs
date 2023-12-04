@@ -98,24 +98,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Upgrade Right Arm"",
-                    ""type"": ""Button"",
-                    ""id"": ""8dc8e52f-31db-4ffd-96f5-0594e9eae84e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Upgrade Left Arm"",
-                    ""type"": ""Button"",
-                    ""id"": ""f2d8f355-25f3-408f-94d1-d749b53c4821"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -250,28 +232,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Right Arm Ultimate Use"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""7b8e44aa-d2f8-4008-9d4d-dd45aaab3e8d"",
-                    ""path"": ""<Keyboard>/z"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Upgrade Right Arm"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bf4b6f85-3089-4281-92ce-0802b7050309"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Upgrade Left Arm"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -316,8 +276,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_RightArmSkillUse = m_Player.FindAction("Right Arm Skill Use", throwIfNotFound: true);
         m_Player_LeftArmUltimateUse = m_Player.FindAction("Left Arm Ultimate Use", throwIfNotFound: true);
         m_Player_RightArmUltimateUse = m_Player.FindAction("Right Arm Ultimate Use", throwIfNotFound: true);
-        m_Player_UpgradeRightArm = m_Player.FindAction("Upgrade Right Arm", throwIfNotFound: true);
-        m_Player_UpgradeLeftArm = m_Player.FindAction("Upgrade Left Arm", throwIfNotFound: true);
         // Stunned
         m_Stunned = asset.FindActionMap("Stunned", throwIfNotFound: true);
         m_Stunned_Newaction = m_Stunned.FindAction("New action", throwIfNotFound: true);
@@ -390,8 +348,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RightArmSkillUse;
     private readonly InputAction m_Player_LeftArmUltimateUse;
     private readonly InputAction m_Player_RightArmUltimateUse;
-    private readonly InputAction m_Player_UpgradeRightArm;
-    private readonly InputAction m_Player_UpgradeLeftArm;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -404,8 +360,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @RightArmSkillUse => m_Wrapper.m_Player_RightArmSkillUse;
         public InputAction @LeftArmUltimateUse => m_Wrapper.m_Player_LeftArmUltimateUse;
         public InputAction @RightArmUltimateUse => m_Wrapper.m_Player_RightArmUltimateUse;
-        public InputAction @UpgradeRightArm => m_Wrapper.m_Player_UpgradeRightArm;
-        public InputAction @UpgradeLeftArm => m_Wrapper.m_Player_UpgradeLeftArm;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -439,12 +393,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightArmUltimateUse.started += instance.OnRightArmUltimateUse;
             @RightArmUltimateUse.performed += instance.OnRightArmUltimateUse;
             @RightArmUltimateUse.canceled += instance.OnRightArmUltimateUse;
-            @UpgradeRightArm.started += instance.OnUpgradeRightArm;
-            @UpgradeRightArm.performed += instance.OnUpgradeRightArm;
-            @UpgradeRightArm.canceled += instance.OnUpgradeRightArm;
-            @UpgradeLeftArm.started += instance.OnUpgradeLeftArm;
-            @UpgradeLeftArm.performed += instance.OnUpgradeLeftArm;
-            @UpgradeLeftArm.canceled += instance.OnUpgradeLeftArm;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -473,12 +421,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @RightArmUltimateUse.started -= instance.OnRightArmUltimateUse;
             @RightArmUltimateUse.performed -= instance.OnRightArmUltimateUse;
             @RightArmUltimateUse.canceled -= instance.OnRightArmUltimateUse;
-            @UpgradeRightArm.started -= instance.OnUpgradeRightArm;
-            @UpgradeRightArm.performed -= instance.OnUpgradeRightArm;
-            @UpgradeRightArm.canceled -= instance.OnUpgradeRightArm;
-            @UpgradeLeftArm.started -= instance.OnUpgradeLeftArm;
-            @UpgradeLeftArm.performed -= instance.OnUpgradeLeftArm;
-            @UpgradeLeftArm.canceled -= instance.OnUpgradeLeftArm;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -552,8 +494,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRightArmSkillUse(InputAction.CallbackContext context);
         void OnLeftArmUltimateUse(InputAction.CallbackContext context);
         void OnRightArmUltimateUse(InputAction.CallbackContext context);
-        void OnUpgradeRightArm(InputAction.CallbackContext context);
-        void OnUpgradeLeftArm(InputAction.CallbackContext context);
     }
     public interface IStunnedActions
     {
