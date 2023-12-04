@@ -280,9 +280,9 @@ MonoBehaviour:
   - {fileID: 3242705092520560973, guid: c7effcb066bee2e45a21f2476d47d97d, type: 3}
   shootPoint: {fileID: 2799670470222651373}
   animator: {fileID: 0}
-  basicAttackSFX: {fileID: 8300000, guid: c3102e9504d10f341998c789c615ad5f, type: 3}
-  skillSFX: {fileID: 8300000, guid: 9f69eacb19cedb24fbd82b6270c9af20, type: 3}
-  ultimateSFX: {fileID: 8300000, guid: 3c6153fd172776540b59dbb8e4a979b1, type: 3}
+  basicAttackSFX: {fileID: 0}
+  skillSFX: {fileID: 0}
+  ultimateSFX: {fileID: 0}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
   skillCameraShakeIntensity: 0
@@ -393,7 +393,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1428446539, guid: b8e3a22209629684c98748f59508846f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 049a30c64a5cec241bc298e569c8f3c7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
