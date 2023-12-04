@@ -17,8 +17,13 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     protected GameObject basicProjectile;   
     protected GameObject spellProjectile;   
     protected GameObject ultimateProjectile;
+    protected int maxSkillCharges;
+    protected int maxSkillInstantiations;
     private float _skillCoolDown;
+    private int _skillCharges;
     private float _ultimateCharge;
+
+    protected float nextBasicFireTime;
 
     // Variables (Audio)
     protected AudioSource audioSource;
@@ -42,6 +47,11 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         get => _skillCoolDown;
         set => _skillCoolDown = value;
     }
+    public int SkillCharges
+    {
+        get => _skillCharges;
+        set => _skillCharges = value;
+    }
     public float UltimateCharge
     {
         get => _ultimateCharge;
@@ -62,7 +72,14 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         ultimateProjectile = projectiles[2] != null ? projectiles[2] : null;
 
         audioSource = GetComponent<AudioSource>();
+
+        maxSkillCharges = armVariable.skillMaxCharges;
+        maxSkillInstantiations = armVariable.skillMaxInstants;
+        SkillCharges = maxSkillCharges;
+        SkillCoolDown = armVariable.skillCoolDown;
         UltimateCharge = armVariable.ultimateCharge;
+
+        nextBasicFireTime = 0f;
     }
 
     
@@ -131,29 +148,31 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
-
-    public virtual bool HaveSkillCharges()
-    {
-        return false; // Default implementation, since Arm doesn't have skill charges
-    }
-
-    public virtual int GetSkillCharges()
-    {
-        return 0; // Default implementation
+    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) 
+    { 
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
     
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) { }
+    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) 
+    {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) { }
+    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) 
+    { 
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
+    }
 
     public void ChargeUltimate(float charge, float divisor)
     {
@@ -165,7 +184,37 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
     }
 
+    public GameObject SpawnProjectile<T>(ulong ownerId, GameObject projectilePrefab, GameObject shootPointPrefab) where T : Spawnables   // SERVER ONLY
+    {
+        // CLIENT-INCLUSIVE
+        GameObject projectileClone = Instantiate(projectilePrefab, shootPointPrefab.transform.position, transform.rotation);
+        projectileClone.GetComponent<T>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+        projectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(ownerId);
 
+        // CLIENT-EXCLUSIVE - Need to sync with ClientRpc
+        projectileClone.layer = transform.root.gameObject.layer;
+        projectileClone.GetComponent<T>().instantiatingArm = gameObject.GetComponent<Arm>();
+
+        ulong projectileId = projectileClone.GetComponent<NetworkObject>().NetworkObjectId;
+
+        SpawnProjectileClientRpc(projectileId);
+        return projectileClone;
+    }
+
+    [ClientRpc]
+    public virtual void SpawnProjectileClientRpc(ulong projectileId)
+    {
+        GameObject projectileClone = NetworkManager.Singleton.SpawnManager.SpawnedObjects[projectileId].gameObject;
+        projectileClone.GetComponent<Spawnables>().instantiatingArm = gameObject.GetComponent<Arm>();
+    }
+
+    public void FireProjectile(GameObject projectileClone)  // SERVER ONLY
+    {
+        // FIRE PROJECTILE ON SERVER
+        // Network Transform included - Synced to all clients
+        Rigidbody2D rb = projectileClone.GetComponent<Rigidbody2D>();
+        rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+    }
 
 // ANIMATION
     public void UpdateWeaponAnimator()  // CLIENT
@@ -198,7 +247,16 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         UpdateWeaponStateServerRpc(WeaponState.Idle);
     }
 
-
+    public void ShakeCamera()   // SERVER
+    {
+        NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(basicAttackCameraShakeIntensity, basicAttackCameraShakeDuration, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+    }
 
 // MISCELLANEOUS
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

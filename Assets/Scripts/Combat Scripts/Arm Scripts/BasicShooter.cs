@@ -5,8 +5,6 @@ using Unity.Netcode;
 
 public class BasicShooter : Arm
 {
-    private float nextBasicFireTime = 0f;
-
     private void Update()
     {
         UpdateWeaponAnimator();
@@ -24,30 +22,16 @@ public class BasicShooter : Arm
         {
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
-            NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(basicAttackCameraShakeIntensity, basicAttackCameraShakeDuration, new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { clientId }
-                }
-            });
+            ShakeCamera();
 
-            GameObject firedBasicProjectileClone = Instantiate(basicProjectile, shootPoint.transform.position, transform.rotation);
-            firedBasicProjectileClone.layer = transform.root.gameObject.layer;
-            // Setup teamId
-            firedBasicProjectileClone.GetComponent<Projectile>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
-            firedBasicProjectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            firedBasicProjectileClone.GetComponent<Projectile>().instantiatingArm = gameObject.GetComponent<Arm>();
-            firedBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
-            Rigidbody2D rb = firedBasicProjectileClone.GetComponent<Rigidbody2D>();
-            rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+            GameObject basicProjectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
+            basicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
+            FireProjectile(basicProjectileClone);
 
-            //Audio Player
             CastBasicAttackSFX();
-
             UpdateWeaponState(WeaponState.BasicAttack);
 
-            CastBasicAttackClientRpc(new ClientRpcParams
+            CastBasicAttackClientRpc(new ClientRpcParams    // REMOVE :This just notifies the client
             {
                 Send = new ClientRpcSendParams
                 {
@@ -59,20 +43,11 @@ public class BasicShooter : Arm
         }
         else
         {
-            // This should be like indication if Player can shoot
+            // TODO: This should be like indication if Player can shoot
             // UpdateWeaponState(WeaponState.Idle);
         }
 
     }
-
-    [ClientRpc]
-    public override void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        if (!IsOwner) return;
-
-        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
-    }
-
 
     public void CastSkill()
     {

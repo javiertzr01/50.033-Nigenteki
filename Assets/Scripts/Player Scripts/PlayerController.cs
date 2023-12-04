@@ -387,7 +387,10 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!IsOwner || !IsClient) return;
-
+        if (transform.childCount < 2)
+        {
+            return;
+        }
         Movement();
         Look();
         LeftArmBasicAttack();
@@ -454,10 +457,6 @@ public class PlayerController : NetworkBehaviour
         Vector2 worldMousePos = cam.ScreenToWorldPoint(mousePos);
         Vector2 lookDir = new Vector2((worldMousePos.x - transform.position.x), (worldMousePos.y - transform.position.y));
         //transform.up = lookDir;
-        if (transform.childCount < 2)
-        {
-            return;
-        }
         transform.GetChild(1).transform.up = lookDir;
         transform.GetChild(2).transform.up = lookDir;
         UpdateBeetleShieldDirection(transform.GetChild(1), lookDir); // For Left Arm Holder
@@ -519,7 +518,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -527,7 +526,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            leftArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            transform.GetChild(1).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
@@ -551,7 +550,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastSkillServerRpc();
         }
     }
 
@@ -559,7 +558,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (value)
         {
-            rightArmHolder.transform.GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
+            transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastUltimateServerRpc();
         }
     }
 
@@ -691,6 +690,18 @@ public class PlayerController : NetworkBehaviour
 
         cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
         shakeTimer = time;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void AdjustMovementSpeedServerRpc(float speed)
+    {
+        MoveSpeed = speed;
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void AdjustDamageTakenScaleServerRpc(float scale)
+    {
+        DamageTakenScale = scale;
     }
 
     private void UpdateAnimator()

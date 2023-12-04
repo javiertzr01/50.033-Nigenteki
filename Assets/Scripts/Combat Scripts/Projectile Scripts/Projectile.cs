@@ -7,16 +7,13 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using System;
 using Unity.VisualScripting;
 
-public abstract class Projectile : NetworkBehaviour
+public abstract class Projectile : Spawnables
 {
     public ProjectileVariables projectileVariable;
     private float _maxDistance;
     private float _damage;
-    public NetworkVariable<int> teamId = new NetworkVariable<int>();
     public bool isColliding = false;
 
-    [System.NonSerialized]
-    public Arm instantiatingArm;
     public Vector2 startingPosition;
 
     public GameObject damageNumber;

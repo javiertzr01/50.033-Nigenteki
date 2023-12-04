@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -33,8 +34,8 @@ public class SilkRoad : SkillObject
         PlayerController playerController = other.GetComponent<PlayerController>();
         if (playerController != null && !playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
-            playerController.MoveSpeed /= 2f; // Halve MoveSpeed
-            playerController.DamageTakenScale *= 2f; // Double Damage Taken
+            playerController.AdjustMovementSpeedServerRpc(playerController.MoveSpeed / 2f); // Halve MoveSpeed
+            playerController.AdjustDamageTakenScaleServerRpc(playerController.DamageTakenScale * 2f); // Double Damage Taken
             playersToStun.Add(playerController);
             Debug.Log("ENTER COUNT: " + playersToStun.Count);
             Debug.Log("ENTER TEAMID: " + teamId.Value);
@@ -47,8 +48,8 @@ public class SilkRoad : SkillObject
         PlayerController playerController = other.GetComponent<PlayerController>();
         if (playerController != null && playersToStun.Contains(playerController) && playerController.teamId.Value != teamId.Value)
         {
-            playerController.MoveSpeed *= 2f; // Reset MoveSpeed
-            playerController.DamageTakenScale /= 2f; // Reset Damage Taken
+            playerController.AdjustMovementSpeedServerRpc(playerController.MoveSpeed * 2f); // Reset MoveSpeed
+            playerController.AdjustDamageTakenScaleServerRpc(playerController.DamageTakenScale / 2f); // Reset Damage Taken
             playersToStun.Remove(playerController);
             Debug.Log("EXIT COUNT: " + playersToStun.Count);
             Debug.Log("EXIT TEAMID: " + teamId.Value);
@@ -62,8 +63,8 @@ public class SilkRoad : SkillObject
             if (playerController != null)
             {
                 playerController.RequestStunServerRpc(stunDuration);
-                playerController.MoveSpeed *= 2f; // Reset Movespeed
-                playerController.DamageTakenScale /= 2f; // Reset Damage Taken
+                playerController.AdjustMovementSpeedServerRpc(playerController.MoveSpeed * 2f); // Reset MoveSpeed
+                playerController.AdjustDamageTakenScaleServerRpc(playerController.DamageTakenScale / 2f); // Reset Damage Taken
             }
         }
 
