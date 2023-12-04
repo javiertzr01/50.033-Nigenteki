@@ -134120,6 +134120,11 @@ PrefabInstance:
       objectReference: {fileID: 783418997}
     - target: {fileID: 545950374616178165, guid: f352e202272a7c14b9cd73344e0cdab5,
         type: 3}
+      propertyPath: audioSFX0
+      value: 
+      objectReference: {fileID: 8300000, guid: 0d5f9455a8f74ef4b9ef17f9f63f45f2, type: 3}
+    - target: {fileID: 545950374616178165, guid: f352e202272a7c14b9cd73344e0cdab5,
+        type: 3}
       propertyPath: gameStateStore
       value: 
       objectReference: {fileID: 288351242}
