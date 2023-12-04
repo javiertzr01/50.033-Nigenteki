@@ -75,7 +75,7 @@ public class SilkRoad : SkillObject
                 playerController.AdjustMovementSpeedServerRpc(playerController.defaultMoveSpeed); // Reset MoveSpeed
                 playerController.AdjustDamageTakenScaleServerRpc(playerController.defaultDamageTakenScale); // Reset Damage Taken
             }
-            playersToStun.Clear(); // Clear the list after applying stun
         }
+        playersToStun.Clear(); // Clear the list after applying stun
     }
 }
