@@ -296,8 +296,34 @@ public class GameManager : NetworkBehaviour
     }
 
 
+    private void ProcessTeamKD()
+    {
+        team1Kills = 0;
+        team1Deaths = 0;
+        team2Kills = 0;
+        team2Deaths = 0;
+        foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            PlayerController player = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.GetComponent<PlayerController>();
+            if(player.teamId.Value == 1)
+            {
+                team1Kills += player.kills.Value;
+                team1Deaths += player.deaths.Value;
+            }
+            else if(player.teamId.Value == 2)
+            {
+                team2Kills += player.kills.Value;
+                team2Deaths += player.deaths.Value;
+            }
+
+        }
+
+
+    }
+
     private void CheckForKDRWinner()
     {
+        ProcessTeamKD();
         float team1KDR = team1Deaths > 0 ? team1Kills / (float)team1Deaths : team1Kills; // avoid division by zero.
         float team2KDR = team2Deaths > 0 ? team2Kills / (float)team2Deaths : team2Kills; // avoid division by zero.
 
