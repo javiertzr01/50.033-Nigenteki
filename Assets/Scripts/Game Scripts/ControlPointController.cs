@@ -47,7 +47,11 @@ public class ControlPointController : NetworkBehaviour, IAudioHelper
     {
         EvaluateControlPointOccupancy();
         UpdateControlPointStatusServerRpc();
-        
+
+        if (audioSource0 != null && audioSFX0 != null && gameStateStore.isControlPointActiveReducingTimer.Value && !audioSource0.isPlaying)
+        {
+            CastAudioSFXServerRpc(0);
+        }
 
     }
 
@@ -73,19 +77,13 @@ public class ControlPointController : NetworkBehaviour, IAudioHelper
             case ControlPointTeamOccupancyState.OnlyTeam1Present:
                 gameStateStore.isControlPointActive.Value = true;
                 gameStateStore.currentTeamOnControlPoint.Value = 1;
-                if(audioSource0 != null && audioSFX0 != null && !audioSource0.isPlaying)
-                {
-                    CastAudioSFXServerRpc(0);
-                }
+                
                 break;
 
             case ControlPointTeamOccupancyState.OnlyTeam2Present:
                 gameStateStore.isControlPointActive.Value = true;
                 gameStateStore.currentTeamOnControlPoint.Value = 2;
-                if (audioSource0 != null && audioSFX0 != null && !audioSource0.isPlaying)
-                {
-                    CastAudioSFXServerRpc(0);
-                }
+
                 break;
 
             case ControlPointTeamOccupancyState.NoPlayers:
