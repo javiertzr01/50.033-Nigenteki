@@ -56,18 +56,19 @@ public abstract class Projectile : NetworkBehaviour
         {
             OnPlayerTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "Shield") 
-        { 
+        else if (other.gameObject.tag == "Shield")
+        {
             OnShieldTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "Projectile") 
-        { 
+        else if (other.gameObject.tag == "Projectile")
+        {
             OnProjectileTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "ControlPoint") 
-        { 
+        else if (other.gameObject.tag == "ControlPoint")
+        {
             OnControlPointTriggerEnter2D(other);
         }
+        else if (other.gameObject.tag == "SpawnPoint") { }
         else
         {
             DestroyServerRpc();
@@ -87,14 +88,14 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamPlayerTriggerEnter2D(other);
         }
     }
-    public virtual void OnEnemyPlayerTriggerEnter2D(Collider2D other){}    // Params can be changed here
-    public virtual void OnTeamPlayerTriggerEnter2D(Collider2D other){}     // Params can be changed here
+    public virtual void OnEnemyPlayerTriggerEnter2D(Collider2D other) { }    // Params can be changed here
+    public virtual void OnTeamPlayerTriggerEnter2D(Collider2D other) { }     // Params can be changed here
 
 
 
     // Shield OnTriggerEnter2D Logic
     public virtual void OnShieldTriggerEnter2D(Collider2D other)            // Params can be changed here
-    { 
+    {
         if (other.transform.GetComponent<ShieldTrigger>().teamId.Value != teamId.Value)
         {
             OnEnemyShieldTriggerEnter2D(other);
@@ -103,9 +104,9 @@ public abstract class Projectile : NetworkBehaviour
         {
             OnTeamShieldTriggerEnter2D(other);
         }
-    }           
-    public virtual void OnEnemyShieldTriggerEnter2D(Collider2D other){}     // Params can be changed here
-    public virtual void OnTeamShieldTriggerEnter2D(Collider2D other){}      // Params can be changed here
+    }
+    public virtual void OnEnemyShieldTriggerEnter2D(Collider2D other) { }     // Params can be changed here
+    public virtual void OnTeamShieldTriggerEnter2D(Collider2D other) { }      // Params can be changed here
 
 
 
@@ -121,16 +122,16 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamProjectileTriggerEnter2D(other);
         }
     }
-    public virtual void OnEnemyProjectileTriggerEnter2D(Collider2D other){}  // Params can be changed here
-    public virtual void OnTeamProjectileTriggerEnter2D(Collider2D other){}   // Params can be changed here
+    public virtual void OnEnemyProjectileTriggerEnter2D(Collider2D other) { }  // Params can be changed here
+    public virtual void OnTeamProjectileTriggerEnter2D(Collider2D other) { }   // Params can be changed here
 
 
 
     // Control Point TriggerEnter2D Logic
-    public virtual void OnControlPointTriggerEnter2D(Collider2D other){}     // Params can be changed here
+    public virtual void OnControlPointTriggerEnter2D(Collider2D other) { }     // Params can be changed here
 
-    
-    
+
+
     // ON TRIGGER STAY
     // Player OnTriggerStay2D Logic
     public virtual void OnPlayerTriggerStay2D(Collider2D other)           // Params can be changed here
@@ -144,14 +145,14 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamPlayerTriggerStay2D(other);
         }
     }
-    public virtual void OnEnemyPlayerTriggerStay2D(Collider2D other){}    // Params can be changed here
-    public virtual void OnTeamPlayerTriggerStay2D(Collider2D other){}     // Params can be changed here
+    public virtual void OnEnemyPlayerTriggerStay2D(Collider2D other) { }    // Params can be changed here
+    public virtual void OnTeamPlayerTriggerStay2D(Collider2D other) { }     // Params can be changed here
 
 
 
     // Shield OnTriggerStay2D Logic
     public virtual void OnShieldTriggerStay2D(Collider2D other)            // Params can be changed here
-    { 
+    {
         if (other.transform.GetComponent<ShieldTrigger>().teamId.Value != teamId.Value)
         {
             OnEnemyShieldTriggerStay2D(other);
@@ -160,9 +161,9 @@ public abstract class Projectile : NetworkBehaviour
         {
             OnTeamShieldTriggerStay2D(other);
         }
-    }           
-    public virtual void OnEnemyShieldTriggerStay2D(Collider2D other){}     // Params can be changed here
-    public virtual void OnTeamShieldTriggerStay2D(Collider2D other){}      // Params can be changed here
+    }
+    public virtual void OnEnemyShieldTriggerStay2D(Collider2D other) { }     // Params can be changed here
+    public virtual void OnTeamShieldTriggerStay2D(Collider2D other) { }      // Params can be changed here
 
 
 
@@ -178,14 +179,14 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamProjectileTriggerStay2D(other);
         }
     }
-    public virtual void OnEnemyProjectileTriggerStay2D(Collider2D other){}  // Params can be changed here
-    public virtual void OnTeamProjectileTriggerStay2D(Collider2D other){}   // Params can be changed here
+    public virtual void OnEnemyProjectileTriggerStay2D(Collider2D other) { }  // Params can be changed here
+    public virtual void OnTeamProjectileTriggerStay2D(Collider2D other) { }   // Params can be changed here
 
 
 
     // Control Point TriggerStay2D Logic
-    public virtual void OnControlPointTriggerStay2D(Collider2D other){}     // Params can be changed here
-    
+    public virtual void OnControlPointTriggerStay2D(Collider2D other) { }     // Params can be changed here
+
 
 
     // ON TRIGGER EXIT
@@ -201,14 +202,14 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamPlayerTriggerExit2D(other);
         }
     }
-    public virtual void OnEnemyPlayerTriggerExit2D(Collider2D other){}    // Params can be changed here
-    public virtual void OnTeamPlayerTriggerExit2D(Collider2D other){}     // Params can be changed here
+    public virtual void OnEnemyPlayerTriggerExit2D(Collider2D other) { }    // Params can be changed here
+    public virtual void OnTeamPlayerTriggerExit2D(Collider2D other) { }     // Params can be changed here
 
 
 
     // Shield OnTriggerExit2D Logic
     public virtual void OnShieldTriggerExit2D(Collider2D other)            // Params can be changed here
-    { 
+    {
         if (other.transform.GetComponent<ShieldTrigger>().teamId.Value != teamId.Value)
         {
             OnEnemyShieldTriggerExit2D(other);
@@ -217,9 +218,9 @@ public abstract class Projectile : NetworkBehaviour
         {
             OnTeamShieldTriggerExit2D(other);
         }
-    }           
-    public virtual void OnEnemyShieldTriggerExit2D(Collider2D other){}     // Params can be changed here
-    public virtual void OnTeamShieldTriggerExit2D(Collider2D other){}      // Params can be changed here
+    }
+    public virtual void OnEnemyShieldTriggerExit2D(Collider2D other) { }     // Params can be changed here
+    public virtual void OnTeamShieldTriggerExit2D(Collider2D other) { }      // Params can be changed here
 
 
 
@@ -235,13 +236,13 @@ public abstract class Projectile : NetworkBehaviour
             OnTeamProjectileTriggerExit2D(other);
         }
     }
-    public virtual void OnEnemyProjectileTriggerExit2D(Collider2D other){}  // Params can be changed here
-    public virtual void OnTeamProjectileTriggerExit2D(Collider2D other){}   // Params can be changed here
+    public virtual void OnEnemyProjectileTriggerExit2D(Collider2D other) { }  // Params can be changed here
+    public virtual void OnTeamProjectileTriggerExit2D(Collider2D other) { }   // Params can be changed here
 
 
 
     // Control Point TriggerExit2D Logic
-    public virtual void OnControlPointTriggerExit2D(Collider2D other){}     // Params can be changed here
+    public virtual void OnControlPointTriggerExit2D(Collider2D other) { }     // Params can be changed here
 
 
 

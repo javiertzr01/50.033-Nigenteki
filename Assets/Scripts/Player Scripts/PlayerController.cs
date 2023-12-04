@@ -90,27 +90,27 @@ public class PlayerController : NetworkBehaviour
         playerHealth.Value = playerMaxHealth.Value;
         spawnPosition.Value = transform.position;
 
-        switch(transform.name)
+        switch (transform.name)
         {
-            case("Player Red Defender(Clone)"):
-            sprite.Value = CharacterSpriteMap.defender_red;
-            break;
+            case ("Player Red Defender(Clone)"):
+                sprite.Value = CharacterSpriteMap.defender_red;
+                break;
 
-            case("Player Red Guardian(Clone)"):
-            sprite.Value = CharacterSpriteMap.guardian_red;
-            break;
+            case ("Player Red Guardian(Clone)"):
+                sprite.Value = CharacterSpriteMap.guardian_red;
+                break;
 
-            case("Player Blue Defender(Clone)"):
-            sprite.Value = CharacterSpriteMap.defender_blue;
-            break;
+            case ("Player Blue Defender(Clone)"):
+                sprite.Value = CharacterSpriteMap.defender_blue;
+                break;
 
-            case("Player Blue Guardian(Clone)"):
-            sprite.Value = CharacterSpriteMap.guardian_blue;
-            break;
+            case ("Player Blue Guardian(Clone)"):
+                sprite.Value = CharacterSpriteMap.guardian_blue;
+                break;
 
             default:
-            Debug.Log("No character chosen");
-            break;
+                Debug.Log("No character chosen");
+                break;
         }
 
         redCrystalCount.Value = 0;

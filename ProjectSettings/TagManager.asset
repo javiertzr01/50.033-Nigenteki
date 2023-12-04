@@ -10,6 +10,7 @@ TagManager:
   - Healing
   - ControlPoint
   - SkillObject
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

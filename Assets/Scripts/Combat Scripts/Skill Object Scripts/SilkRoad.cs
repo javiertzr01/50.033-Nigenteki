@@ -62,12 +62,21 @@ public class SilkRoad : SkillObject
             if (playerController != null)
             {
                 playerController.RequestStunServerRpc(stunDuration);
+            }
+        }
+    }
+
+    public override void OnDestroy()
+    {
+        foreach (PlayerController playerController in playersToStun)
+        {
+            if (playerController != null)
+            {
                 playerController.MoveSpeed *= 2f; // Reset Movespeed
                 playerController.DamageTakenScale /= 2f; // Reset Damage Taken
             }
+            playersToStun.Clear(); // Clear the list after applying stun
         }
-
-        playersToStun.Clear(); // Clear the list after applying stun
+        base.OnDestroy();
     }
-
 }
