@@ -80,6 +80,14 @@ public class GameManager : NetworkBehaviour
                     ReduceTeamTimer(2, captureMultiplier);
                 }
             }
+            else
+            {
+                gameStateStore.isControlPointActiveReducingTimer.Value = false;
+            }
+        }
+        else
+        {
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
         }
     }
 
@@ -112,6 +120,8 @@ public class GameManager : NetworkBehaviour
 
     public void EndGame()
     {
+        gameStateStore.isControlPointActiveReducingTimer.Value = false;
+
         GameInProgress = false;
         SetTimeScaleClientRpc(0); // Call the RPC method
         gameStateStore.phase.Value = 0;
@@ -236,6 +246,10 @@ public class GameManager : NetworkBehaviour
             {
                 gameStateStore.team2Timer.Value = AdjustTimerValue(gameStateStore.team2Timer.Value, clockedTime);
             }
+            else
+            {
+                gameStateStore.isControlPointActiveReducingTimer.Value = false;
+            }
 
             // Check for win condition
             if (gameStateStore.team1Timer.Value <= winCondition || gameStateStore.team2Timer.Value <= winCondition)
@@ -252,13 +266,20 @@ public class GameManager : NetworkBehaviour
         float timer = currentTeamTimer;
         timer -= clockedTime;
 
+        
         if (gameStateStore.phase.Value == 1 && timer < phaseOneMaxCaptureTimer)
         {
             timer = phaseOneMaxCaptureTimer;
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
         }
         else if (gameStateStore.phase.Value == 1 && timer < winCondition)
         {
             timer = winCondition;
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
+        }
+        else
+        {
+            gameStateStore.isControlPointActiveReducingTimer.Value = true;
         }
 
 

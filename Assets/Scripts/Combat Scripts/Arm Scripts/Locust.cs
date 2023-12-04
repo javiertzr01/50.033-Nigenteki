@@ -109,6 +109,11 @@ public class Locust : Arm
                 // shotBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 1f;
                 Rigidbody2D rb = shotBasicProjectileClone.GetComponent<Rigidbody2D>();
                 rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+
+                //Audio Player
+                int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
                 // Cast the Basic Attack ClientRpc
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
@@ -191,6 +196,11 @@ public class Locust : Arm
 
         if (ulted || skillCharges > 0)
         {
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
+
             // Trigger the dash on the client
             playerController.TriggerDashClientRpc(new ClientRpcParams
             {
@@ -234,6 +244,11 @@ public class Locust : Arm
             UltimateCharge = 0f; // Reset Ultimate Charge
             ulted = true;
             playerController.immuneStun.Value = true;
+
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
             {

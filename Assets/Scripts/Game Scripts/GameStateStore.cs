@@ -13,6 +13,7 @@ public class GameStateStore : NetworkBehaviour
     public NetworkVariable<int> gameWinner = new NetworkVariable<int>();
 
     public NetworkVariable<bool> isControlPointActive = new NetworkVariable<bool>();
+    public NetworkVariable<bool> isControlPointActiveReducingTimer = new NetworkVariable<bool>();
     public NetworkList<ulong> team1PlayersIDOnControlPoint;
     public NetworkVariable<int> numberOfTeam1PlayersOnControlPoint = new NetworkVariable<int>();
     public NetworkList<ulong> team2PlayersIDOnControlPoint;
@@ -34,6 +35,7 @@ public class GameStateStore : NetworkBehaviour
     public void Awake()
     {
         isControlPointActive.Value = false;
+        isControlPointActiveReducingTimer.Value = false;
         team1PlayersIDOnControlPoint = new NetworkList<ulong>();
         team2PlayersIDOnControlPoint = new NetworkList<ulong>();
     }

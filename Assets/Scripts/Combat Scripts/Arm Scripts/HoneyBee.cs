@@ -97,6 +97,11 @@ public class HoneyBee : Arm
             // shotBasicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             Rigidbody2D rb = shotBasicProjectileClone.GetComponent<Rigidbody2D>();
             rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+
+            //Audio Player
+            int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
             // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams
             {
@@ -142,6 +147,10 @@ public class HoneyBee : Arm
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
             skillReady = false;
+
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Skill ClientRpc
             CastSkillClientRpc(new ClientRpcParams
@@ -205,6 +214,11 @@ public class HoneyBee : Arm
             }
             ulted = true;
             countdownTimer = armVariable.ultimateDuration;
+
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams
             {

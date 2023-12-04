@@ -50,6 +50,10 @@ public class Beetle : Arm
 
         shieldInitialized = true;
 
+        ////Audio Player
+        //int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+        //CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
         SpawnShieldClientRpc(new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -157,6 +161,10 @@ public class Beetle : Arm
                 rb.AddForce(ultShootPoint.transform.up * armVariable.ultimateForce, ForceMode2D.Impulse);
                 Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack: ");
 
+                //Audio Player
+                int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
@@ -181,6 +189,11 @@ public class Beetle : Arm
                 Rigidbody2D rb = shotBasicProjectile.GetComponent<Rigidbody2D>();
                 rb.AddForce(ultShootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
                 Debug.Log("Casting " + armVariable.armName + "'s Alt Attack");
+
+                //Audio Player
+                // DisabledSFX
+                int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
                 CastBasicAttackClientRpc(new ClientRpcParams
                 {
@@ -235,6 +248,10 @@ public class Beetle : Arm
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
 
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
             // Cast the Skill ClientRpc
             CastSkillClientRpc(new ClientRpcParams
             {
@@ -282,6 +299,10 @@ public class Beetle : Arm
 
             // Set the start time of the ultimate
             ultimateStartTime = Time.time;
+
+            ////Audio Player
+            //int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            //CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams

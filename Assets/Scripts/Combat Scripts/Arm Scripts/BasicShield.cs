@@ -12,6 +12,45 @@ public class BasicShield : Arm
     protected bool destroyed;
     protected GameObject currentShield;
 
+    private AudioClip enableShieldSFX;
+    private AudioClip disbleShieldSFX;
+    private AudioClip destroyedShieldSFX;
+    public AudioClip disabledOptionSFX; 
+
+
+    private void Start()
+    {
+        base.Start();
+
+        enableShieldSFX = basicAttackSFX;
+        disbleShieldSFX = skillSFX;
+        destroyedShieldSFX = ultimateSFX;
+
+    }
+
+    protected override void SetAudioSourceClips(int attackTypeIndex, out AudioSource audioSource, out AudioClip audioClip)
+    {
+        switch (attackTypeIndex)
+        {
+            case 3:
+                audioSource = audioSource2;
+                audioClip = disabledOptionSFX;
+                break;
+            case 2:
+                audioSource = audioSource2;
+                audioClip = destroyedShieldSFX;
+                break;
+            case 1:
+                audioSource = audioSource1;
+                audioClip = disbleShieldSFX;
+                break;
+            default:
+            case 0:
+                audioSource = audioSource0;
+                audioClip = enableShieldSFX;
+                break;
+        }
+    }
 
     public override void Initialize()
     {
@@ -69,6 +108,11 @@ public class BasicShield : Arm
             if (activated)
             {
                 ToggleShield();
+                //destroyed shield sfx
+                //Audio Player
+                int attackTypeIndex = 2; //Enable - 0; DisableShield - 1; Destroyed - 2; DisabledOption - 3;
+                CastAttackSFXServerRpc(attackTypeIndex);
+
             }
         }
 
@@ -87,6 +131,27 @@ public class BasicShield : Arm
             shieldCollider.enabled = !activated;
             shieldSprite.enabled = !activated;
             activated = !activated;
+            if (activated)
+            {
+                //activated sfx
+                //Audio Player
+                int attackTypeIndex = 0; //Enable - 0; DisableShield - 1; Destroyed - 2; DisabledOption - 3;
+                CastAttackSFXServerRpc(attackTypeIndex);
+            }
+            else
+            {
+                //deactivated sfx
+                //Audio Player
+                int attackTypeIndex = 1; //Enable - 0; DisableShield - 1; Destroyed - 2; DisabledOption - 3;
+                CastAttackSFXServerRpc(attackTypeIndex);
+            }
+        }
+        else
+        {
+            //disabled sfx
+            //Audio Player
+            int attackTypeIndex = 3; //Enable - 0; DisableShield - 1; Destroyed - 2; DisabledOption - 3;
+            CastAttackSFXServerRpc(attackTypeIndex);
         }
     }
 

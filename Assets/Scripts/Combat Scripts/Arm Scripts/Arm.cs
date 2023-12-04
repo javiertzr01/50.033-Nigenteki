@@ -19,7 +19,11 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     private Animator animator;
     protected GameObject basicProjectile;
     private float _ultimateCharge;
-    protected AudioSource audioSource;
+
+    protected AudioSource audioSource0;
+    protected AudioSource audioSource1;
+    protected AudioSource audioSource2;
+
     public AudioClip basicAttackSFX;   // Assign this in the Inspector
     public AudioClip skillSFX;   // Assign this in the Inspector
     public AudioClip ultimateSFX;   // Assign this in the Inspector
@@ -31,6 +35,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public float ultimateCameraShakeIntensity;
     public float ultimateCameraShakeDuration;
 
+    protected void Awake()
+    {
+        audioSource0 = gameObject.AddComponent<AudioSource>();
+        audioSource1 = gameObject.AddComponent<AudioSource>();
+        audioSource2 = gameObject.AddComponent<AudioSource>();
+    }
 
     protected virtual void Start()
     {
@@ -57,17 +67,20 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     [ClientRpc]
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    // Server-side method to loop and play audio
+    protected void PlayAudioForAllClients(int attackTypeIndex, ClientRpcParams clientRpcParams = default)
     {
-        if (basicAttackSFX != null && audioSource != null)
+        AudioSource audioSource;
+        AudioClip audioClip;
+        SetAudioSourceClips(attackTypeIndex, out audioSource, out audioClip);
+
+        if (audioClip != null)
         {
             foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-
                 Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
 
-                CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
+                PlayAudioClientRpc(attackTypeIndex, otherPlayerPosition, new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
                     {
@@ -75,23 +88,30 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
                     }
                 });
             }
-            //audioSource.PlayOneShot(basicAttackSFX, 1f);
         }
     }
 
-    [ClientRpc]
-    public void CastBasicAttackSFXClientRpc(Vector3 otherPlayerPosition, ClientRpcParams clientRpcParams = default)
+    [ServerRpc(RequireOwnership = false)]
+    public void CastAttackSFXServerRpc(int attackTypeIndex, ServerRpcParams serverRpcParams = default)
     {
+        PlayAudioForAllClients(attackTypeIndex);
+    }
 
+    // Method to play audio with given AudioSource and AudioClip
+    protected void PlayAudio(int attackTypeIndex, Vector3 otherPlayerPosition)
+    {
+        AudioSource audioSource;
+        AudioClip audioClip;
+        SetAudioSourceClips(attackTypeIndex, out audioSource, out audioClip);
 
-        if (basicAttackSFX != null && audioSource != null)
+        if (audioClip != null && audioSource != null)
         {
             // Calculate the distance between this player and the other player
             Vector2 relativePosition = otherPlayerPosition - transform.position;
 
             float maxPanDistance = 5f;
             float panExponent = 2f;     // A quadratic curve for more pronounced panning
-            float volumeExponent = 3f;     // A quadratic curve for more pronounced volume
+            float volumeExponent = 3f;  // A quadratic curve for more pronounced volume
 
             // Define the maximum distance at which the sound can be heard
             float maxDistance = 100f;
@@ -106,9 +126,34 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
             float volumeRatio = Mathf.Clamp(1 - (distance / maxDistance), 0, 1);
             float volume = Mathf.Pow(volumeRatio, volumeExponent);
 
-            audioSource.PlayOneShot(basicAttackSFX, volume);
-
+            audioSource.PlayOneShot(audioClip, volume);
         }
+    }
+
+    protected virtual void SetAudioSourceClips(int attackTypeIndex, out AudioSource audioSource, out AudioClip audioClip)
+    {
+        switch (attackTypeIndex)
+        {
+            case 2:
+                audioSource = audioSource2;
+                audioClip = ultimateSFX;
+                break;
+            case 1:
+                audioSource = audioSource1;
+                audioClip = skillSFX;
+                break;
+            default:
+            case 0:
+                audioSource = audioSource0;
+                audioClip = basicAttackSFX;
+                break;
+        }
+    }
+
+    [ClientRpc]
+    public void PlayAudioClientRpc(int attackTypeIndex, Vector3 otherPlayerPosition, ClientRpcParams clientRpcParams = default)
+    {
+        PlayAudio(attackTypeIndex, otherPlayerPosition);
     }
 
     [ServerRpc(RequireOwnership = false)]
