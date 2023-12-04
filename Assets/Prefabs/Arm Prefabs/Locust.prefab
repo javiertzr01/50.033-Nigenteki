@@ -246,9 +246,9 @@ MonoBehaviour:
   - {fileID: 6570955299702910688, guid: 11b4516544b363d4e958091cddca2418, type: 3}
   shootPoint: {fileID: 3178301148310594185}
   animator: {fileID: 0}
-  basicAttackSFX: {fileID: 0}
-  skillSFX: {fileID: 0}
-  ultimateSFX: {fileID: 0}
+  basicAttackSFX: {fileID: 8300000, guid: 277094143c5c50e478771750f6882e83, type: 3}
+  skillSFX: {fileID: 8300000, guid: ef6cc4afc69bb404aa98e5cf0d81083f, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: 7f8c22c40f113544da9b0d4ccebf98e3, type: 3}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
   skillCameraShakeIntensity: 0

@@ -165,11 +165,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armVariable: {fileID: 11400000, guid: 042e2d128cf62db4282c6713b8fd7614, type: 2}
+  networkWeaponState:
+    m_InternalValue: 0
   projectiles:
   - {fileID: 5537228041370519060, guid: 95b9165a552fbba4c87694200b87cad4, type: 3}
   - {fileID: 6660459748630045391, guid: 282c100d356988441864a0fdcbeb51ff, type: 3}
   - {fileID: 4697647102691926273, guid: cf2b3ab694978164d936870f150324b4, type: 3}
   shootPoint: {fileID: 3353677083415655259}
+  animator: {fileID: 0}
+  basicAttackSFX: {fileID: 8300000, guid: 9dcaa67abec342542a62b0d7b2a5febc, type: 3}
+  skillSFX: {fileID: 8300000, guid: 2d78c6b9184164b41b5642d94bd29ea9, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: f7b0fd5326941c74a82d5b7279b9a479, type: 3}
+  basicAttackCameraShakeIntensity: 0
+  basicAttackCameraShakeDuration: 0
+  skillCameraShakeIntensity: 0
+  skillCameraShakeDuration: 0
+  ultimateCameraShakeIntensity: 0
+  ultimateCameraShakeDuration: 0
+  disabledOptionSFX: {fileID: 8300000, guid: b190a8a5f59499f4f9204e64b9a04da9, type: 3}
 --- !u!114 &-1105360502137136963
 MonoBehaviour:
   m_ObjectHideFlags: 0

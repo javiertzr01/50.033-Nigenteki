@@ -296,6 +296,11 @@ MonoBehaviour:
     m_InternalValue: 0
   shieldCollider: {fileID: 0}
   shieldSprite: {fileID: 0}
+  activateShieldSFX: {fileID: 8300000, guid: 9dcaa67abec342542a62b0d7b2a5febc, type: 3}
+  deactivateShieldSFX: {fileID: 8300000, guid: 2d78c6b9184164b41b5642d94bd29ea9, type: 3}
+  destroyedShieldSFX: {fileID: 8300000, guid: f7b0fd5326941c74a82d5b7279b9a479, type: 3}
+  disabledOptionSFX: {fileID: 8300000, guid: b190a8a5f59499f4f9204e64b9a04da9, type: 3}
+  takeDamageSFX: {fileID: 8300000, guid: c7fe2089dc8a1cb4d8791e8d68bfa165, type: 3}
   isShieldActive:
     m_InternalValue: 0
 --- !u!114 &-5284786589227282400
