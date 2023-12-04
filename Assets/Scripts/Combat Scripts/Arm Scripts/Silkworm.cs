@@ -47,7 +47,7 @@ public class Silkworm : Arm
             Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
             GameObject basicProjectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
-            FireProjectile(basicProjectileClone);
+            FireProjectile(basicProjectileClone, armVariable.baseForce);
 
             // Set the nextBasicFireTime
             nextBasicFireTime = Time.time + armVariable.baseFireRate;

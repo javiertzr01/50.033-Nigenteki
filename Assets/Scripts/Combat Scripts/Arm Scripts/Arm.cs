@@ -18,11 +18,11 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     protected GameObject basicProjectile;   
     protected GameObject spellProjectile;   
     protected GameObject ultimateProjectile;
+    protected GameObject altProjectile;
     [SerializeField]
     protected int maxSkillCharges;
     protected int maxSkillInstantiations;
-    protected float countdownTimer;
-    [SerializeField]
+    protected float countdownTimer;         // Used as Ult Timer
     private float _skillCoolDown;
     [SerializeField]
     private int _skillCharges;
@@ -240,12 +240,12 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         projectileClone.GetComponent<Spawnables>().instantiatingArm = gameObject.GetComponent<Arm>();
     }
 
-    public void FireProjectile(GameObject projectileClone)  // SERVER ONLY
+    public void FireProjectile(GameObject projectileClone, float force)  // SERVER ONLY
     {
         // FIRE PROJECTILE ON SERVER
         // Network Transform included - Synced to all clients
         Rigidbody2D rb = projectileClone.GetComponent<Rigidbody2D>();
-        rb.AddForce(shootPoint.transform.up * armVariable.baseForce, ForceMode2D.Impulse);
+        rb.AddForce(shootPoint.transform.up * force, ForceMode2D.Impulse);
     }
 
 // ANIMATION

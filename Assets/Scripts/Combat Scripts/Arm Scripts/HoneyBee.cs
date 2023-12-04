@@ -29,30 +29,27 @@ public class HoneyBee : Arm
             if (countdownTimer > 0f)
             {
                 countdownTimer -= Time.deltaTime;
-                if (countdownTimer <= 0f)
+            }
+            else
+            {
+                Debug.Log("Honeybee Ultimate ended");
+                // Reset
+                // Iterate through each player
+                foreach (var player in players)
                 {
-                    Debug.Log("Honeybee Ultimate ended");
-                    // Reset
-                    // Iterate through each player
-                    foreach (var player in players)
+                    // Access the PlayerController script
+                    PlayerController playerController = player.GetComponent<PlayerController>();
+                    // Check if the playerController is not null and is an ally
+                    if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
                     {
-                        // Access the PlayerController script
-                        PlayerController playerController = player.GetComponent<PlayerController>();
-
-                        // Check if the playerController is not null and is an ally
-                        if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
-                        {
-                            // Reset the MoveSpeed variable
-                            playerController.AdjustMovementSpeedServerRpc(playerController.defaultMoveSpeed);
-                            // Reset damage taken
-                            playerController.AdjustDamageTakenScaleServerRpc(playerController.defaultDamageTakenScale);
-                            playerController.passiveHealthRegenerationPercentage = playerController.defaultPassiveHealthRegenerationPercentage;
-                        }
+                        // Reset the MoveSpeed variable
+                        playerController.AdjustMovementSpeedServerRpc(playerController.defaultMoveSpeed);
+                        // Reset damage taken
+                        playerController.AdjustDamageTakenScaleServerRpc(playerController.defaultDamageTakenScale);
+                        playerController.passiveHealthRegenerationPercentage = playerController.defaultPassiveHealthRegenerationPercentage;
                     }
-
-                    ulted = false;
-
                 }
+                ulted = false;
             }
         }
     }
@@ -77,7 +74,7 @@ public class HoneyBee : Arm
             // Spawn the Projectile
             GameObject projectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
             // Fire the projectile
-            FireProjectile(projectileClone);
+            FireProjectile(projectileClone, armVariable.baseForce);
             // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams            // REMOVE : This just notifies the client
             {

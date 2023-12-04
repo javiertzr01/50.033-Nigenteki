@@ -68,7 +68,7 @@ public class Locust : Arm
                 {
                     ProjectileSpawned = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
                 }
-                FireProjectile(ProjectileSpawned);
+                FireProjectile(ProjectileSpawned, armVariable.baseForce);
 
                 // Set the nextBasicFireTime
                 if (ulted)

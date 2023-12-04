@@ -30,7 +30,7 @@ public class BasicShooter : Arm
 
             GameObject basicProjectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
             basicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
-            FireProjectile(basicProjectileClone);
+            FireProjectile(basicProjectileClone, armVariable.baseForce);
 
             CastBasicAttackSFX();                           // TODO: Add this in Arms so that everyone has
             UpdateWeaponState(WeaponState.BasicAttack);     // TODO: Add this to Arms so that everyone has

@@ -5,25 +5,23 @@ using UnityEngine;
 
 public class BeetleSkillTrigger : ShieldTrigger
 {
-    Beetle arm;
 
     [SerializeField]
-    private float countdownTimer; // Countdown timer
+    private float skillDurationTimer; // Countdown timer
 
     void Start()
     {
-        arm = instantiatingArm.GetComponent<Beetle>();
-        countdownTimer = arm.armVariable.skillDuration;
+        skillDurationTimer = instantiatingArm.armVariable.skillDuration;
     }
 
     private void Update()
     {
-        if (countdownTimer > 0f)
+        if (skillDurationTimer > 0f)
         {
-            countdownTimer -= Time.deltaTime;
-            if (countdownTimer <= 0f)
+            skillDurationTimer -= Time.deltaTime;
+            if (skillDurationTimer <= 0f)
             {
-                DestroyServerRpc();
+                DestroyShieldServerRpc();
             }
         }
     }
@@ -42,7 +40,7 @@ public class BeetleSkillTrigger : ShieldTrigger
         if (ShieldHealth <= 0)
         {
             Logger.Instance.LogInfo("BEETLE SKILL DESTROYED");
-            DestroyServerRpc();
+            DestroyShield();
         }
     }
 
