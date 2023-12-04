@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7dce1fb9ca6121b4098e4fe5136a259c
+guid: d22d79975d3de6f439f36525151e85f0
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 110
+  spritePixelsToUnits: 24
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,49 +108,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: locust_0
-      rect:
-        serializedVersion: 2
-        x: 156
-        y: 24
-        width: 108
-        height: 108
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 92f55b883c655284c8dac1bdeb343687
-      internalID: -1898389670
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: locust_1
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 24
-        width: 108
-        height: 108
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 51c0d79a4d561de438c8e583ad4e4037
-      internalID: -1473646272
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -161,15 +119,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      grasshopper_0: -1656490799
-      grasshopper_1: 1781263123
-      locust_0: -1898389670
-      locust_1: -1473646272
-      tulapas-icons-export_0: 113941242
-      tulapas-icons-export_1: -1031606881
-      tulapas-icons-export_2: 1830341609
-      tulapas-icons-export_3: 1400528218
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
