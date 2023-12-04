@@ -734,13 +734,13 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void AdjustPlayerHealth(float health)
+    public void AdjustPlayerHealthServerRpc(float health)
     {
         playerHealth.Value = health;
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void AdjustPlayerMaxHealth(float health)
+    public void AdjustPlayerMaxHealthServerRpc(float health)
     {
         playerMaxHealth.Value = health;
     }

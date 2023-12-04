@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileName: Locust Ult
   damage: 40
+  damageUpgraded: 40
+  damageMax: 60
   maxDistance: 3
+  maxDistanceUpgraded: 10

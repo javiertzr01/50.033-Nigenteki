@@ -70,8 +70,8 @@ public class Beetle : Arm
     public override void OnMax()
     {
         base.OnMax();
-        transform.GetComponentInParent<PlayerController>().AdjustPlayerMaxHealth(1.5f * transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
-        transform.GetComponentInParent<PlayerController>().AdjustPlayerHealth(transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
+        transform.GetComponentInParent<PlayerController>().AdjustPlayerMaxHealthServerRpc(1.5f * transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
+        transform.GetComponentInParent<PlayerController>().AdjustPlayerHealthServerRpc(transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
     }
     // SPAWNING
     [ServerRpc(RequireOwnership = false)]
