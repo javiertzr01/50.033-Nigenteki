@@ -2,27 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Mathematics;
 
 public abstract class Arm : NetworkBehaviour, INetworkSerializable
 {
-    public ArmVariables armVariable; // Ensure ArmVariables is serializable if it contains network-relevant data
+    // Variables
+    public ArmVariables armVariable;        // Ensure ArmVariables is serializable if it contains network-relevant data
     public NetworkVariable<WeaponState> networkWeaponState = new NetworkVariable<WeaponState>();
 
-    // Serialize references by ID or some other network-friendly method, not directly
+    // Variables (Combat)
     [SerializeField]
     protected List<GameObject> projectiles; // Consider serializing relevant state information instead of GameObjects
-
     [SerializeField]
-    protected GameObject shootPoint; // Same as above, consider what needs to be synchronized
+    protected GameObject shootPoint;        // Same as above, consider what needs to be synchronized
+    protected GameObject basicProjectile;   
+    protected GameObject spellProjectile;   
+    protected GameObject ultimateProjectile;
+    protected GameObject altProjectile;
+    [SerializeField]
+    protected int maxSkillCharges;
+    protected int maxSkillInstantiations;
+    protected float countdownTimer;         // Used as Ult Timer
+    private float _skillCoolDown;
+    [SerializeField]
+    private int _skillCharges;
+    [SerializeField]
+    private float _ultimateCharge;
+
+    protected float nextBasicFireTime;
+
+    // Variables (Audio)
+    protected AudioSource audioSource;
+    public AudioClip basicAttackSFX;        // Assign this in the Inspector
+    public AudioClip skillSFX;              // Assign this in the Inspector
+    public AudioClip ultimateSFX;           // Assign this in the Inspector
+
+    // Variables (Visual)
     [SerializeField]
     private Animator animator;
-    protected GameObject basicProjectile;
-    private float _ultimateCharge;
-    protected AudioSource audioSource;
-    public AudioClip basicAttackSFX;   // Assign this in the Inspector
-    public AudioClip skillSFX;   // Assign this in the Inspector
-    public AudioClip ultimateSFX;   // Assign this in the Inspector
-
     public float basicAttackCameraShakeIntensity;
     public float basicAttackCameraShakeDuration;
     public float skillCameraShakeIntensity;
@@ -30,40 +47,56 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public float ultimateCameraShakeIntensity;
     public float ultimateCameraShakeDuration;
 
+    // Properties (Combat)
+    public float SkillCoolDown
+    {
+        get => _skillCoolDown;
+        set => _skillCoolDown = value;
+    }
+    public int SkillCharges
+    {
+        get => _skillCharges;
+        set => _skillCharges = value;
+    }
+    public float UltimateCharge
+    {
+        get => _ultimateCharge;
+        set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
+    }
 
-    protected virtual void Start()
+
+
+    public override void OnNetworkSpawn()
     {
         Initialize();
     }
 
     public virtual void Initialize()
     {
-        basicProjectile = projectiles[0];
+        SetProjectiles();   
+
+        audioSource = GetComponent<AudioSource>();
+
+        maxSkillCharges = armVariable.skillMaxCharges;
+        maxSkillInstantiations = armVariable.skillMaxInstants;
+        SkillCharges = maxSkillCharges;
+        SkillCoolDown = armVariable.skillCoolDown;
+        UltimateCharge = armVariable.ultimateCharge;
+        countdownTimer = armVariable.ultimateDuration;
+
+        nextBasicFireTime = 0f;
     }
 
-    private float _skillCoolDown;
+    
 
-    public float SkillCoolDown
+// SOUND EFFECTS
+    public void CastBasicAttackSFX()    //SERVER ONLY
     {
-        get => _skillCoolDown;
-        set => _skillCoolDown = value;
-    }
-
-    // The basic attack method
-    [ServerRpc(RequireOwnership = false)]
-    public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
-
-    [ClientRpc]
-    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) { }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
-    {
+        if (!IsServer) return;
         if (basicAttackSFX != null && audioSource != null)
         {
             foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-
                 Vector3 otherPlayerPosition = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.position;
 
                 CastBasicAttackSFXClientRpc(otherPlayerPosition, new ClientRpcParams
@@ -74,15 +107,18 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
                     }
                 });
             }
-            //audioSource.PlayOneShot(basicAttackSFX, 1f);
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void CastBasicAttackSFXServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        CastBasicAttackSFX();
     }
 
     [ClientRpc]
     public void CastBasicAttackSFXClientRpc(Vector3 otherPlayerPosition, ClientRpcParams clientRpcParams = default)
     {
-
-
         if (basicAttackSFX != null && audioSource != null)
         {
             // Calculate the distance between this player and the other player
@@ -106,66 +142,155 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
             float volume = Mathf.Pow(volumeRatio, volumeExponent);
 
             audioSource.PlayOneShot(basicAttackSFX, volume);
-
         }
     }
 
+
+
+// COMBAT
+    public abstract void SetProjectiles();
+
+    // The basic attack method
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
+
+    [ClientRpc]
+    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) 
+    { 
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
+    }
+    
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) { }
+    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) 
+    {
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public virtual void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) { }
+    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) 
+    { 
+        if (!IsOwner) return;
+        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
+    }
 
-    public void ChargeUltimate(float charge, float divisor)
+    [ServerRpc(RequireOwnership = false)]
+    public void ChargeUltimateServerRpc(float charge, float divisor)
     {
         if (divisor < 1)
         {
             divisor = 1;
         }
-        UltimateCharge += (charge / divisor);
+        AdjustUltimateCharge(UltimateCharge + (charge / divisor));
         Debug.Log(armVariable.armName + " Ultimate Charge: " + UltimateCharge);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateWeaponAnimatorServerRpc(WeaponState newState)
+    public void ResetUltimateCharge()
     {
-        networkWeaponState.Value = newState;
+        AdjustUltimateCharge(0f);   // Reset Ultimate Charge
+        AdjustUltimateChargeClientRpc(0f);
     }
 
-    public void UpdateWeaponAnimator()
+    public void AdjustUltimateCharge(float charge)  // SERVER ONLY
+    {
+        UltimateCharge = charge;
+        AdjustUltimateChargeClientRpc(charge);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AdjustUltimateChargeServerRpc(float charge)
+    {
+        AdjustUltimateCharge(charge);
+    }
+
+    [ClientRpc]
+    public void AdjustUltimateChargeClientRpc(float charge)
+    {
+        UltimateCharge = charge;
+    }
+
+    public GameObject SpawnProjectile<T>(ulong ownerId, GameObject projectilePrefab, GameObject shootPointPrefab) where T : Spawnables   // SERVER ONLY
+    {
+        // CLIENT-INCLUSIVE
+        GameObject projectileClone = Instantiate(projectilePrefab, shootPointPrefab.transform.position, transform.rotation);
+        projectileClone.GetComponent<T>().teamId.Value = transform.root.transform.GetComponent<PlayerController>().teamId.Value;
+        projectileClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(ownerId);
+
+        // CLIENT-EXCLUSIVE - Need to sync with ClientRpc
+        projectileClone.layer = transform.root.gameObject.layer;
+        projectileClone.GetComponent<T>().instantiatingArm = gameObject.GetComponent<Arm>();
+
+        ulong projectileId = projectileClone.GetComponent<NetworkObject>().NetworkObjectId;
+
+        SpawnProjectileClientRpc(projectileId);
+        return projectileClone;
+    }
+
+    [ClientRpc]
+    public virtual void SpawnProjectileClientRpc(ulong projectileId)
+    {
+        GameObject projectileClone = NetworkManager.Singleton.SpawnManager.SpawnedObjects[projectileId].gameObject;
+        projectileClone.GetComponent<Spawnables>().instantiatingArm = gameObject.GetComponent<Arm>();
+    }
+
+    public void FireProjectile(GameObject projectileClone, float force)  // SERVER ONLY
+    {
+        // FIRE PROJECTILE ON SERVER
+        // Network Transform included - Synced to all clients
+        Rigidbody2D rb = projectileClone.GetComponent<Rigidbody2D>();
+        rb.AddForce(shootPoint.transform.up * force, ForceMode2D.Impulse);
+    }
+
+// ANIMATION
+    public void UpdateWeaponAnimator()  // CLIENT
     {
         if (networkWeaponState.Value == WeaponState.Idle)
         {
-            animator.SetBool("isBasicAttack", true);
+            animator.SetBool("isBasicAttack", false);
         }
         else if (networkWeaponState.Value == WeaponState.BasicAttack)
         {
-            animator.SetBool("isBasicAttack", false);
+            animator.SetBool("isBasicAttack", true);
         }
     }
 
-    public float UltimateCharge
+    public void UpdateWeaponState(WeaponState newState) //SERVER ONLY
     {
-        get => _ultimateCharge;
-        set => _ultimateCharge = Mathf.Clamp(value, 0, 100);
+        if (!IsServer) return;
+        if (networkWeaponState.Value == newState) return;
+        networkWeaponState.Value = newState;
     }
 
-    public virtual bool HaveSkillCharges()
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateWeaponStateServerRpc(WeaponState newState)
     {
-        return false; // Default implementation, since Arm doesn't have skill charges
+        UpdateWeaponState(newState);
     }
 
-    public virtual int GetSkillCharges()
+    public void AnimationReset()
     {
-        return 0; // Default implementation
+        UpdateWeaponStateServerRpc(WeaponState.Idle);
     }
 
+    public void ShakeCamera()   // SERVER
+    {
+        NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(basicAttackCameraShakeIntensity, basicAttackCameraShakeDuration, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+    }
+
+// MISCELLANEOUS
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         throw new System.NotImplementedException();

@@ -17,8 +17,7 @@ public class BasicProjectile : Projectile
         ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
         other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
         InstantiateDamageNumberServerRpc(targetClientId);
-        // Can be overwritten
-        ChargeUltimateValue(Damage, 100);
+        ChargeUltimateValue(Damage, 2);     // This is a ServerRpc too
         DestroyServerRpc();
     }
 

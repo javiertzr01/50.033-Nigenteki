@@ -7,62 +7,49 @@ public class BeetleShieldTrigger : ShieldTrigger
 {
     Beetle arm;
 
+    // Network variable to keep track of the shield's activation state
+    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> isAttackingNoShield = new NetworkVariable<bool>(false); 
     [SerializeField]
     private Collider2D shieldCollider;
     [SerializeField]
     private SpriteRenderer shieldSprite;
     private float shieldRegenTimer;
 
-    void Start()
+    void Awake()
     {
         shieldCollider = gameObject.GetComponent<BoxCollider2D>();
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+    }
 
+    void Start()
+    {
         shieldRegenTimer = 0f;
-        isShieldActive.Value = true;
         Destroyed = false;
-        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
+        arm = transform.GetComponentInParent<Beetle>();
+        ShieldHealth = arm.armVariable.shieldMaxHealth;
 
         // Initialize the shield's state based on isShieldActive value
         shieldCollider.enabled = isShieldActive.Value;
         shieldSprite.enabled = isShieldActive.Value;
     }
 
-
-
-    // Network variable to keep track of the shield's activation state
-    public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
-
-    [ServerRpc(RequireOwnership = false)]
-    public void ToggleShieldServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        // Toggle the shield's activation state
-        isShieldActive.Value = !isShieldActive.Value;
-
-        // Call the client RPC to update the shield state on all clients
-        ToggleShieldClientRpc(isShieldActive.Value);
-    }
-
-    [ClientRpc]
-    void ToggleShieldClientRpc(bool isActive, ClientRpcParams clientRpcParams = default)
-    {
-        // Update the shield's collider and sprite renderer based on the received state
-        shieldCollider.enabled = isActive;
-        shieldSprite.enabled = isActive;
-    }
-
-
     void Update()
     {
         // Check if the shield is not active
         if (!isShieldActive.Value)
         {
+            if (isAttackingNoShield.Value) 
+            {
+                shieldRegenTimer = 0;
+                ToggleAttackingNoShieldServerRpc(false);
+            }
             shieldRegenTimer += Time.deltaTime;
 
             // Start regeneration after 3 seconds of inactivity
             if (shieldRegenTimer >= 3.0f)
             {
-                RegenerateShield();
+                RegenerateShieldServerRpc();
             }
         }
         else
@@ -70,29 +57,43 @@ public class BeetleShieldTrigger : ShieldTrigger
             // Reset the timer if the shield is active or not destroyed
             shieldRegenTimer = 0f;
         }
+        if ((shieldCollider.enabled == isShieldActive.Value) && (shieldSprite.enabled == isShieldActive.Value)) {return;}
+        else
+        {
+            shieldCollider.enabled = isShieldActive.Value;
+            shieldSprite.enabled = isShieldActive.Value;
+        }
     }
 
-    private void RegenerateShield()
+    public void ToggleShield()      // SERVER ONLY
     {
-        if (ShieldHealth < instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
+        // Toggle the shield's activation state
+        isShieldActive.Value = !isShieldActive.Value;
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void ToggleAttackingNoShieldServerRpc(bool value)
+    {
+        isAttackingNoShield.Value = value;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RegenerateShieldServerRpc()
+    {
+        if (ShieldHealth < arm.armVariable.shieldMaxHealth)
         {
             ShieldHealth += 50f * Time.deltaTime; // Regenerate HP per second
-            if (ShieldHealth >= instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth)
+            if (ShieldHealth >= arm.armVariable.shieldMaxHealth)
             {
-                ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
-                Destroyed = false; // Mark shield as not destroyed
+                ShieldHealth = arm.armVariable.shieldMaxHealth;   
             }
 
-            Logger.Instance.LogInfo("Shield Regen HP: " + ShieldHealth);
-
-            // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
-            UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
+            if (ShieldHealth >= 0.5 * arm.armVariable.shieldMaxHealth)
             {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
-                }
-            });
+                Destroyed = false; // Mark shield as not destroyed
+            }
+            // Do not update the visual state here, keep the shield invisible and non-colliding during regeneration
+            UpdateShieldStatusClientRpc(ShieldHealth, Destroyed);
         }
     }
 
@@ -111,59 +112,29 @@ public class BeetleShieldTrigger : ShieldTrigger
         {
             ShieldHealth = 0f;
             Destroyed = true;
+            isShieldActive.Value = false;
         }
         Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
 
 
         // Update clients about the shield's status, including if it's destroyed
-        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
-            }
-        });
+        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed);
     }
 
     [ClientRpc]
-    private void UpdateShieldStatusClientRpc(float health, bool destroyed, ClientRpcParams clientRpcParams = default)
+    private void UpdateShieldStatusClientRpc(float health, bool destroyed)
     {
         ShieldHealth = health;
         Destroyed = destroyed;
-        isShieldActive.Value = (ShieldHealth > 0) && !destroyed;
-
-
-        // Update the shield's visual or physical state on clients
-        if (isShieldActive.Value && !destroyed)
-        {
-            // If the shield is not destroyed, you can update its state as needed
-            // For example, you might want to change the appearance to indicate damage but not disable it completely
-            // Update the shield's visual or physical state on clients
-            shieldCollider.enabled = true;
-            shieldSprite.enabled = true;
-        }
-        else
-        {
-
-            // If the shield is destroyed, disable collider and sprite
-            shieldCollider.enabled = false;
-            shieldSprite.enabled = false;
-        }
     }
 
     public void ResetShieldHealth()
     {
-        ShieldHealth = instantiatingArm.GetComponent<Arm>().armVariable.shieldMaxHealth;
+        ShieldHealth = arm.armVariable.shieldMaxHealth;
         Destroyed = false;
         isShieldActive.Value = false; // Optionally reset the active state
         Logger.Instance.LogInfo("Reset Beetle Shield Health to: " + ShieldHealth);
-        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed, new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = NetworkManager.Singleton.ConnectedClientsList.Select(c => c.ClientId).ToArray()
-            }
-        });
+        UpdateShieldStatusClientRpc(ShieldHealth, Destroyed);
     }
 
 }

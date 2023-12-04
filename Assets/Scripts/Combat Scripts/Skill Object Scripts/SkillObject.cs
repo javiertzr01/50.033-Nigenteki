@@ -2,15 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-public abstract class SkillObject : NetworkBehaviour
+public abstract class SkillObject : Spawnables
 {
-    [System.NonSerialized]
-    public Arm instantiatingArm;
-    public NetworkVariable<int> teamId = new NetworkVariable<int>();
-
-
-
-
     void OnTriggerEnter2D(Collider2D other)
     {
         TriggerEnter2DLogic(other);
