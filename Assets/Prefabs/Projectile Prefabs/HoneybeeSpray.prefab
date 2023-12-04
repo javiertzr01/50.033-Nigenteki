@@ -181,6 +181,7 @@ MonoBehaviour:
   startingPosition: {x: 0, y: 0}
   damageNumber: {fileID: 6714799550899306158, guid: 5a4f2903c1acec7459f76a1295bf855c,
     type: 3}
+  damageNumberAddressableName: DamageNumber
   duration: 4
 --- !u!1 &4338065651555008858
 GameObject:
@@ -257,7 +258,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
     type: 3}
-  m_Color: {r: 1, g: 0.630161, b: 0.4669811, a: 1}
+  m_Color: {r: 0.98039216, g: 0.67058825, b: 0.105882354, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
