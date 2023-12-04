@@ -137,6 +137,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameStateStore: {fileID: 0}
   netStore: {fileID: 0}
+  audioSFX0: {fileID: 8300000, guid: 883f6c1b7d2ff694492a7217df502077, type: 3}
+  audioSFX1: {fileID: 0}
+  audioSFX2: {fileID: 0}
 --- !u!114 &8745791523594317370
 MonoBehaviour:
   m_ObjectHideFlags: 0
