@@ -911,9 +911,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7320736889795440830}
-  - component: {fileID: 2101985453449340391}
-  - component: {fileID: -4927349297532990969}
-  m_Layer: 0
+  - component: {fileID: 6556403202113173100}
+  - component: {fileID: 2180152857329965160}
+  m_Layer: 9
   m_Name: BlueSpawn
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -945,7 +945,21 @@ Transform:
   - {fileID: 2446184396333907948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &2101985453449340391
+--- !u!114 &6556403202113173100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804966583983567202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3345a187be33f7743aff1f275eada981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamId: 1
+  spawnHealingValue: 50
+--- !u!61 &2180152857329965160
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -990,19 +1004,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.010747, y: 0.75281763}
   m_EdgeRadius: 0
---- !u!114 &-4927349297532990969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6804966583983567202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3345a187be33f7743aff1f275eada981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  teamId: 1
 --- !u!1 &7568271005473918278
 GameObject:
   m_ObjectHideFlags: 0

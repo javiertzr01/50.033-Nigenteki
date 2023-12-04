@@ -225,7 +225,6 @@ public class PlayerController : NetworkBehaviour
         if ((healedClient.playerHealth.Value + heal) >= playerMaxHealth.Value)
         {
             healedClient.playerHealth.Value = playerMaxHealth.Value;
-            Logger.Instance.LogInfo($"Player has full health");
         }
         else
         {
