@@ -850,8 +850,12 @@ MonoBehaviour:
     m_InternalValue: 0
   greenCrystalCount:
     m_InternalValue: 0
-  KDStats:
-    m_InternalValue: {x: 0, y: 0}
+  kills:
+    m_InternalValue: 0
+  deaths:
+    m_InternalValue: 0
+  sprite:
+    m_InternalValue: 0
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:
@@ -1014,7 +1018,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.4117647, g: 0.8392157, b: 0.27058825, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
