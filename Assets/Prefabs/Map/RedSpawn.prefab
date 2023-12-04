@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 7320736889795440830}
   - component: {fileID: 958203209317572407}
   - component: {fileID: 6086469089708444713}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: RedSpawn
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

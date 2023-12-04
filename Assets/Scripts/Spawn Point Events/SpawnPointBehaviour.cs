@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -17,24 +15,30 @@ public class SpawnPointBehaviour : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        SpawnProtection(other);
-        HealAllyPlayer(other);
-    }
-
-    private void HealAllyPlayer(Collider2D other)
-    {
-        if (!NetworkManager.Singleton.IsServer) // Ensure this runs only on the server
+        if (!NetworkManager.Singleton.IsServer)
         {
+            Logger.Instance.LogInfo("Not running on the server.");
             return;
         }
 
         PlayerController player = other.gameObject.GetComponent<PlayerController>();
 
-        if (player != null && player.teamId.Value == this.teamId)
+        if (player != null)
         {
-            player.HealPlayerServerRpc(spawnHealingValue * Time.deltaTime, player.GetComponent<NetworkObject>().OwnerClientId);
+            if (player.teamId.Value == this.teamId)
+            {
+                Logger.Instance.LogInfo($"Healing player {player.gameObject.name}");
+                player.HealPlayerServerRpc(spawnHealingValue * Time.deltaTime, player.GetComponent<NetworkObject>().OwnerClientId);
+            }
+            else
+            {
+                Logger.Instance.LogInfo($"Player {player.gameObject.name} is from a different team.");
+            }
         }
+
+        SpawnProtection(other);
     }
+
 
     private void SpawnProtection(Collider2D other)
     {

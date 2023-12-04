@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 7320736889795440830}
   - component: {fileID: 6556403202113173100}
   - component: {fileID: 2180152857329965160}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BlueSpawn
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
