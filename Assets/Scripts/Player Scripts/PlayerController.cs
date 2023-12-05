@@ -806,25 +806,25 @@ public class PlayerController : NetworkBehaviour
         Arm arm = playerController.transform.GetChild(1).GetChild(0).GetComponent<Arm>();
         if (arm.armLevel.Value == ArmLevel.Upgraded) 
         {
-            playerController.rightArmUpgradable.Value = false;    
+            playerController.leftArmUpgradable.Value = false;    
             return;
         }
         Arm.ArmType armType = arm.armType;
         if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
         {
-            playerController.rightArmUpgradable.Value = true;
+            playerController.leftArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
         {
-            playerController.rightArmUpgradable.Value = true;
+            playerController.leftArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
         {
-            playerController.rightArmUpgradable.Value = true;
+            playerController.leftArmUpgradable.Value = true;
         }
         else
         {
-            playerController.rightArmUpgradable.Value = false;        
+            playerController.leftArmUpgradable.Value = false;        
         }
     }
 
