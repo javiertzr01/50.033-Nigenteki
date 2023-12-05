@@ -1,6 +1,8 @@
 # Nigenteki
  50.033 Game Development Project Group 11
 
+![image](https://github.com/50033-game-design-and-development/50033-final-project-team/assets/29447484/4b051272-87c6-4251-a631-d1e4241387bd)
+
 ## General Information
 Nigenteki is an exhilarating team-based 2D shooter game. The game falls into the category of an online action game. In this king-of-the-hill-esque gameplay, players form trios and engage in strategic battles to capture zones and emerge victorious.
 
@@ -13,6 +15,20 @@ Graphics: NVIDIA GeForce GTX 1060<br/>
 Network: Broadbang Internet Connection<br/>
 Storage Size: 150mb
 
+### How to Play The Game
+
+Teams of three players start by each player selecting Arms to go into the map with. During the initial resource collection phase of four minutes, teams collect resources, eliminate opponents, and scout for the control point. The control point phase begins after the resource collections phase, where players work to capture the countdown of one and a half minutes for an instant win within the six minutes of the control point phase. Should the match extend to the 10th minute, the team with the highest team kill death ratio wins.
+
+#### Player Controls
+- **Aim**: Mouse position determines direction of projectile
+- **Movement**: WASD keys to move the character
+- **Normal Attack**: Left and right mouse buttons for the respective arms
+- **Special Ability**: Q and E keys for the left and right arm respectively
+- **Ultimate Activation**: 1 and 4 keys for the left and right arm respectively
+- **Upgrade Weapon**: Press Z and C keys when in character team’s spawn to upgrade left and right arm respectively
+
+### Gameplay
+Link: 
 
 ### Key Features
 1. **Tactical Gameplay**: Nigenteki places a heavy emphasis on tactical decision-making, challenging players to make strategic choices in fast-paced combat scenarios.
@@ -52,13 +68,6 @@ Storage Size: 150mb
 - **Basic Ability**: Grasshopper
 - **Ultimate**: Mantis
 
-### Player Controls
-- **Aim**: Mouse position determines direction of projectile
-- **Movement**: WASD keys to move the character
-- **Normal Attack**: Left and right mouse buttons for the respective arms
-- **Special Ability**: Q and E keys for the left and right arm respectively
-- **Ultimate Activation**: 1 and 4 keys for the left and right arm respectively
-- **Upgrade Weapon**: Press Z and C keys when in character team’s spawn to upgrade left and right arm respectively
 
 ## How to Win
 ### Resource Collection Phase (first 4 minutes)
@@ -73,24 +82,3 @@ Storage Size: 150mb
 ### Extended Match Resolution (beyond 10th minute)
 - If the match surpasses the 10th minute, the team with the highest kill-death ratio wins
 
-## How to Use RTT Map Generator
-
-0. Ignore if everything is already set up
-1. Create a Tilemap gameobject (Right-Click > 2D Object > Tilemap > Isometric) -> Name it **Floor**
-2. Create a Tilemap gameobject (Right-Click > 2D Object > Tilemap > Isometric) -> Name it **Walls**
-3. In the **Walls** gameobject, create a *TilemapCollider2D* Component and a *Rigidbody2D(Static)* component 
-3. Create a new gameobject called **TilemapVisualizer**, drag *TilemapVisualizer* script as component
-	1. Set Floor Tilemap as The **floor** Tilemap gameobject
-	2. Set Walls Tilemap as the **Walls** Tilemap gameobject
-	3. Set Floor Tile to be the sprite
-	4. Set Walls Tile to be the sprite
-4. Create a new gameobject called **RTTGenerator**, drag *RTTGenerator* script as component
-	1. Set Tilemap Visualizer as **TilemapVisualizer** gameobject
-5. Click on **Generate Map**
-
-### Options
-
-- **Num Nodes**: Determines the number of nodes to place. More nodes = bigger map
-- **Max Length**: Determines the max length between each node
-- **Iterations**: Determines the number of iterations the Random Walk Algorithm goes through. More iterations = more *"filled"* it will be around each node
-- **Walk Length**: Determines how long the Random Walk Algorithm will walk around each node. Higher walk length = higher density + more width
