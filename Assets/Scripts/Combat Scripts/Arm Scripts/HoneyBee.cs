@@ -75,6 +75,11 @@ public class HoneyBee : Arm
             GameObject projectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
             // Fire the projectile
             FireProjectile(projectileClone, armVariable.baseForce);
+
+            //Audio Player
+            int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+            
             // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams            // REMOVE : This just notifies the client
             {
@@ -105,6 +110,10 @@ public class HoneyBee : Arm
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
             skillReady = false;
+
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Skill ClientRpc
             CastSkillClientRpc(new ClientRpcParams                  // REMOVE : This just notifies the client
@@ -159,6 +168,10 @@ public class HoneyBee : Arm
 
             ulted = true;
             countdownTimer = armVariable.ultimateDuration;
+
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams                   // REMOVE : This just notifies the client

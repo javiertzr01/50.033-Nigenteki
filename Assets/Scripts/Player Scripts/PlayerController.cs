@@ -23,6 +23,8 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> redCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> blueCrystalCount = new NetworkVariable<int>();
     public NetworkVariable<int> greenCrystalCount = new NetworkVariable<int>();
+    public NetworkVariable<bool> rightArmUpgradable = new NetworkVariable<bool>();
+    public NetworkVariable<bool> leftArmUpgradable = new NetworkVariable<bool>();
     public NetworkVariable<int> kills = new NetworkVariable<int>();
     public NetworkVariable<int> deaths = new NetworkVariable<int>();
     public NetworkVariable<CharacterSpriteMap> sprite = new NetworkVariable<CharacterSpriteMap>();
@@ -32,6 +34,8 @@ public class PlayerController : NetworkBehaviour
     public UnityEvent<int> redCrystalCountUpdateEventInvoker;
     public UnityEvent<int> blueCrystalCountUpdateEventInvoker;
     public UnityEvent<int> greenCrystalCountUpdateEventInvoker;
+    public UnityEvent<bool> rightArmUpgradableIndicatorEventInvoker;
+    public UnityEvent<bool> leftArmUpgrableIndicatorEventInvoker;
 
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     private NetworkVariable<Vector2> spawnPosition = new NetworkVariable<Vector2>();
@@ -74,6 +78,9 @@ public class PlayerController : NetworkBehaviour
     public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
     private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
+    private int upgradeThreshold = 1;
+
+    private bool inSpawn;
 
     // Implemented for Dash Function
     private bool doForce = false;
@@ -105,13 +112,21 @@ public class PlayerController : NetworkBehaviour
                 sprite.Value = CharacterSpriteMap.guardian_red;
                 break;
 
+            case ("Player Red Syndicate(Clone)"):
+            sprite.Value = CharacterSpriteMap.syndicate_red;
+            break;
+
             case ("Player Blue Defender(Clone)"):
-                sprite.Value = CharacterSpriteMap.defender_blue;
-                break;
+            sprite.Value = CharacterSpriteMap.defender_blue;
+            break;
 
             case ("Player Blue Guardian(Clone)"):
                 sprite.Value = CharacterSpriteMap.guardian_blue;
                 break;
+
+            case ("Player Blue Syndicate(Clone)"):
+            sprite.Value = CharacterSpriteMap.syndicate_blue;
+            break;
 
             default:
                 Debug.Log("No character chosen");
@@ -162,6 +177,7 @@ public class PlayerController : NetworkBehaviour
         rightArmClone.transform.GetComponent<NetworkObject>().TrySetParent(rightArmHolderClone.transform);
         rightArmClone.layer = player.layer;
 
+
         armsInitialized = true;
 
         SpawnArmsClientRpc(leftArmHolderClone.GetComponent<NetworkObject>().NetworkObjectId,
@@ -173,8 +189,6 @@ public class PlayerController : NetworkBehaviour
                                    TargetClientIds = new ulong[] { OwnerClientId }
                                }
                            });
-
-
     }
 
     [ClientRpc]
@@ -380,6 +394,8 @@ public class PlayerController : NetworkBehaviour
             redCrystalCount.OnValueChanged += OnRedCrystalCountChanged;
             blueCrystalCount.OnValueChanged += OnBlueCrystalCountChanged;
             greenCrystalCount.OnValueChanged += OnGreenCrystalCountChanged;
+            rightArmUpgradable.OnValueChanged += OnRightArmUpgradableChanged;
+            leftArmUpgradable.OnValueChanged += OnLeftArmUpgradableChanged;
         }
         else
         {
@@ -402,6 +418,9 @@ public class PlayerController : NetworkBehaviour
         LeftArmBasicAttack();
         RightArmBasicAttack();
         UpdateAnimator();
+        InSpawnCheck();
+        IndicateRightArmUpgradable();
+        IndicateLeftArmUpgradable();
 
         if (shakeTimer > 0)
         {
@@ -457,6 +476,16 @@ public class PlayerController : NetworkBehaviour
     public void OnGreenCrystalCountChanged(int previous, int current)
     {
         greenCrystalCountUpdateEventInvoker.Invoke(current);
+    }
+
+    public void OnRightArmUpgradableChanged(bool previous, bool current)
+    {
+        rightArmUpgradableIndicatorEventInvoker.Invoke(current);
+    }
+
+    public void OnLeftArmUpgradableChanged(bool previous, bool current)
+    {
+        leftArmUpgrableIndicatorEventInvoker.Invoke(current);
     }
 
     void Movement()
@@ -593,6 +622,111 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void RightArmUpgradeCheck(bool value)
+    {
+        if (value && inSpawn)
+        {
+            Arm.ArmType armType = rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductRedCrystalCountServerRpc(OwnerClientId);
+            }
+            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductBlueCrystalCountServerRpc(OwnerClientId);
+            }
+            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductGreenCrystalCountServerRpc(OwnerClientId);
+            }
+        }
+    }
+
+    public void LeftArmUpgradeCheck(bool value)
+    {
+        if (value && inSpawn)
+        {
+            Arm.ArmType armType = leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+            if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductRedCrystalCountServerRpc(OwnerClientId);
+            }
+            else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductBlueCrystalCountServerRpc(OwnerClientId);
+            }
+            else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+            {
+                // Call arm upgrade
+                DeductGreenCrystalCountServerRpc(OwnerClientId);
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DeductRedCrystalCountServerRpc(ulong deductClientId, ServerRpcParams serverRpcParams = default)
+    {
+        NetworkManager.Singleton.ConnectedClients[deductClientId].PlayerObject.GetComponent<PlayerController>().redCrystalCount.Value -= upgradeThreshold;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DeductBlueCrystalCountServerRpc(ulong deductClientId, ServerRpcParams serverRpcParams = default)
+    {
+        NetworkManager.Singleton.ConnectedClients[deductClientId].PlayerObject.GetComponent<PlayerController>().blueCrystalCount.Value -= upgradeThreshold;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DeductGreenCrystalCountServerRpc(ulong deductClientId, ServerRpcParams serverRpcParams = default)
+    {
+        NetworkManager.Singleton.ConnectedClients[deductClientId].PlayerObject.GetComponent<PlayerController>().greenCrystalCount.Value -= upgradeThreshold;
+    }
+
+    public void IndicateRightArmUpgradable()
+    {
+        Arm.ArmType armType = rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+        if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+        {
+            rightArmUpgradable.Value = true;
+        }
+        else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+        {
+            rightArmUpgradable.Value = true;
+        }
+        else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+        {
+            rightArmUpgradable.Value = true;
+        }
+        else
+        {
+            rightArmUpgradable.Value = false;
+        }
+    }
+
+    public void IndicateLeftArmUpgradable()
+    {
+        Arm.ArmType armType = leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+        if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
+        {
+            leftArmUpgradable.Value = true;
+        }
+        else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
+        {
+            leftArmUpgradable.Value = true;
+        }
+        else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
+        {
+            leftArmUpgradable.Value = true;
+        }
+        else
+        {
+            leftArmUpgradable.Value = false;
+        }
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestStunServerRpc(float duration, ServerRpcParams rpcParams = default)
@@ -687,6 +821,18 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void InSpawnCheck()
+    {
+        if ((transform.position.x >= (spawnPosition.Value.x - 2f) && transform.position.x <= (spawnPosition.Value.x + 2f)) &&
+            (transform.position.y >= (spawnPosition.Value.y - 2f) && transform.position.y <= (spawnPosition.Value.y + 2f)))
+        {
+            inSpawn = true;
+        }
+        else
+        {
+            inSpawn = false;
+        }
+    }
 
     private void FixedUpdate()
     {

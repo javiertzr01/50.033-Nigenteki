@@ -561,21 +561,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5903825f3523d74ea9d5bb63a6046d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraFollow:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: d201a69931eb9c44c84e45816be8c20f, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[UnityEngine.Object, UnityEngine
-        m_MethodName: Raise
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
   playerMaxHealth:
     m_InternalValue: 0
@@ -587,12 +572,25 @@ MonoBehaviour:
     m_InternalValue: 0
   greenCrystalCount:
     m_InternalValue: 0
-  KDStats:
-    m_InternalValue: {x: 0, y: 0}
+  kills:
+    m_InternalValue: 0
+  deaths:
+    m_InternalValue: 0
+  sprite:
+    m_InternalValue: 0
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls: []
   playerMaxHealthUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls: []
+  redCrystalCountUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls: []
+  blueCrystalCountUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls: []
+  greenCrystalCountUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls: []
   leftArmHolderPrefab: {fileID: 2967011719965532442, guid: 3d10e4d4b3e2b8f4cb9791501cee1ba3,

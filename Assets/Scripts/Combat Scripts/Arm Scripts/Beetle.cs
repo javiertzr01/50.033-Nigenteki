@@ -129,6 +129,10 @@ public class Beetle : Arm
 
                 Debug.Log("Casting " + armVariable.armName + "'s Ultimate Attack: ");
 
+                //Audio Player
+                int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
                 CastBasicAttackClientRpc(new ClientRpcParams                // REMOVE : This just notifies the client
                 {
                     Send = new ClientRpcSendParams
@@ -152,7 +156,12 @@ public class Beetle : Arm
 
                 Debug.Log("Casting " + armVariable.armName + "'s Alt Attack");
 
-                CastBasicAttackClientRpc(new ClientRpcParams                // REMOVE : This just notifies the client
+                //Audio Player
+                // DisabledSFX
+                int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
+                CastBasicAttackClientRpc(new ClientRpcParams
                 {
                     Send = new ClientRpcSendParams
                     {
@@ -189,6 +198,10 @@ public class Beetle : Arm
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
             skillReady = false;
+
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Skill ClientRpc
             CastSkillClientRpc(new ClientRpcParams                      // REMOVE : This just notifies the client
@@ -229,6 +242,10 @@ public class Beetle : Arm
 
             // Set the start time of the ultimate
             countdownTimer = armVariable.ultimateDuration;
+
+            ////Audio Player
+            //int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            //CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams

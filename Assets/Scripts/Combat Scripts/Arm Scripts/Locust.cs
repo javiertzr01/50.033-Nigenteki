@@ -70,6 +70,10 @@ public class Locust : Arm
                 }
                 FireProjectile(ProjectileSpawned, armVariable.baseForce);
 
+                //Audio Player
+                int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+                CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
                 // Set the nextBasicFireTime
                 if (ulted)
                 {
@@ -101,6 +105,11 @@ public class Locust : Arm
 
         if (ulted || SkillCharges > 0)
         {
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
+
             // Trigger the dash on the client
             gameObject.GetComponentInParent<PlayerController>().TriggerDashClientRpc(new ClientRpcParams
             {
@@ -135,6 +144,11 @@ public class Locust : Arm
             ResetUltimateCharge();
             ulted = true;
             gameObject.GetComponentInParent<PlayerController>().ToggleImmuneStunServerRpc(true);
+
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams               // REMOVE : This just notifies the client
             {

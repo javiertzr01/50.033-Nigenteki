@@ -61,6 +61,9 @@ public class Silkworm : Arm
             // Set the nextBasicFireTime
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
 
+            //Audio Player
+            int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams        // REMOVE : This just notifies the client
@@ -105,6 +108,10 @@ public class Silkworm : Arm
             Debug.Log("Decrease Silkworm Skill Charge: " + SkillCharges);
         }
 
+        //Audio Player
+        int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+        CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
+
         // Cast the Skill ClientRpc
         CastSkillClientRpc(new ClientRpcParams       // REMOVE :This just notifies the client
             {
@@ -141,6 +148,9 @@ public class Silkworm : Arm
             GameObject ultimateArea = SpawnProjectile<SkillObject>(clientId, ultimateProjectile, ultShootPoint);
             ultimateArea.GetComponent<SilkRoad>().countdownTimer = armVariable.ultimateDuration;
 
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
 
             // Cast the Ultimate ClientRpc
             CastUltimateClientRpc(new ClientRpcParams       // REMOVE :This just notifies the client

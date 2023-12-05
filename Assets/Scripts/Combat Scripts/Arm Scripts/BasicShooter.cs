@@ -32,8 +32,10 @@ public class BasicShooter : Arm
             basicProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
             FireProjectile(basicProjectileClone, armVariable.baseForce);
 
-            CastBasicAttackSFX();                           // TODO: Add this in Arms so that everyone has
-            UpdateWeaponState(WeaponState.BasicAttack);     // TODO: Add this to Arms so that everyone has
+            //Audio Player
+            int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);       // TODO: Change to non-ServerRpc + Add to Arms?
+            UpdateWeaponState(WeaponState.BasicAttack);                     // TODO: Add this to Arms so that everyone has
 
             CastBasicAttackClientRpc(new ClientRpcParams    // REMOVE :This just notifies the client
             {
@@ -67,4 +69,3 @@ public class BasicShooter : Arm
         GameObject shotUltimateProjectile = Instantiate(ultimateProjectile, shootPoint.transform.position, transform.rotation);
     }
 }
-

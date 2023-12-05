@@ -369,6 +369,7 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: 95b163b17d17f5143b5c13136b3c865c, type: 2}
   networkWeaponState:
     m_InternalValue: 0
+  armType: 1
   projectiles:
   - {fileID: 6093875963110399478, guid: 305250e271c47004fa8ca6414636edd9, type: 3}
   - {fileID: 7034513550059083727, guid: 6a746f7a72d6a224dbf385a8e837af72, type: 3}
@@ -376,9 +377,9 @@ MonoBehaviour:
   - {fileID: 3866945137309950759, guid: 2aa06897cf9bf7a409e19479b119e9cb, type: 3}
   shootPoint: {fileID: 2578164899720361747}
   animator: {fileID: 0}
-  basicAttackSFX: {fileID: 0}
-  skillSFX: {fileID: 0}
-  ultimateSFX: {fileID: 0}
+  basicAttackSFX: {fileID: 8300000, guid: 6bd5985dd7100e245b3a75cc7cb70194, type: 3}
+  skillSFX: {fileID: 8300000, guid: 7ad46e2b185dd0d409af07196e84a01e, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: 7e58c1718e011c847949792efd486a17, type: 3}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
   skillCameraShakeIntensity: 0
@@ -388,7 +389,7 @@ MonoBehaviour:
   ultShootPoint: {fileID: 1842468663822812149}
   currentShield: {fileID: 0}
   beetleShieldTrigger: {fileID: 0}
-  shield: {fileID: 0}
+  shieldHolderPrefab: {fileID: 0}
 --- !u!114 &3470576363740146910
 MonoBehaviour:
   m_ObjectHideFlags: 0
