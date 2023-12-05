@@ -117,20 +117,20 @@ public class PlayerController : NetworkBehaviour
                 break;
 
             case ("Player Red Syndicate(Clone)"):
-            sprite.Value = CharacterSpriteMap.syndicate_red;
-            break;
+                sprite.Value = CharacterSpriteMap.syndicate_red;
+                break;
 
             case ("Player Blue Defender(Clone)"):
-            sprite.Value = CharacterSpriteMap.defender_blue;
-            break;
+                sprite.Value = CharacterSpriteMap.defender_blue;
+                break;
 
             case ("Player Blue Guardian(Clone)"):
                 sprite.Value = CharacterSpriteMap.guardian_blue;
                 break;
 
             case ("Player Blue Syndicate(Clone)"):
-            sprite.Value = CharacterSpriteMap.syndicate_blue;
-            break;
+                sprite.Value = CharacterSpriteMap.syndicate_blue;
+                break;
 
             default:
                 Debug.Log("No character chosen");
@@ -350,6 +350,14 @@ public class PlayerController : NetworkBehaviour
     public void UpdatePlayerStateServerRpc(PlayerState newState)
     {
         networkPlayerState.Value = newState;
+        UpdatePlayerStateClientRpc(newState);
+    }
+
+    [ClientRpc]
+    private void UpdatePlayerStateClientRpc(PlayerState newState)
+    {
+        networkPlayerState.Value = newState;
+        UpdateAnimator(); // Ensure the animator is updated on all clients
     }
 
     public float MoveSpeed
@@ -505,7 +513,7 @@ public class PlayerController : NetworkBehaviour
     {
         rightArmIndexUpdateEventInvoker.Invoke(current);
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     public void UpdateRightArmImageServerRpc(string armName, ulong senderClientId)
     {
@@ -640,7 +648,7 @@ public class PlayerController : NetworkBehaviour
 
     void LeftArmBasicAttack()
     {
-        if (!leftArmBasicUse) 
+        if (!leftArmBasicUse)
         {
             transform.GetChild(1).GetChild(0).GetComponent<Arm>().AnimationReset();
             return;
@@ -677,7 +685,7 @@ public class PlayerController : NetworkBehaviour
             transform.GetChild(2).GetChild(0).GetComponent<Arm>().AnimationReset();
             return;
         }
-        
+
 
         transform.GetChild(2).GetChild(0).GetComponent<Arm>().CastBasicAttackServerRpc();
     }
@@ -775,9 +783,9 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerController playerController = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>();
         Arm arm = playerController.transform.GetChild(2).GetChild(0).GetComponent<Arm>();
-        if (arm.armLevel.Value == ArmLevel.Max) 
+        if (arm.armLevel.Value == ArmLevel.Max)
         {
-            playerController.rightArmUpgradable.Value = false;    
+            playerController.rightArmUpgradable.Value = false;
             return;
         }
         Arm.ArmType armType = arm.armType;
@@ -795,7 +803,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            playerController.rightArmUpgradable.Value = false;        
+            playerController.rightArmUpgradable.Value = false;
         }
     }
 
@@ -804,9 +812,9 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerController playerController = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>();
         Arm arm = playerController.transform.GetChild(1).GetChild(0).GetComponent<Arm>();
-        if (arm.armLevel.Value == ArmLevel.Max) 
+        if (arm.armLevel.Value == ArmLevel.Max)
         {
-            playerController.leftArmUpgradable.Value = false;    
+            playerController.leftArmUpgradable.Value = false;
             return;
         }
         Arm.ArmType armType = arm.armType;
@@ -824,7 +832,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            playerController.leftArmUpgradable.Value = false;        
+            playerController.leftArmUpgradable.Value = false;
         }
     }
 
@@ -873,6 +881,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (!immuneStun.Value)
         {
+            UpdatePlayerStateServerRpc(PlayerState.Stunned); // Set player state to stunned
+            animator.SetTrigger("stunned");
+
             // Disable the player's input actions
             playerInput.SwitchCurrentActionMap("Stunned");
             Debug.Log($"Stunned Player on client {OwnerClientId}");
@@ -889,6 +900,9 @@ public class PlayerController : NetworkBehaviour
     private IEnumerator ReenableInputAfterStun(float duration)
     {
         yield return new WaitForSeconds(duration);
+        UpdatePlayerStateServerRpc(PlayerState.Idle); // Reset player state to idle
+        animator.SetTrigger("unStunned");
+
         playerInput.SwitchCurrentActionMap("Player"); // Switch back to normal input
         // Here you can also end the stun animation or effect if any
         Debug.Log("Unstunned Player");
@@ -968,13 +982,13 @@ public class PlayerController : NetworkBehaviour
         shakeTimer = time;
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void AdjustMovementSpeedServerRpc(float speed)
     {
         MoveSpeed = speed;
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void AdjustDamageTakenScaleServerRpc(float scale)
     {
         DamageTakenScale = scale;
@@ -992,12 +1006,13 @@ public class PlayerController : NetworkBehaviour
         playerMaxHealth.Value = health;
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void ToggleImmuneStunServerRpc(bool value)
     {
         immuneStun.Value = value;
     }
 
+    // Update the UpdateAnimator method
     private void UpdateAnimator()
     {
         if (networkPlayerState.Value == PlayerState.Walking)
@@ -1008,13 +1023,18 @@ public class PlayerController : NetworkBehaviour
         {
             animator.SetBool("isMoving", false);
         }
+        else if (networkPlayerState.Value == PlayerState.Stunned)
+        {
+            animator.SetTrigger("stunned");
+        }
     }
 
     public enum PlayerState
     {
         Idle,
         Walking,
-        Damaged,
+        Stunned,
         Death
     }
+
 }
