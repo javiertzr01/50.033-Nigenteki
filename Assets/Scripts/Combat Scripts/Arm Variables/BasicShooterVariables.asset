@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armName: Basic Shooter
   baseForce: 10
-  baseFireRate: 0.1
+  baseFireRate: 0.4
   skillForce: 15
   skillCoolDown: 0
   skillDuration: 0
