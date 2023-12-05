@@ -8,7 +8,7 @@ public class HoneyBee : Arm
     private bool ulted = false;
     private GameObject[] players;
     private bool skillReady = true;
-    
+
     public void Update()
     {
         if (!skillReady)
@@ -79,7 +79,7 @@ public class HoneyBee : Arm
             //Audio Player
             int attackTypeIndex = 0; //Basic - 0; Skill - 1; Ultimate - 2;
             CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);
-            
+
             // Cast the Basic Attack ClientRpc
             CastBasicAttackClientRpc(new ClientRpcParams            // REMOVE : This just notifies the client
             {
@@ -106,7 +106,7 @@ public class HoneyBee : Arm
             // Instantiate the skill projectile and add it to the active projectiles queue
             GameObject skillProjectile = SpawnProjectile<SkillObject>(clientId, spellProjectile, shootPoint);
             skillProjectile.GetComponent<HoneyComb>().countdownTimer = armVariable.skillDuration;
-
+            skillProjectile.layer = 0;
             // Set the skill cooldown to initial value
             SkillCoolDown = armVariable.skillCoolDown;
             skillReady = false;

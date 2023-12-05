@@ -1063,7 +1063,7 @@ GameObject:
   - component: {fileID: -1812905518146102804}
   m_Layer: 8
   m_Name: RedSpawn
-  m_TagString: Obstacle
+  m_TagString: ProximityBehaviour
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

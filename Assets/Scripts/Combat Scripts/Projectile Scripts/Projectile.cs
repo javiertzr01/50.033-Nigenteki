@@ -66,7 +66,7 @@ public abstract class Projectile : Spawnables
         {
             OnControlPointTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "ProximityBehaviour") { }
+        else if (other.gameObject.tag == "ProximityBehaviour" || other.gameObject.tag == "Healing" || other.gameObject.tag == "SkillObject") { }
         else
         {
             DestroyServerRpc();
@@ -302,15 +302,15 @@ public abstract class Projectile : Spawnables
     {
         switch (instantiatingArm.armLevel.Value)
         {
-            case(ArmLevel.Default):
+            case (ArmLevel.Default):
                 MaxDistance = projectileVariable.maxDistance;
                 Damage = projectileVariable.damage;
                 break;
-            case(ArmLevel.Upgraded):
+            case (ArmLevel.Upgraded):
                 MaxDistance = projectileVariable.maxDistanceUpgraded;
                 Damage = projectileVariable.damageUpgraded;
                 break;
-            case(ArmLevel.Max):
+            case (ArmLevel.Max):
                 MaxDistance = projectileVariable.maxDistanceUpgraded;       // Intentional. Only default and upgraded values
                 Damage = projectileVariable.damageMax;
                 break;

@@ -223,9 +223,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4f136aee0ee05748b5f423bf97eddc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  instantiatingArm: {fileID: 0}
   teamId:
     m_InternalValue: 0
+  countdownTimer: 0
   healingValue: 10
+  alliesToHeal: []
 --- !u!60 &8102635043815432934
 PolygonCollider2D:
   m_ObjectHideFlags: 0
