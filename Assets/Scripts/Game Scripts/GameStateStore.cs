@@ -57,55 +57,55 @@ public class GameStateStore : NetworkBehaviour
 
     public void OnCurrentTeamOnControlPointChanged(int previous, int current)
     {
-        //Logger.Instance.LogInfo($"OnCurrentTeamOnControlPointChanged: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"OnCurrentTeamOnControlPointChanged: {current.ToString()}");
         currentTeamOnCPEventInvoker.Invoke(current);
     }
 
     public void OnNumberOfTeam1PlayersOnControlPointChanged(int previous, int current)
     {
-        //Logger.Instance.LogInfo($"OnNumberOfTeam1PlayersOnControlPointChanged: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"OnNumberOfTeam1PlayersOnControlPointChanged: {current.ToString()}");
         numberOfTeam1PlayersOnCPEventInvoker.Invoke(current);
     }
 
     public void OnNumberOfTeam2PlayersOnControlPointChanged(int previous, int current)
     {
-        //Logger.Instance.LogInfo($"OnNumberOfTeam2PlayersOnControlPointChanged: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"OnNumberOfTeam2PlayersOnControlPointChanged: {current.ToString()}");
         numberOfTeam2PlayersOnCPEventInvoker.Invoke(current);
     }
 
     public void OnControlPointActiveStateChanged(bool previous, bool current)
     {
-        //Logger.Instance.LogInfo($"ControlPointActiveState: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"ControlPointActiveState: {current.ToString()}");
         activeStateOfCPEventInvoker.Invoke(current);
     }
 
     public void OnGameWinnerChanged(int previous, int current)
     {
-        Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
+        //Logger.Instance.LogInfo($"Current Game Winner: {current.ToString()}");
         if (current != -1)
             gameWinnerUpdateEventInvoker.Invoke(current);
     }
 
     public void OnPhaseChanged(int previous, int current)
     {
-        //Logger.Instance.LogInfo($"Current Phase: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"Current Phase: {current.ToString()}");
         phaseUpdateEventInvoker.Invoke(current);
     }
 
     public void OnMainTimerChanged(float previous, float current)
     {
-        //Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
         mainTimerUpdateEventInvoker.Invoke(current);
     }
 
     public void OnTeam1TimerChanged(float previous, float current)
     {
-        //Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
         team1TimerUpdateEventInvoker.Invoke(current);
     }
     public void OnTeam2TimerChanged(float previous, float current)
     {
-        //Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
+        ////Logger.Instance.LogInfo($"Main Timer CountDown: {current.ToString()}");
         team2TimerUpdateEventInvoker.Invoke(current);
     }
 

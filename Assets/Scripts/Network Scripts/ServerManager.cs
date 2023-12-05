@@ -36,7 +36,7 @@ public class ServerManager : Singleton<ServerManager>
         ClientData = new Dictionary<ulong, ClientData>();
 
         if (NetworkManager.Singleton.StartHost())
-            Logger.Instance.LogInfo("Host Started");
+            //Logger.Instance.LogInfo("Host Started");
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -53,7 +53,7 @@ public class ServerManager : Singleton<ServerManager>
 
         ClientData[request.ClientNetworkId] = new ClientData(request.ClientNetworkId);
 
-        Logger.Instance.LogInfo($"Added client {request.ClientNetworkId}"); 
+        //Logger.Instance.LogInfo($"Added client {request.ClientNetworkId}"); 
     }
 
     private void OnNetworkReady()
@@ -69,7 +69,7 @@ public class ServerManager : Singleton<ServerManager>
         {
             if (ClientData.Remove(clientId))
             {
-                Logger.Instance.LogInfo($"Removed client {clientId}");
+                //Logger.Instance.LogInfo($"Removed client {clientId}");
             }
         }
     }
@@ -84,7 +84,7 @@ public class ServerManager : Singleton<ServerManager>
             data.rightArmId = rightArmId;
         }
 
-        Logger.Instance.LogInfo($"Set Player {clientID}'s character as team {teamId}, character as {characterId}, left arm as {leftArmId}, right arm as {rightArmId}");
+        //Logger.Instance.LogInfo($"Set Player {clientID}'s character as team {teamId}, character as {characterId}, left arm as {leftArmId}, right arm as {rightArmId}");
     }
 
     public void StartGame()

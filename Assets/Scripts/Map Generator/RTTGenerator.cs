@@ -118,7 +118,7 @@ public class RTTGenerator : AbstractProceduralGenerator
             CapturePointPosition = capturePointPosition
         };
 
-        Logger.Instance.LogInfo("Saved map info, floor position length = " + netStore.generatedMapData.Value.FloorPositionsArray.Length);
+        //Logger.Instance.LogInfo("Saved map info, floor position length = " + netStore.generatedMapData.Value.FloorPositionsArray.Length);
     }
 
     public override void LoadMap()
@@ -131,7 +131,7 @@ public class RTTGenerator : AbstractProceduralGenerator
         Vector2Int blueSpawnPosition = netStore.generatedMapData.Value.BlueSpawnPosition;
         Vector2Int capturePointPosition = netStore.generatedMapData.Value.CapturePointPosition;
 
-        Logger.Instance.LogInfo($"Loading map info for client, floor position length = {obstacleNamesArray.Length}");
+        //Logger.Instance.LogInfo($"Loading map info for client, floor position length = {obstacleNamesArray.Length}");
 
         tilemapVisualizer.PaintBiomeTiles(floorPositionsArray, spritesArray);
         WallGenerator.CreateWalls(floorPositionsArray.ToHashSet(), tilemapVisualizer);

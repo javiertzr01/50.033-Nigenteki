@@ -26,7 +26,7 @@ public class BasicShooter : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
+            //Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
             ShakeCamera();
 
@@ -67,7 +67,7 @@ public class BasicShooter : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Skill ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
+            //Logger.Instance.LogInfo($"Cast Skill ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
             ShakeCameraSkill();
 
@@ -108,7 +108,7 @@ public class BasicShooter : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
+            //Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
 
             ShakeCameraUltimate();
 

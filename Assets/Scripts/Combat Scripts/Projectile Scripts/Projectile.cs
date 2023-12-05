@@ -252,7 +252,7 @@ public abstract class Projectile : Spawnables
     {
         if (!IsServer) return;
 
-        Logger.Instance.LogInfo($"Spawning damage number on {hitClientId}");
+        //Logger.Instance.LogInfo($"Spawning damage number on {hitClientId}");
 
         GameObject damageNumberClone = Instantiate(damageNumber, NetworkManager.Singleton.ConnectedClients[hitClientId].PlayerObject.transform.position, NetworkManager.Singleton.ConnectedClients[hitClientId].PlayerObject.transform.rotation);
         damageNumberClone.GetComponent<DamageNumber>().Initialize();

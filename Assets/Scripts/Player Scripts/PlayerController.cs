@@ -161,7 +161,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (armsInitialized) return;
 
-        Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawning arms on {OwnerClientId}");
 
         GameObject leftArmHolderClone = Instantiate(leftArmHolderPrefab, player.transform.GetComponent<NetworkObject>().transform.position + leftArmHolderPrefab.transform.localPosition, Quaternion.Euler(0, 0, 0));
         leftArmHolderClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
@@ -207,13 +207,13 @@ public class PlayerController : NetworkBehaviour
 
         leftArmHolder = leftArmHolderObject;
         rightArmHolder = rightArmHolderObject;
-        Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SpawnParticleSystemServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        Logger.Instance.LogInfo($"Spawning particle system on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawning particle system on {OwnerClientId}");
 
         Vector3 particleSystemPosition = player.transform.position + new Vector3(0, -0.4f, 0);
         GameObject particleSystemClone = Instantiate(particleSystemPrefab, particleSystemPosition, Quaternion.identity);
@@ -240,7 +240,7 @@ public class PlayerController : NetworkBehaviour
         var particleSystemObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[particleSystemId].gameObject;
         healingParticles = particleSystemObject;
         healingParticles.SetActive(isActive); // Explicitly set the active state
-        Logger.Instance.LogInfo($"Spawned particle system on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawned particle system on {OwnerClientId}");
     }
 
 
@@ -285,7 +285,7 @@ public class PlayerController : NetworkBehaviour
         float calculatedDamage = damage * DamageTakenScale;
         if ((damagedClient.playerHealth.Value - calculatedDamage) <= 0)
         {
-            Logger.Instance.LogInfo("Health below 0 - Respawn: " + damagedClient);
+            //Logger.Instance.LogInfo("Health below 0 - Respawn: " + damagedClient);
             // damagedClient.playerHealth.Value = 0;
             attackerClient.kills.Value += 1;
             damagedClient.deaths.Value += 1;
@@ -294,7 +294,7 @@ public class PlayerController : NetworkBehaviour
         else
         {
             damagedClient.playerHealth.Value -= calculatedDamage;
-            Logger.Instance.LogInfo($"Player {damagedClientId} took {calculatedDamage} damage from {attackerClientId} and has {damagedClient.playerHealth.Value}");
+            //Logger.Instance.LogInfo($"Player {damagedClientId} took {calculatedDamage} damage from {attackerClientId} and has {damagedClient.playerHealth.Value}");
 
         }
 
@@ -319,7 +319,7 @@ public class PlayerController : NetworkBehaviour
         else
         {
             healedClient.playerHealth.Value += heal;
-            Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
+            //Logger.Instance.LogInfo($"Player {clientId} restored {heal} health and has {healedClient.playerHealth.Value}");
         }
     }
 
@@ -330,7 +330,7 @@ public class PlayerController : NetworkBehaviour
 
         setClient.spawnPosition.Value = setClient.transform.position;
 
-        Logger.Instance.LogInfo($"Set Player {OwnerClientId} spawn position as {setClient.spawnPosition.Value}");
+        //Logger.Instance.LogInfo($"Set Player {OwnerClientId} spawn position as {setClient.spawnPosition.Value}");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -355,7 +355,7 @@ public class PlayerController : NetworkBehaviour
             }
         });
 
-        Logger.Instance.LogInfo($"Player {clientId} has respawned at {respawnClient.spawnPosition.Value}");
+        //Logger.Instance.LogInfo($"Player {clientId} has respawned at {respawnClient.spawnPosition.Value}");
     }
 
     [ClientRpc]
@@ -432,7 +432,7 @@ public class PlayerController : NetworkBehaviour
         get => moveSpeed.Value;
         set
         {
-            Logger.Instance.LogInfo($"Adjusted MoveSpeed to {value} on {OwnerClientId}");
+            //Logger.Instance.LogInfo($"Adjusted MoveSpeed to {value} on {OwnerClientId}");
             moveSpeed.Value = value;
         }
     }
@@ -442,7 +442,7 @@ public class PlayerController : NetworkBehaviour
         get => damageTakenScale.Value;
         set
         {
-            Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
+            //Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
             damageTakenScale.Value = value;
         }
     }
@@ -452,7 +452,7 @@ public class PlayerController : NetworkBehaviour
         get => passiveHealthRegenerationPercentage.Value;
         set
         {
-            Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
+            //Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
             passiveHealthRegenerationPercentage.Value = value;
         }
     }
@@ -1044,7 +1044,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void ShakeCameraClientRpc(float intensity, float time, ClientRpcParams clientRpcParams = default)
     {
-        Logger.Instance.LogInfo($"Shaking camera on client {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Shaking camera on client {OwnerClientId}");
 
         CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin =
             vc.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();

@@ -9,6 +9,7 @@ public class Locust : Arm
     private NetworkVariable<Color> syncedColor = new NetworkVariable<Color>(new Color(1, 1, 1, 1)); // default color
     private SpriteRenderer playerSprite;
     GameObject ProjectileSpawned;
+    private bool upgraded = false;
     [SerializeField]
     private bool ulted = false;
 
@@ -28,6 +29,19 @@ public class Locust : Arm
 
         // Subscribe to the color change event
         syncedColor.OnValueChanged += OnColorChanged;
+    }
+
+    public override void OnUpgraded()
+    {
+        base.OnUpgraded();
+        upgraded = true;
+        Logger.Instance.LogInfo($"Increased Attack Range");
+    }
+
+    public override void OnMax()
+    {
+        base.OnMax();
+        Logger.Instance.LogInfo($"Increased Attack Damage");
     }
 
     public override void OnDestroy()
@@ -118,9 +132,9 @@ public class Locust : Arm
         if (Time.time >= nextBasicFireTime)
         {
             // Limit number of projectiles to 1 UNLESS ULTED
-            if (ulted || ProjectileSpawned == null)
+            if (ulted || ProjectileSpawned == null || upgraded)
             {
-                Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+                //Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
                 // Instantiate the type of Projectile
                 if (ulted)
@@ -202,7 +216,7 @@ public class Locust : Arm
 
         if (UltimateCharge >= 100f)
         {
-            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
+            //Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("LOCUST ULTIMATE: Casting");
             ShakeCameraUltimate();

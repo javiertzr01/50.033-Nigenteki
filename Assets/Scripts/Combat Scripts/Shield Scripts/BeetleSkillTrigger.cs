@@ -40,10 +40,10 @@ public class BeetleSkillTrigger : ShieldTrigger
         if (OwnerClientId != clientId) return;
 
         ShieldHealth -= damage;
-        Logger.Instance.LogInfo("BEETLE SKILL HP: " + ShieldHealth);
+        //Logger.Instance.LogInfo("BEETLE SKILL HP: " + ShieldHealth);
         if (ShieldHealth <= 0)
         {
-            Logger.Instance.LogInfo("BEETLE SKILL DESTROYED");
+            //Logger.Instance.LogInfo("BEETLE SKILL DESTROYED");
             DestroyShield();
         }
     }

@@ -59,7 +59,7 @@ public class RelayManager : Singleton<RelayManager>
 
         joinCode = relayHostData.JoinCode;
 
-        Logger.Instance.LogInfo($"Relay Server generated a join code {relayHostData.JoinCode}");
+        //Logger.Instance.LogInfo($"Relay Server generated a join code {relayHostData.JoinCode}");
 
         return relayHostData;
     }
@@ -95,7 +95,7 @@ public class RelayManager : Singleton<RelayManager>
 
         joinCode = relayJoinData.JoinCode;
 
-        Logger.Instance.LogInfo($"Client joined game with join code {joinCode}");
+        //Logger.Instance.LogInfo($"Client joined game with join code {joinCode}");
 
         return relayJoinData;
     }

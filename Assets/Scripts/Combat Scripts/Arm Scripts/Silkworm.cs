@@ -42,6 +42,13 @@ public class Silkworm : Arm
         // Increase Base Movement Speed
         transform.GetComponentInParent<PlayerController>().defaultMoveSpeed = 1.5f * transform.GetComponentInParent<PlayerController>().defaultMoveSpeed;
         transform.GetComponentInParent<PlayerController>().AdjustMovementSpeedServerRpc(transform.GetComponentInParent<PlayerController>().defaultMoveSpeed);
+        Logger.Instance.LogInfo("Increased Movement Speed");
+    }
+
+    public override void OnMax()
+    {
+        base.OnMax();
+        Logger.Instance.LogInfo("Increased Attack Damage");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -53,7 +60,7 @@ public class Silkworm : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+            //Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
             GameObject basicProjectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
             FireProjectile(basicProjectileClone, armVariable.baseForce);
@@ -140,7 +147,7 @@ public class Silkworm : Arm
 
         if (UltimateCharge >= 100f)
         {
-            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
+            //Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("SILKWORM ULTIMATE: Casting");
             ResetUltimateCharge();

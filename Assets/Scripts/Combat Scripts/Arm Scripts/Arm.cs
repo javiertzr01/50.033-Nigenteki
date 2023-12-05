@@ -196,7 +196,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -206,7 +206,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -216,7 +216,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
-        Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -379,7 +379,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     [ServerRpc(RequireOwnership = false)]
     public void UpgradeArmServerRpc()
     {
-        Logger.Instance.LogInfo("Upgraded Arm");
+        //Logger.Instance.LogInfo("Upgraded Arm");
         UpgradeArm();
     }
 

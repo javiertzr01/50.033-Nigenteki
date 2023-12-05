@@ -69,6 +69,16 @@ public class HoneyBee : Arm
         spellProjectile = projectiles[1];
     }
 
+    public override void OnUpgraded()
+    {
+        Logger.Instance.LogInfo($"Increased Damage and Healing");
+    }
+
+    public override void OnMax()
+    {
+        Logger.Instance.LogInfo($"Further Increased Damage and Healing");
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -78,7 +88,7 @@ public class HoneyBee : Arm
 
         if (Time.time >= nextBasicFireTime)
         {
-            Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
+            //Logger.Instance.LogInfo($"Cast Basic Attack ServerRpc called by {clientId}");
 
             // Spawn the Projectile
             GameObject projectileClone = SpawnProjectile<Projectile>(clientId, basicProjectile, shootPoint);
@@ -136,7 +146,7 @@ public class HoneyBee : Arm
         else
         {
             Debug.Log("HONEYBEE SKILL: Cannot cast yet");
-            Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
+            //Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
         }
     }
 
@@ -150,7 +160,7 @@ public class HoneyBee : Arm
 
         if (UltimateCharge >= 100f)
         {
-            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
+            //Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("HONEYBEE ULTIMATE: Casting");
             ResetUltimateCharge();

@@ -14,9 +14,9 @@ public class MapGeneratorManager : NetworkBehaviour
         if (IsServer)
         {
             generateMap.Invoke();
-            Logger.Instance.LogInfo("Generated Map");
+            //Logger.Instance.LogInfo("Generated Map");
             saveMap.Invoke();
-            Logger.Instance.LogInfo("Saving Map");
+            //Logger.Instance.LogInfo("Saving Map");
         }
     }
 

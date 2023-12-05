@@ -266,7 +266,7 @@ public class BeetleShieldTrigger : ShieldTrigger
             //Enable - 0; DisableShield - 1; Destroyed - 2; DisabledOption - 3; Damage - 4;
             PlayAudioForAllClients(4);
         }
-        Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
+        //Logger.Instance.LogInfo("BEETLE SHIELD HP: " + ShieldHealth);
 
 
         // Update clients about the shield's status, including if it's destroyed
@@ -286,7 +286,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         ShieldHealth = shieldMaxHealth;
         Destroyed = false;
         isShieldActive.Value = false; // Optionally reset the active state
-        Logger.Instance.LogInfo("Reset Beetle Shield Health to: " + ShieldHealth);
+        //Logger.Instance.LogInfo("Reset Beetle Shield Health to: " + ShieldHealth);
         UpdateShieldStatusClientRpc(ShieldHealth, Destroyed);
     }
 }

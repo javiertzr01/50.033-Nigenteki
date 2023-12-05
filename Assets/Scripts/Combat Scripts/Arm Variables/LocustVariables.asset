@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armName: Locust
   baseForce: 4
-  baseFireRate: 0.3
+  baseFireRate: 0.6
   skillForce: 0
   skillCoolDown: 5
   skillDuration: 0
@@ -25,3 +25,4 @@ MonoBehaviour:
   ultimateCharge: 100
   ultimateDuration: 15
   shieldMaxHealth: 0
+  shieldMaxHealthUpgraded: 0

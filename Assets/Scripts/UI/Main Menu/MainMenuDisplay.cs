@@ -17,7 +17,7 @@ public class MainMenuDisplay : MonoBehaviour
             await RelayManager.Instance.SetupRelay();
 
         if (NetworkManager.Singleton.StartHost())
-            Logger.Instance.LogInfo("Host Started");
+            //Logger.Instance.LogInfo("Host Started");
 
         NetworkManager.Singleton.SceneManager.LoadScene(characterSelectScreenSceneName, LoadSceneMode.Single);*/
 
@@ -37,6 +37,6 @@ public class MainMenuDisplay : MonoBehaviour
             await RelayManager.Instance.JoinRelay(joinCodeInputField.text);
 
         if (NetworkManager.Singleton.StartClient())
-            Logger.Instance.LogInfo("Client Started");
+            //Logger.Instance.LogInfo("Client Started");
     }
 }

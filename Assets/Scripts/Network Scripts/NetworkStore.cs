@@ -25,7 +25,7 @@ public class NetworkStore : NetworkBehaviour
 
     public void OnGeneratedMapDataChanged(GeneratedMapData previous, GeneratedMapData current)
     {
-        Logger.Instance.LogInfo($"Generated map data has been updated");
+        //Logger.Instance.LogInfo($"Generated map data has been updated");
     }
 
 }

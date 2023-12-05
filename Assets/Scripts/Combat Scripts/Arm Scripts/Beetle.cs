@@ -47,7 +47,7 @@ public class Beetle : Arm
             {
                 ulted = false; // Reset the ulted flag after the ultimate duration
                 Debug.Log("BEETLE ULTIMATE: Expired");
-                Logger.Instance.LogInfo("BEETLE ULTIMATE: Expired");
+                //Logger.Instance.LogInfo("BEETLE ULTIMATE: Expired");
             }
         }
     }
@@ -69,6 +69,7 @@ public class Beetle : Arm
         }
         beetleShieldTrigger.shieldMaxHealth = armVariable.shieldMaxHealthUpgraded;
         beetleShieldTrigger.ShieldHealth = beetleShieldTrigger.shieldMaxHealth;
+        Logger.Instance.LogInfo($"Increased Max Shield Health");
 
     }
 
@@ -77,6 +78,7 @@ public class Beetle : Arm
         base.OnMax();
         transform.GetComponentInParent<PlayerController>().AdjustPlayerMaxHealthServerRpc(1.5f * transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
         transform.GetComponentInParent<PlayerController>().AdjustPlayerHealthServerRpc(transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
+        Logger.Instance.LogInfo($"Increased Max Player Health");
     }
     // SPAWNING
     [ServerRpc(RequireOwnership = false)]
@@ -84,10 +86,10 @@ public class Beetle : Arm
     {
         if (shieldInitialized) return;
 
-        Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawning Shield on {OwnerClientId}");
 
         // Helpful for if the shield spawns wrongly for client side again
-        // Logger.Instance.LogInfo($"Parent Transform {transform.parent.parent.transform.position} + Shield Transform {shieldClone.transform.position}");
+        // //Logger.Instance.LogInfo($"Parent Transform {transform.parent.parent.transform.position} + Shield Transform {shieldClone.transform.position}");
         currentShield = SpawnProjectile<ShieldTrigger>(OwnerClientId, basicProjectile, shootPoint);
         currentShield.transform.GetComponent<NetworkObject>().TrySetParent(gameObject.transform);
         beetleShieldTrigger = currentShield.GetComponent<BeetleShieldTrigger>();
@@ -103,7 +105,7 @@ public class Beetle : Arm
         currentShield = NetworkManager.Singleton.SpawnManager.SpawnedObjects[shieldId].gameObject;
         beetleShieldTrigger = currentShield.GetComponent<BeetleShieldTrigger>();
         shieldInitialized = true;
-        Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
+        //Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
     }
 
 
@@ -220,7 +222,7 @@ public class Beetle : Arm
         else
         {
             Debug.Log("BEETLE SKILL: Cannot cast yet");
-            Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
+            //Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}: FAIL - CD");
         }
 
     }
@@ -265,7 +267,7 @@ public class Beetle : Arm
         else
         {
             Debug.Log("BEETLE ULTIMATE: Not enough Ult Charge");
-            Logger.Instance.LogInfo($"Cast Ult ClientRpc called by {OwnerClientId}: FAIL - Charge");
+            //Logger.Instance.LogInfo($"Cast Ult ClientRpc called by {OwnerClientId}: FAIL - Charge");
         }
 
 

@@ -15,7 +15,7 @@ public class GameLobby : MonoBehaviour
 
         AuthenticationService.Instance.SignedIn += () =>
         {
-            Logger.Instance.LogError("Signed in " + AuthenticationService.Instance.PlayerId);
+            //Logger.Instance.LogError("Signed in " + AuthenticationService.Instance.PlayerId);
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -30,11 +30,11 @@ public class GameLobby : MonoBehaviour
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers);
 
-            Logger.Instance.LogInfo($"Lobby created with name {lobby.Name} and size {lobby.MaxPlayers}");
+            //Logger.Instance.LogInfo($"Lobby created with name {lobby.Name} and size {lobby.MaxPlayers}");
         }
         catch (LobbyServiceException e)
         {
-            Logger.Instance.LogError(e.ToString());
+            //Logger.Instance.LogError(e.ToString());
         }
     }
 
@@ -44,15 +44,15 @@ public class GameLobby : MonoBehaviour
         {
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync();
 
-            Logger.Instance.LogInfo($"Lobbies found: " + queryResponse.Results.Count);
+            //Logger.Instance.LogInfo($"Lobbies found: " + queryResponse.Results.Count);
             foreach (Lobby lobby in queryResponse.Results)
             {
-                Logger.Instance.LogInfo($"Lobby {lobby.Name} with {lobby.MaxPlayers}");
+                //Logger.Instance.LogInfo($"Lobby {lobby.Name} with {lobby.MaxPlayers}");
             }
         }
         catch (LobbyServiceException e)
         {
-            Logger.Instance.LogInfo(e.ToString());
+            //Logger.Instance.LogInfo(e.ToString());
         }
     }
 }
