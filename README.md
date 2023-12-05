@@ -1,5 +1,6 @@
 # Nigenteki
- 50.033 Game Development Project Group 11
+ 50.033 Game Development Project Group 11<br/>
+Team Members: Chris, Javier, Louis, Lee Jing, Jodi, Baarath
 
 ![image](https://github.com/50033-game-design-and-development/50033-final-project-team/assets/29447484/4b051272-87c6-4251-a631-d1e4241387bd)
 
@@ -28,7 +29,7 @@ Teams of three players start by each player selecting Arms to go into the map wi
 - **Upgrade Weapon**: Press Z and C keys when in character team’s spawn to upgrade left and right arm respectively
 
 ### Gameplay
-Link: 
+Video Link: [50.033 WAH Games - Nigenteki](https://youtu.be/W2Zl5M726vI)
 
 ### Key Features
 1. **Tactical Gameplay**: Nigenteki places a heavy emphasis on tactical decision-making, challenging players to make strategic choices in fast-paced combat scenarios.
