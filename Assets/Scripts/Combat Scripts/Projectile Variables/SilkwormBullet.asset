@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SilkwormBullet
   m_EditorClassIdentifier: 
   projectileName: Silkworm Bullet
-  damage: 20
+  damage: 10
   damageUpgraded: 20
   damageMax: 50
   maxDistance: 30
