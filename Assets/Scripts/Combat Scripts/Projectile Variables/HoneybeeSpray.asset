@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: HoneybeeSpray
   m_EditorClassIdentifier: 
   projectileName: Honeybee Spray
-  damage: 4
-  damageUpgraded: 8
-  damageMax: 12
+  damage: 2
+  damageUpgraded: 4
+  damageMax: 6
   maxDistance: 3
   maxDistanceUpgraded: 3

@@ -15,6 +15,6 @@ MonoBehaviour:
   projectileName: Silkworm Bullet
   damage: 10
   damageUpgraded: 20
-  damageMax: 50
+  damageMax: 35
   maxDistance: 30
   maxDistanceUpgraded: 30
