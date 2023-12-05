@@ -239,7 +239,7 @@ MonoBehaviour:
   m_PivotOffset: {x: 0, y: 0, z: 0}
   m_AmplitudeGain: 0
   m_FrequencyGain: 1
-  mNoiseOffsets: {x: 0, y: 0, z: 0}
+  mNoiseOffsets: {x: 280.00497, y: 601.6538, z: -177.67273}
 --- !u!1 &5009592937343648668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1074,8 @@ MonoBehaviour:
   leftArmPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f,
     type: 3}
   rightArmPrefab: {fileID: 7756204089957409917, guid: b297dee32b742cc4384500cbecd75d0f,
+    type: 3}
+  particleSystemPrefab: {fileID: 2282719973751793616, guid: 79a1f3ec07a338c4d98a1cbdadb10c0b,
     type: 3}
   vc: {fileID: 436870612953158045}
   cam: {fileID: 3255546274460269327}

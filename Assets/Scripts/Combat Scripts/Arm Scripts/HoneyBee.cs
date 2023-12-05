@@ -42,11 +42,20 @@ public class HoneyBee : Arm
                     // Check if the playerController is not null and is an ally
                     if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
                     {
+                        if (!IsServer)
+                        {
+                            playerController.ToggleParticleSystemServerRpc(false);
+
+                        }
+                        else
+                        {
+                            playerController.ToggleParticleSystem(false);
+                        }
                         // Reset the MoveSpeed variable
                         playerController.AdjustMovementSpeedServerRpc(playerController.defaultMoveSpeed);
                         // Reset damage taken
                         playerController.AdjustDamageTakenScaleServerRpc(playerController.defaultDamageTakenScale);
-                        playerController.passiveHealthRegenerationPercentage = playerController.defaultPassiveHealthRegenerationPercentage;
+                        playerController.AdjustPassiveHealthRegenServerRpc(-0.05f);
                     }
                 }
                 ulted = false;
@@ -157,12 +166,21 @@ public class HoneyBee : Arm
                 // Check if the playerController is not null and is an ally
                 if (playerController != null && playerController.teamId.Value == transform.root.transform.GetComponent<PlayerController>().teamId.Value)
                 {
+                    if (!IsServer)
+                    {
+                        playerController.ToggleParticleSystemServerRpc(true);
+
+                    }
+                    else
+                    {
+                        playerController.ToggleParticleSystem(true);
+                    }
                     // Multiply the MoveSpeed variable by 2
                     playerController.AdjustMovementSpeedServerRpc(playerController.defaultMoveSpeed * 2f);
                     // Reduce damage taken by 25%
                     playerController.AdjustDamageTakenScaleServerRpc(playerController.defaultDamageTakenScale * 0.75f);
 
-                    playerController.passiveHealthRegenerationPercentage = playerController.defaultPassiveHealthRegenerationPercentage + 0.05f;
+                    playerController.AdjustPassiveHealthRegenServerRpc(0.05f);
                 }
             }
 
