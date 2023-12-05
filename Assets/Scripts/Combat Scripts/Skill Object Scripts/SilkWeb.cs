@@ -6,6 +6,11 @@ using UnityEngine;
 public class SilkWeb : SkillObject
 {
 
+    protected override void ColorSpriteToTeamId()
+    {
+        // skip behaviour since SilkWebBehaviour already does this
+    }
+
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         // Check if the colliding object has an enemy PlayerController script
@@ -53,7 +58,7 @@ public class SilkWeb : SkillObject
     public void RemoveAndShiftClientRpc(int index)
     {
         if (IsHost) return;
-        Silkworm arm = (Silkworm) instantiatingArm;
+        Silkworm arm = (Silkworm)instantiatingArm;
         arm.activeSpellProjectiles.RemoveAt(index);
     }
 

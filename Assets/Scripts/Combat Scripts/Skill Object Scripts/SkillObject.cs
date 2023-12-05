@@ -4,6 +4,22 @@ using Unity.Netcode;
 using UnityEngine;
 public abstract class SkillObject : Spawnables
 {
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        ColorSpriteToTeamId();
+    }
+
+    protected virtual void ColorSpriteToTeamId()
+    {
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        Color tint = teamId.Value == 0 ? new Color(1f, 0.5f, 0.5f, 1f) : new Color(0.5f, 0.5f, 1f, 1f);  // Light hue of red and blue
+        spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
+    }
+
+
+
     void OnTriggerEnter2D(Collider2D other)
     {
         TriggerEnter2DLogic(other);

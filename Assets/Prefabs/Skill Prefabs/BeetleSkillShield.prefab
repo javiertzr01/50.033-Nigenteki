@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
     type: 3}
-  m_Color: {r: 0.3915094, g: 0.8755322, b: 1, a: 0.27450982}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.27450982}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -171,9 +171,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa57ce5e6fe8f264d881169163dbb996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  instantiatingArm: {fileID: 0}
   teamId:
     m_InternalValue: 0
-  countdownTimer: 0
+  _shieldCurrentHealth: 0
+  animator: {fileID: 0}
+  shieldMaxHealth: 0
+  skillDurationTimer: 0
 --- !u!114 &5215591454952065365
 MonoBehaviour:
   m_ObjectHideFlags: 0

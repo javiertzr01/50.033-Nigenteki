@@ -13,6 +13,9 @@ public class BeetleSkillTrigger : ShieldTrigger
     {
         base.Start();
         skillDurationTimer = instantiatingArm.armVariable.skillDuration;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color tint = teamId.Value == 0 ? new Color(1f, 0.5f, 0.5f, 1f) : new Color(0.5f, 0.5f, 1f, 1f);  // Light hue of red and blue
+        spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
     }
 
     private void Update()

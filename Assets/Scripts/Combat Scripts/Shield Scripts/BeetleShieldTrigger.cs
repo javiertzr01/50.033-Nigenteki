@@ -10,7 +10,7 @@ public class BeetleShieldTrigger : ShieldTrigger
 
     // Network variable to keep track of the shield's activation state
     public NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(false);
-    public NetworkVariable<bool> isAttackingNoShield = new NetworkVariable<bool>(false); 
+    public NetworkVariable<bool> isAttackingNoShield = new NetworkVariable<bool>(false);
     [SerializeField]
     private Collider2D shieldCollider;
     [SerializeField]
@@ -45,7 +45,11 @@ public class BeetleShieldTrigger : ShieldTrigger
         shieldRegenTimer = 0f;
         Destroyed = false;
         arm = transform.GetComponentInParent<Beetle>();
-        
+
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        Color tint = teamId.Value == 0 ? Color.red : Color.blue;
+        spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
+
 
         // Initialize the shield's state based on isShieldActive value
         shieldCollider.enabled = isShieldActive.Value;
@@ -154,7 +158,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         // Check if the shield is not active
         if (!isShieldActive.Value)
         {
-            if (isAttackingNoShield.Value) 
+            if (isAttackingNoShield.Value)
             {
                 shieldRegenTimer = 0;
                 ToggleAttackingNoShieldServerRpc(false);
@@ -180,7 +184,7 @@ public class BeetleShieldTrigger : ShieldTrigger
                 animator.enabled = false;
             }
         }
-        if ((shieldCollider.enabled == isShieldActive.Value) && (shieldSprite.enabled == isShieldActive.Value)) {return;}
+        if ((shieldCollider.enabled == isShieldActive.Value) && (shieldSprite.enabled == isShieldActive.Value)) { return; }
         else
         {
             shieldCollider.enabled = isShieldActive.Value;
@@ -211,7 +215,7 @@ public class BeetleShieldTrigger : ShieldTrigger
             PlayAudioForAllClients(1);
         }
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     public void ToggleAttackingNoShieldServerRpc(bool value)
     {
@@ -226,7 +230,7 @@ public class BeetleShieldTrigger : ShieldTrigger
             ShieldHealth += 50f * Time.deltaTime; // Regenerate HP per second
             if (ShieldHealth >= shieldMaxHealth)
             {
-                ShieldHealth = shieldMaxHealth;   
+                ShieldHealth = shieldMaxHealth;
             }
 
             if (ShieldHealth >= 0.5 * shieldMaxHealth)

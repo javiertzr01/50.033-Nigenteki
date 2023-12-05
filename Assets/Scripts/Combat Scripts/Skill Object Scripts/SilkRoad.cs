@@ -29,8 +29,18 @@ public class SilkRoad : SkillObject
         }
     }
 
-    // TO FIX: WHY IF PLAYER = TEAMID 1, THEY CREATE A TEAMID = 0 SILK ROAD?
-    // Although it does not stun them.
+    protected override void ColorSpriteToTeamId()
+    {
+        Color tint = teamId.Value == 0 ? Color.red : Color.blue;  // Light hue of red and blue
+
+        foreach (SpriteRenderer spriteRenderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
+        }
+
+    }
+
+
     public override void TriggerEnter2DLogic(Collider2D other)
     {
         if (enterAdjustMoveSpeed) return;
