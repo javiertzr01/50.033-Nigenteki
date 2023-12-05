@@ -27,6 +27,10 @@ public class SilkWebBehavior : NetworkBehaviour
         int silkWebTeamId = transform.parent.GetComponent<SilkWeb>().teamId.Value; // Assuming SilkWeb has a NetworkVariable<int> teamId
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
+        // Set the color tint based on the SilkWeb team ID
+        Color tint = silkWebTeamId == 0 ? Color.red : Color.blue;
+        spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
+
         if (player.teamId.Value == silkWebTeamId)
         {
             // If the player is on the same team as the SilkWeb, it's always fully visible
