@@ -995,21 +995,36 @@ public class PlayerController : NetworkBehaviour
         Dash(dashDirection);
     }
 
-
-    public void Dash(Vector2 dashDirection)
+    IEnumerator DashCoroutine(Vector2 direction, float force, float duration)
     {
+        float time = 0;
 
-        if (rb != null)
+        // Activate the TrailRenderer
+        if (tr != null)
         {
-            // Normalize the dash direction to ensure consistent speed in all directions
-            dashDirection.Normalize();
-
-            // Apply a force to the Rigidbody2D in the specified direction
-
-            lastDashVelocity = dashDirection * dashFactor;
-
-            doForce = true;
+            tr.emitting = true;
         }
+
+        while (time < duration)
+        {
+            // Apply a smaller portion of the force each frame
+            rb.AddForce(direction * force * Time.deltaTime / duration, ForceMode2D.Force);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        // Deactivate the TrailRenderer
+        if (tr != null)
+        {
+            tr.emitting = false;
+        }
+    }
+
+    public void Dash(Vector2 direction)
+    {
+        float dashForce = 20000f; // Adjust as needed
+        float dashDuration = 0.5f; // Adjust as needed
+        StartCoroutine(DashCoroutine(direction, dashForce, dashDuration));
     }
 
     private void InSpawnCheck()
@@ -1025,27 +1040,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (doForce)
-        {
-            doForce = false;
-            // Debug.Log(lastDashVelocity);
-            if (tr != null)
-            {
-                tr.emitting = true;
-
-            }
-            rb.AddForce(lastDashVelocity, ForceMode2D.Impulse);
-        }
-        else
-        {
-            if (tr != null && tr.emitting)
-            {
-                tr.emitting = false;
-            }
-        }
-    }
 
     [ClientRpc]
     public void ShakeCameraClientRpc(float intensity, float time, ClientRpcParams clientRpcParams = default)
