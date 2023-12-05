@@ -241,20 +241,27 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: da6ad6e1800bdeb439426e8a8f75d55b, type: 2}
   networkWeaponState:
     m_InternalValue: 0
+  armLevel:
+    m_InternalValue: 0
+  armType: 0
   projectiles:
   - {fileID: 5731709433743611798, guid: 69c31cb0e92092744a7cb8d8e61708ca, type: 3}
   - {fileID: 6570955299702910688, guid: 11b4516544b363d4e958091cddca2418, type: 3}
   shootPoint: {fileID: 3178301148310594185}
-  animator: {fileID: 0}
+  maxSkillCharges: 0
+  _skillCharges: 0
+  _ultimateCharge: 0
   basicAttackSFX: {fileID: 8300000, guid: 277094143c5c50e478771750f6882e83, type: 3}
   skillSFX: {fileID: 8300000, guid: ef6cc4afc69bb404aa98e5cf0d81083f, type: 3}
   ultimateSFX: {fileID: 8300000, guid: 7f8c22c40f113544da9b0d4ccebf98e3, type: 3}
-  basicAttackCameraShakeIntensity: 0
-  basicAttackCameraShakeDuration: 0
+  animator: {fileID: 0}
+  basicAttackCameraShakeIntensity: 0.4
+  basicAttackCameraShakeDuration: 0.3
   skillCameraShakeIntensity: 0
   skillCameraShakeDuration: 0
-  ultimateCameraShakeIntensity: 0
-  ultimateCameraShakeDuration: 0
+  ultimateCameraShakeIntensity: 0.8
+  ultimateCameraShakeDuration: 0.3
+  ulted: 0
 --- !u!1 &3178301148310594185
 GameObject:
   m_ObjectHideFlags: 0

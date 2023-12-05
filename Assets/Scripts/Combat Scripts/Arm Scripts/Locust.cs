@@ -5,12 +5,59 @@ using Unity.Netcode;
 
 public class Locust : Arm
 {
+    private Color originalColor;
+    private NetworkVariable<Color> syncedColor = new NetworkVariable<Color>(new Color(1, 1, 1, 1)); // default color
+    private SpriteRenderer playerSprite;
     GameObject ProjectileSpawned;
     [SerializeField]
     private bool ulted = false;
 
+
+    private void Start()
+    {
+        playerSprite = gameObject.GetComponentInParent<SpriteRenderer>();
+        if (playerSprite != null)
+        {
+            originalColor = playerSprite.color;
+            syncedColor.Value = playerSprite.color;
+        }
+        else
+        {
+            Debug.LogError("SpriteRenderer not found!");
+        }
+
+        // Subscribe to the color change event
+        syncedColor.OnValueChanged += OnColorChanged;
+    }
+
+    public override void OnDestroy()
+    {
+        // Unsubscribe to avoid memory leaks
+        syncedColor.OnValueChanged -= OnColorChanged;
+        base.OnDestroy();
+    }
+
+    private void OnColorChanged(Color oldColor, Color newColor)
+    {
+        Debug.Log($"Color changed from {oldColor} to {newColor}");
+        if (playerSprite != null)
+        {
+            playerSprite.color = newColor;
+        }
+        else
+        {
+            Debug.LogError("Failed to apply color change: SpriteRenderer is null.");
+        }
+    }
+
     private void Update()
     {
+        // Apply synchronized color
+        if (playerSprite != null && syncedColor.Value != playerSprite.color)
+        {
+            playerSprite.color = new Color(syncedColor.Value.r, syncedColor.Value.g, syncedColor.Value.b, playerSprite.color.a);
+        }
+
         // Update the skill charge timer
         if (SkillCharges < maxSkillCharges)
         {
@@ -33,9 +80,26 @@ public class Locust : Arm
                 ulted = false; // Reset the ulted flag when the timer reaches 0
                 gameObject.GetComponentInParent<PlayerController>().ToggleImmuneStunServerRpc(false);
                 Debug.Log("LOCUST ULT: Expired");
+                ShakeCamera();
+                SetColor(originalColor); // Reset color
+
+
                 countdownTimer = armVariable.ultimateDuration; // Reset the timer for the next ultimate
             }
         }
+    }
+
+    private void SetColor(Color newColor)
+    {
+        if (IsServer) // Ensure the server is making the change
+        {
+            syncedColor.Value = newColor;
+        }
+        else
+        {
+            Debug.LogWarning("SetColor called from a non-server instance.");
+        }
+
     }
 
     public override void SetProjectiles()
@@ -141,9 +205,12 @@ public class Locust : Arm
             Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId}");
 
             Debug.Log("LOCUST ULTIMATE: Casting");
+            ShakeCameraUltimate();
             ResetUltimateCharge();
             ulted = true;
             gameObject.GetComponentInParent<PlayerController>().ToggleImmuneStunServerRpc(true);
+            Color tint = new Color(0.5f, 1f, 0.5f, 1f); // Light Green hue
+            SetColor(tint);
 
             //Audio Player
             int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;

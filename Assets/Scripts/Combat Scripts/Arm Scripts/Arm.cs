@@ -17,8 +17,8 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     protected List<GameObject> projectiles; // Consider serializing relevant state information instead of GameObjects
     [SerializeField]
     protected GameObject shootPoint;        // Same as above, consider what needs to be synchronized
-    protected GameObject basicProjectile;   
-    protected GameObject spellProjectile;   
+    protected GameObject basicProjectile;
+    protected GameObject spellProjectile;
     protected GameObject ultimateProjectile;
     protected GameObject altProjectile;
     [SerializeField]
@@ -47,7 +47,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public float basicAttackCameraShakeIntensity;
     public float basicAttackCameraShakeDuration;
     public float skillCameraShakeIntensity;
-    public float skillCameraShakeDuration; 
+    public float skillCameraShakeDuration;
     public float ultimateCameraShakeIntensity;
     public float ultimateCameraShakeDuration;
 
@@ -77,7 +77,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
     public virtual void Initialize()
     {
-        SetProjectiles();   
+        SetProjectiles();
 
         audioSource0 = gameObject.AddComponent<AudioSource>();
         audioSource1 = gameObject.AddComponent<AudioSource>();
@@ -93,9 +93,9 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         nextBasicFireTime = 0f;
     }
 
-    
 
-// SOUND EFFECTS
+
+    // SOUND EFFECTS
     // Server-side method to loop and play audio
     protected void PlayAudioForAllClients(int attackTypeIndex, ClientRpcParams clientRpcParams = default)
     {
@@ -193,8 +193,8 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default) 
-    { 
+    public virtual void CastBasicAttackClientRpc(ClientRpcParams clientRpcParams = default)
+    {
         if (!IsOwner) return;
         Logger.Instance.LogInfo($"Cast Basic Attack ClientRpc called by {OwnerClientId}");
     }
@@ -203,7 +203,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastSkillServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default) 
+    public virtual void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
         Logger.Instance.LogInfo($"Cast Skill ClientRpc called by {OwnerClientId}");
@@ -213,8 +213,8 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     public virtual void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default) { }
 
     [ClientRpc]
-    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default) 
-    { 
+    public virtual void CastUltimateClientRpc(ClientRpcParams clientRpcParams = default)
+    {
         if (!IsOwner) return;
         Logger.Instance.LogInfo($"Cast Ultimate ClientRpc called by {OwnerClientId}");
     }
@@ -288,7 +288,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         rb.AddForce(shootPoint.transform.up * force, ForceMode2D.Impulse);
     }
 
-// ANIMATION
+    // ANIMATION
     public void UpdateWeaponAnimator()  // CLIENT
     {
         if (networkWeaponState.Value == WeaponState.Idle)
@@ -330,7 +330,18 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         });
     }
 
-// MISCELLANEOUS
+    public void ShakeCameraUltimate()   // SERVER
+    {
+        NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(ultimateCameraShakeIntensity, ultimateCameraShakeDuration, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+    }
+
+    // MISCELLANEOUS
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         throw new System.NotImplementedException();
@@ -338,17 +349,17 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 
     public void UpgradeArm()            // SERVER ONLY      TODO: Add cost of upgrade
     {
-        if (armLevel.Value == ArmLevel.Default) 
+        if (armLevel.Value == ArmLevel.Default)
         {
             armLevel.Value = ArmLevel.Upgraded;
             OnUpgraded();
         }
-        else if (armLevel.Value == ArmLevel.Upgraded) 
+        else if (armLevel.Value == ArmLevel.Upgraded)
         {
             armLevel.Value = ArmLevel.Max;
             OnMax();
         }
-        else {Debug.Log("Arm Not Upgradable");}
+        else { Debug.Log("Arm Not Upgradable"); }
     }
 
     public virtual void OnUpgraded() { }
@@ -377,8 +388,8 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
 }
 
 public enum ArmLevel
-    {
-        Default,
-        Upgraded,
-        Max
-    }
+{
+    Default,
+    Upgraded,
+    Max
+}
