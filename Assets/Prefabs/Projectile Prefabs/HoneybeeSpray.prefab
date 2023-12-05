@@ -33,7 +33,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7052477770899669767}
   m_Father: {fileID: 0}
@@ -174,13 +174,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a606320e501fc154b875fe3d3dd593d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileVariable: {fileID: 11400000, guid: c89be3e72dae24b42be7820c92c6fa59, type: 2}
+  instantiatingArm: {fileID: 0}
   teamId:
     m_InternalValue: 0
+  projectileVariable: {fileID: 11400000, guid: c89be3e72dae24b42be7820c92c6fa59, type: 2}
   isColliding: 0
   startingPosition: {x: 0, y: 0}
   damageNumber: {fileID: 6714799550899306158, guid: 5a4f2903c1acec7459f76a1295bf855c,
     type: 3}
+  damageNumberAddressableName: DamageNumber
   duration: 4
 --- !u!1 &4338065651555008858
 GameObject:
@@ -210,7 +212,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2893566722720785042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -255,9 +257,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
-    type: 3}
-  m_Color: {r: 1, g: 0.630161, b: 0.4669811, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 34717f95325d5ff4f88395d24161e53f, type: 3}
+  m_Color: {r: 1, g: 0.99344397, b: 0.6179246, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

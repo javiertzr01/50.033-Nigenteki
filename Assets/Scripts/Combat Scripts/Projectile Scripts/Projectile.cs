@@ -49,6 +49,7 @@ public abstract class Projectile : Spawnables
     {
         if (isColliding) return;
         isColliding = true;
+        Debug.Log("Colliding with: " + other.name);
         if (other.gameObject.tag == "Player")
         {
             OnPlayerTriggerEnter2D(other);
@@ -294,6 +295,9 @@ public abstract class Projectile : Spawnables
         MaxDistance = projectileVariable.maxDistance;
         Damage = projectileVariable.damage;
         AssignDamageNumberPrefab(damageNumberAddressableName);
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        Color tint = teamId.Value == 0 ? new Color(1f, 0.5f, 0.5f, 1f) : new Color(0.5f, 0.5f, 1f, 1f);  // Light hue of red and blue
+        spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
     }
 
     public void AssignDamageNumberPrefab(string name)   // Call this function to change the DamageNumber prefab with an addressable name (Overwrite it in OnNetworkSpawn after base.OnNetworkSpawn())
