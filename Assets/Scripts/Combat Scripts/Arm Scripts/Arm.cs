@@ -330,6 +330,17 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
         });
     }
 
+    public void ShakeCameraSkill()   // SERVER
+    {
+        NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(skillCameraShakeIntensity, skillCameraShakeDuration, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        });
+    }
+
     public void ShakeCameraUltimate()   // SERVER
     {
         NetworkManager.Singleton.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<PlayerController>().ShakeCameraClientRpc(ultimateCameraShakeIntensity, ultimateCameraShakeDuration, new ClientRpcParams
