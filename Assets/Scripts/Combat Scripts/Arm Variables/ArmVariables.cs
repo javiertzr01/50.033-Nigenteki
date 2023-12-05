@@ -24,5 +24,6 @@ public class ArmVariables : ScriptableObject
 
     [Space(10f), Header("Shield-related Variables")]
     public float shieldMaxHealth;
+    public float shieldMaxHealthUpgraded;
 
 }

@@ -35,6 +35,15 @@ public class Silkworm : Arm
         ultimateProjectile = projectiles[2];
     }
 
+    public override void OnUpgraded()
+    {
+        base.OnUpgraded();
+
+        // Increase Base Movement Speed
+        transform.GetComponentInParent<PlayerController>().defaultMoveSpeed = 1.5f * transform.GetComponentInParent<PlayerController>().defaultMoveSpeed;
+        transform.GetComponentInParent<PlayerController>().AdjustMovementSpeedServerRpc(transform.GetComponentInParent<PlayerController>().defaultMoveSpeed);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -91,16 +100,23 @@ public class Silkworm : Arm
             ProjectileListAdd(activeSpellProjectiles, skillProjectile);
 
             // Decrease the number of available skill charges
-            SkillCharges--;                                 
+            SkillCharges--;
+            UpdateSkillChargesClientRpc();                                
             Debug.Log("Decrease Silkworm Skill Charge: " + SkillCharges);
         }
 
         // Cast the Skill ClientRpc
-        CastSkillClientRpc();                               // Reflect SkillChargeson Client
+        CastSkillClientRpc(new ClientRpcParams       // REMOVE :This just notifies the client
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
     }
 
     [ClientRpc]
-    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
+    public void UpdateSkillChargesClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (IsHost) return;
         SkillCharges--;

@@ -292,12 +292,29 @@ public abstract class Projectile : Spawnables
     public override void OnNetworkSpawn()
     {
         startingPosition = transform.position;
-        MaxDistance = projectileVariable.maxDistance;
-        Damage = projectileVariable.damage;
         AssignDamageNumberPrefab(damageNumberAddressableName);
         SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         Color tint = teamId.Value == 0 ? new Color(1f, 0.5f, 0.5f, 1f) : new Color(0.5f, 0.5f, 1f, 1f);  // Light hue of red and blue
         spriteRenderer.color = new Color(tint.r, tint.g, tint.b, spriteRenderer.color.a);
+    }
+
+    public void Start()
+    {
+        switch (instantiatingArm.armLevel.Value)
+        {
+            case(ArmLevel.Default):
+                MaxDistance = projectileVariable.maxDistance;
+                Damage = projectileVariable.damage;
+                break;
+            case(ArmLevel.Upgraded):
+                MaxDistance = projectileVariable.maxDistanceUpgraded;
+                Damage = projectileVariable.damageUpgraded;
+                break;
+            case(ArmLevel.Max):
+                MaxDistance = projectileVariable.maxDistanceUpgraded;       // Intentional. Only default and upgraded values
+                Damage = projectileVariable.damageMax;
+                break;
+        }
     }
 
     public void AssignDamageNumberPrefab(string name)   // Call this function to change the DamageNumber prefab with an addressable name (Overwrite it in OnNetworkSpawn after base.OnNetworkSpawn())

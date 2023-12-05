@@ -734,6 +734,18 @@ public class PlayerController : NetworkBehaviour
         DamageTakenScale = scale;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void AdjustPlayerHealthServerRpc(float health)
+    {
+        playerHealth.Value = health;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AdjustPlayerMaxHealthServerRpc(float health)
+    {
+        playerMaxHealth.Value = health;
+    }
+
     [ServerRpc (RequireOwnership = false)]
     public void ToggleImmuneStunServerRpc(bool value)
     {

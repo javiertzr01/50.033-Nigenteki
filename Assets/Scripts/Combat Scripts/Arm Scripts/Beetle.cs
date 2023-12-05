@@ -60,7 +60,20 @@ public class Beetle : Arm
         altProjectile = projectiles[3];
     }
 
-// SPAWNING
+    public override void OnUpgraded()
+    {
+        base.OnUpgraded();
+        beetleShieldTrigger.shieldMaxHealth = armVariable.shieldMaxHealthUpgraded;
+        beetleShieldTrigger.ShieldHealth = beetleShieldTrigger.shieldMaxHealth;
+    }
+
+    public override void OnMax()
+    {
+        base.OnMax();
+        transform.GetComponentInParent<PlayerController>().AdjustPlayerMaxHealthServerRpc(1.5f * transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
+        transform.GetComponentInParent<PlayerController>().AdjustPlayerHealthServerRpc(transform.GetComponentInParent<PlayerController>().playerMaxHealth.Value);
+    }
+    // SPAWNING
     [ServerRpc(RequireOwnership = false)]
     private void SpawnShieldServerRpc(ServerRpcParams serverRpcParams = default)
     {

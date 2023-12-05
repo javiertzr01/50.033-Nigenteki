@@ -25,3 +25,4 @@ MonoBehaviour:
   ultimateCharge: 100
   ultimateDuration: 20
   shieldMaxHealth: 500
+  shieldMaxHealthUpgraded: 800
