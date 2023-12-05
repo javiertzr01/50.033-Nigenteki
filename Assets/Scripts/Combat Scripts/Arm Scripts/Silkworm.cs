@@ -35,6 +35,15 @@ public class Silkworm : Arm
         ultimateProjectile = projectiles[2];
     }
 
+    public override void OnUpgraded()
+    {
+        base.OnUpgraded();
+
+        // Increase Base Movement Speed
+        transform.GetComponentInParent<PlayerController>().defaultMoveSpeed = 1.5f * transform.GetComponentInParent<PlayerController>().defaultMoveSpeed;
+        transform.GetComponentInParent<PlayerController>().AdjustMovementSpeedServerRpc(transform.GetComponentInParent<PlayerController>().defaultMoveSpeed);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {
