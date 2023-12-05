@@ -710,7 +710,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7707033610063034363}
         m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: OnLeftArmUpgradeAction
+        m_MethodName: OnLeftArmUseAction
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -912,10 +912,6 @@ MonoBehaviour:
     m_InternalValue: 0
   greenCrystalCount:
     m_InternalValue: 0
-  rightArmUpgradable:
-    m_InternalValue: 0
-  leftArmUpgradable:
-    m_InternalValue: 0
   kills:
     m_InternalValue: 0
   deaths:
@@ -997,11 +993,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  rightArmUpgradableIndicatorEventInvoker:
+  rightArmImageUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: 7ff70bad420944442a33500f03362d07, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Boolean, mscorlib
+      - m_Target: {fileID: 11400000, guid: 626ae1a9d36d23e429a1decbbb4cd6d2, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
         m_MethodName: Raise
         m_Mode: 0
         m_Arguments:
@@ -1012,11 +1008,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  leftArmUpgrableIndicatorEventInvoker:
+  leftArmImageUpdateEventInvoker:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400000, guid: d309d6dc1b73eb04e869c5cc17e395f3, type: 2}
-        m_TargetAssemblyTypeName: GameEvent`1[[System.Boolean, mscorlib
+      - m_Target: {fileID: 11400000, guid: 0c134d7d37febc94fb1b06f254ded765, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
         m_MethodName: Raise
         m_Mode: 0
         m_Arguments:
