@@ -369,16 +369,21 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: 293deccd5b73cb7498129b1edfd3cb33, type: 2}
   networkWeaponState:
     m_InternalValue: 0
+  armLevel:
+    m_InternalValue: 0
   armType: 2
   projectiles:
   - {fileID: 8325093185264832265, guid: df01831e0060d464498f23ff03c90c9d, type: 3}
   - {fileID: 6075488854381465895, guid: 0c6266a99a71ca94b91d2a102c7c5083, type: 3}
   - {fileID: 4683418114031762622, guid: d8ba3570ed15c8f43a32817a8fe7fdcd, type: 3}
   shootPoint: {fileID: 5917749454591906957}
+  maxSkillCharges: 0
+  _skillCharges: 0
+  _ultimateCharge: 0
+  basicAttackSFX: {fileID: 8300000, guid: 410d28fdbf061304b8680053ee5aa5fd, type: 3}
+  skillSFX: {fileID: 8300000, guid: 4cf03d4c6d715c0418981384fe8958e7, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: 1f2d1f117bd6b04449dd2935dc72e8dc, type: 3}
   animator: {fileID: 0}
-  basicAttackSFX: {fileID: 0}
-  skillSFX: {fileID: 0}
-  ultimateSFX: {fileID: 0}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
   skillCameraShakeIntensity: 0
@@ -386,6 +391,7 @@ MonoBehaviour:
   ultimateCameraShakeIntensity: 0
   ultimateCameraShakeDuration: 0
   ultShootPoint: {fileID: 751519957012032050}
+  activeSpellProjectiles: []
 --- !u!114 &-7250538322722667007
 MonoBehaviour:
   m_ObjectHideFlags: 0

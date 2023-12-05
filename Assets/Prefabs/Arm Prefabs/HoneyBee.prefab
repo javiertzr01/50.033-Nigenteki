@@ -284,9 +284,9 @@ MonoBehaviour:
   maxSkillCharges: 0
   _skillCharges: 0
   _ultimateCharge: 0
-  basicAttackSFX: {fileID: 0}
-  skillSFX: {fileID: 0}
-  ultimateSFX: {fileID: 0}
+  basicAttackSFX: {fileID: 8300000, guid: c3102e9504d10f341998c789c615ad5f, type: 3}
+  skillSFX: {fileID: 8300000, guid: 9f69eacb19cedb24fbd82b6270c9af20, type: 3}
+  ultimateSFX: {fileID: 8300000, guid: 3c6153fd172776540b59dbb8e4a979b1, type: 3}
   animator: {fileID: 0}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
