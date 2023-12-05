@@ -66,7 +66,10 @@ public abstract class Projectile : Spawnables
         {
             OnControlPointTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "ProximityBehaviour" || other.gameObject.tag == "Healing" || other.gameObject.tag == "SkillObject") { }
+        else if (other.gameObject.tag == "ProximityBehaviour" || other.gameObject.tag == "Healing" || other.gameObject.tag == "SkillObject")
+        {
+            isColliding = false; // Need to ignore that it collided with these
+        }
         else
         {
             DestroyServerRpc();
