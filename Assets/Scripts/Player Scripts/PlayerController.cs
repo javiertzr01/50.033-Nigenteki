@@ -417,14 +417,6 @@ public class PlayerController : NetworkBehaviour
     public void UpdatePlayerStateServerRpc(PlayerState newState)
     {
         networkPlayerState.Value = newState;
-        UpdatePlayerStateClientRpc(newState);
-    }
-
-    [ClientRpc]
-    private void UpdatePlayerStateClientRpc(PlayerState newState)
-    {
-        networkPlayerState.Value = newState;
-        UpdateAnimator(); // Ensure the animator is updated on all clients
     }
 
     public float MoveSpeed
