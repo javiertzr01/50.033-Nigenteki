@@ -226,7 +226,7 @@ Transform:
   m_GameObject: {fileID: 2578164899720361747}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.9, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -369,6 +369,8 @@ MonoBehaviour:
   armVariable: {fileID: 11400000, guid: 95b163b17d17f5143b5c13136b3c865c, type: 2}
   networkWeaponState:
     m_InternalValue: 0
+  armLevel:
+    m_InternalValue: 0
   armType: 1
   projectiles:
   - {fileID: 6093875963110399478, guid: 305250e271c47004fa8ca6414636edd9, type: 3}
@@ -376,20 +378,22 @@ MonoBehaviour:
   - {fileID: 4740422706544774022, guid: f909e3900386d5847af8dd7ff00290f9, type: 3}
   - {fileID: 3866945137309950759, guid: 2aa06897cf9bf7a409e19479b119e9cb, type: 3}
   shootPoint: {fileID: 2578164899720361747}
-  animator: {fileID: 0}
+  maxSkillCharges: 0
+  _skillCharges: 0
+  _ultimateCharge: 0
   basicAttackSFX: {fileID: 8300000, guid: 6bd5985dd7100e245b3a75cc7cb70194, type: 3}
   skillSFX: {fileID: 8300000, guid: 7ad46e2b185dd0d409af07196e84a01e, type: 3}
   ultimateSFX: {fileID: 8300000, guid: 7e58c1718e011c847949792efd486a17, type: 3}
+  animator: {fileID: 0}
   basicAttackCameraShakeIntensity: 0
   basicAttackCameraShakeDuration: 0
   skillCameraShakeIntensity: 0
   skillCameraShakeDuration: 0
   ultimateCameraShakeIntensity: 0
   ultimateCameraShakeDuration: 0
-  ultShootPoint: {fileID: 1842468663822812149}
   currentShield: {fileID: 0}
   beetleShieldTrigger: {fileID: 0}
-  shieldHolderPrefab: {fileID: 0}
+  ultShootPoint: {fileID: 1842468663822812149}
 --- !u!114 &3470576363740146910
 MonoBehaviour:
   m_ObjectHideFlags: 0
