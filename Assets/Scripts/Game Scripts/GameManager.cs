@@ -80,6 +80,14 @@ public class GameManager : NetworkBehaviour
                     ReduceTeamTimer(2, captureMultiplier);
                 }
             }
+            else
+            {
+                gameStateStore.isControlPointActiveReducingTimer.Value = false;
+            }
+        }
+        else
+        {
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
         }
     }
 
@@ -112,6 +120,8 @@ public class GameManager : NetworkBehaviour
 
     public void EndGame()
     {
+        gameStateStore.isControlPointActiveReducingTimer.Value = false;
+
         GameInProgress = false;
         SetTimeScaleClientRpc(0); // Call the RPC method
         gameStateStore.phase.Value = 0;
@@ -236,6 +246,10 @@ public class GameManager : NetworkBehaviour
             {
                 gameStateStore.team2Timer.Value = AdjustTimerValue(gameStateStore.team2Timer.Value, clockedTime);
             }
+            else
+            {
+                gameStateStore.isControlPointActiveReducingTimer.Value = false;
+            }
 
             // Check for win condition
             if (gameStateStore.team1Timer.Value <= winCondition || gameStateStore.team2Timer.Value <= winCondition)
@@ -252,13 +266,20 @@ public class GameManager : NetworkBehaviour
         float timer = currentTeamTimer;
         timer -= clockedTime;
 
+        
         if (gameStateStore.phase.Value == 1 && timer < phaseOneMaxCaptureTimer)
         {
             timer = phaseOneMaxCaptureTimer;
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
         }
         else if (gameStateStore.phase.Value == 1 && timer < winCondition)
         {
             timer = winCondition;
+            gameStateStore.isControlPointActiveReducingTimer.Value = false;
+        }
+        else
+        {
+            gameStateStore.isControlPointActiveReducingTimer.Value = true;
         }
 
 
@@ -275,8 +296,34 @@ public class GameManager : NetworkBehaviour
     }
 
 
+    private void ProcessTeamKD()
+    {
+        team1Kills = 0;
+        team1Deaths = 0;
+        team2Kills = 0;
+        team2Deaths = 0;
+        foreach (var playerClientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            PlayerController player = NetworkManager.Singleton.ConnectedClients[playerClientId].PlayerObject.transform.GetComponent<PlayerController>();
+            if(player.teamId.Value == 1)
+            {
+                team1Kills += player.kills.Value;
+                team1Deaths += player.deaths.Value;
+            }
+            else if(player.teamId.Value == 2)
+            {
+                team2Kills += player.kills.Value;
+                team2Deaths += player.deaths.Value;
+            }
+
+        }
+
+
+    }
+
     private void CheckForKDRWinner()
     {
+        ProcessTeamKD();
         float team1KDR = team1Deaths > 0 ? team1Kills / (float)team1Deaths : team1Kills; // avoid division by zero.
         float team2KDR = team2Deaths > 0 ? team2Kills / (float)team2Deaths : team2Kills; // avoid division by zero.
 
