@@ -380,7 +380,8 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
-
+        UpdateRightArmImage(rightArmPrefab.name);
+        UpdateLeftArmImage(leftArmPrefab.name);
 
         MoveSpeed = playerVariables.moveSpeed;
         playerHealth.Value = playerVariables.maxHealth;
@@ -403,7 +404,6 @@ public class PlayerController : NetworkBehaviour
             leftArmUpgradable.OnValueChanged += OnLeftArmUpgradableChanged;
             rightArmIndex.OnValueChanged += OnRightArmIndexChanged;
             leftArmIndex.OnValueChanged += OnLeftArmIndexChanged;
-
         }
         else
         {
@@ -429,11 +429,6 @@ public class PlayerController : NetworkBehaviour
         InSpawnCheck();
         IndicateRightArmUpgradableServerRpc(OwnerClientId);
         IndicateLeftArmUpgradableServerRpc(OwnerClientId);
-
-
-        UpdateRightArmImageServerRpc(transform.GetChild(2).GetChild(0).name, OwnerClientId);
-        UpdateLeftArmImageServerRpc(transform.GetChild(1).GetChild(0).name, OwnerClientId);
-
 
         if (shakeTimer > 0)
         {
@@ -506,55 +501,28 @@ public class PlayerController : NetworkBehaviour
         rightArmIndexUpdateEventInvoker.Invoke(current);
     }
     
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateRightArmImageServerRpc(string armName, ulong senderClientId)
+    public void UpdateRightArmImage(string armName)
     {
         switch (armName)
         {
-            case ("BasicShooter(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmIndex.Value = 0;
+            case ("BasicShooter"):
+                rightArmIndex.Value = 0;
                 break;
 
-            case ("Beetle(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmIndex.Value = 1;
+            case ("Beetle"):
+                rightArmIndex.Value = 1;
                 break;
 
-            case ("Silkworm(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmIndex.Value = 2;
+            case ("Silkworm"):
+                rightArmIndex.Value = 2;
                 break;
 
-            case ("HoneyBee(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmIndex.Value = 3;
+            case ("HoneyBee"):
+                rightArmIndex.Value = 3;
                 break;
 
-            case ("Locust(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmIndex.Value = 4;
-                break;
-        }
-    }
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateLeftArmImageServerRpc(string armName, ulong senderClientId)
-    {
-        switch (armName)
-        {
-            case ("BasicShooter(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmIndex.Value = 0;
-                break;
-
-            case ("Beetle(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmIndex.Value = 1;
-                break;
-
-            case ("Silkworm(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmIndex.Value = 2;
-                break;
-
-            case ("HoneyBee(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmIndex.Value = 3;
-                break;
-
-            case ("Locust(Clone)"):
-                NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmIndex.Value = 4;
+            case ("Locust"):
+                rightArmIndex.Value = 4;
                 break;
         }
     }

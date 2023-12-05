@@ -902,6 +902,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerVariables: {fileID: 11400000, guid: 550c4e1f542664e4f9977bba9089cc19, type: 2}
+  defaultMoveSpeed: 0
+  defaultDamageTakenScale: 0
+  defaultPassiveHealthRegenerationPercentage: 0
+  defaultHealingPerSecond: 0
+  moveSpeed:
+    m_InternalValue: 0
   playerMaxHealth:
     m_InternalValue: 0
   teamId:
@@ -921,6 +927,10 @@ MonoBehaviour:
   deaths:
     m_InternalValue: 0
   sprite:
+    m_InternalValue: 0
+  rightArmIndex:
+    m_InternalValue: 0
+  leftArmIndex:
     m_InternalValue: 0
   playerHealthUpdateEventInvoker:
     m_PersistentCalls:
@@ -1027,6 +1037,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  rightArmIndexUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 626ae1a9d36d23e429a1decbbb4cd6d2, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  leftArmIndexUpdateEventInvoker:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 0c134d7d37febc94fb1b06f254ded765, type: 2}
+        m_TargetAssemblyTypeName: GameEvent`1[[System.Int32, mscorlib
+        m_MethodName: Raise
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   leftArmHolderPrefab: {fileID: 2967011719965532442, guid: 3d10e4d4b3e2b8f4cb9791501cee1ba3,
     type: 3}
   rightArmHolderPrefab: {fileID: 1210991556933272544, guid: 8607eb4bd2ce7ce48bba3298c851eb82,
@@ -1038,6 +1078,8 @@ MonoBehaviour:
   vc: {fileID: 436870612953158045}
   cam: {fileID: 3255546274460269327}
   listener: {fileID: 1969903448111313722}
+  passiveHealthRegenerationPercentage: 0
+  interactingWithHoneyComb: 0
   dashFactor: 500
   immuneStun:
     m_InternalValue: 0
