@@ -436,8 +436,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Phase: Objective'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 88840a36f13c04349af071ca98b9b95b, type: 2}
-  m_sharedMaterial: {fileID: -2757315208868302631, guid: 88840a36f13c04349af071ca98b9b95b,
+  m_fontAsset: {fileID: 11400000, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d, type: 2}
+  m_sharedMaterial: {fileID: 3499606202792414509, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

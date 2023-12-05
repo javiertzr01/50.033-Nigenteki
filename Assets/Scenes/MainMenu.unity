@@ -2317,8 +2317,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Enter join code...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 88840a36f13c04349af071ca98b9b95b, type: 2}
-  m_sharedMaterial: {fileID: -2757315208868302631, guid: 88840a36f13c04349af071ca98b9b95b,
+  m_fontAsset: {fileID: 11400000, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d, type: 2}
+  m_sharedMaterial: {fileID: 3499606202792414509, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2523,7 +2523,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 88840a36f13c04349af071ca98b9b95b, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
@@ -2702,8 +2702,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Host Game
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 88840a36f13c04349af071ca98b9b95b, type: 2}
-  m_sharedMaterial: {fileID: -2757315208868302631, guid: 88840a36f13c04349af071ca98b9b95b,
+  m_fontAsset: {fileID: 11400000, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d, type: 2}
+  m_sharedMaterial: {fileID: 3499606202792414509, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3045,8 +3045,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 88840a36f13c04349af071ca98b9b95b, type: 2}
-  m_sharedMaterial: {fileID: -2757315208868302631, guid: 88840a36f13c04349af071ca98b9b95b,
+  m_fontAsset: {fileID: 11400000, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d, type: 2}
+  m_sharedMaterial: {fileID: 3499606202792414509, guid: 30e23f6a1d71dbc41a2d1f0cf1c5333d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
