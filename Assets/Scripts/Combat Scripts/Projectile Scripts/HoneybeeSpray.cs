@@ -11,6 +11,10 @@ public class HoneybeeSpray : Projectile
     SpriteRenderer spr;
     public float duration = 2f;
     private float elapsedTime = 0f;
+    List<GameObject> enemyInRange = new List<GameObject>();
+    List<GameObject> teamInRange = new List<GameObject>();
+    private float timer = 0.3f;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -39,6 +43,35 @@ public class HoneybeeSpray : Projectile
             spr.color = new Color(spr.color.r, spr.color.g, spr.color.b, opacity);
 
             elapsedTime += Time.deltaTime;
+        }
+
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            foreach(GameObject go in enemyInRange)
+            {
+                ulong sourceClientId = OwnerClientId;
+                ulong targetClientId = go.GetComponent<NetworkObject>().OwnerClientId;
+                if (go.transform.GetComponent<PlayerController>().playerHealth.Value > 0)
+                {
+                    go.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
+                    InstantiateDamageNumberServerRpc(targetClientId);
+                    // Can be overwritten
+                    ChargeUltimateValue(Damage, 1);
+                }
+            }
+
+            foreach(GameObject go in teamInRange)
+            {
+                ulong sourceClientId = OwnerClientId;
+                ulong targetClientId = go.GetComponent<NetworkObject>().OwnerClientId;
+                if (go.transform.GetComponent<PlayerController>().playerHealth.Value > 0)
+                {
+                    go.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, targetClientId);
+                    // Can be overwritten
+                    ChargeUltimateValue(Damage, 1);
+                }
+            }
         }
     }
 
@@ -74,28 +107,32 @@ public class HoneybeeSpray : Projectile
         }
     }
 
-    public override void OnTeamPlayerTriggerStay2D(Collider2D other)
+    public override void OnTeamPlayerTriggerEnter2D(Collider2D other)
     {
-        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
-        if (other.transform.GetComponent<PlayerController>().playerHealth.Value < other.transform.GetComponent<PlayerController>().playerMaxHealth.Value)
-        {
-            other.transform.GetComponent<PlayerController>().HealPlayerServerRpc(Damage, targetClientId);
-            // Can be overwritten
-            ChargeUltimateValue(Damage, 1);
-        }
+        base.OnTeamPlayerTriggerEnter2D(other);
+        teamInRange.Add(other.gameObject);
     }
 
-    public override void OnEnemyPlayerTriggerStay2D(Collider2D other)
+    public override void OnTeamPlayerTriggerExit2D(Collider2D other)
     {
-        ulong sourceClientId = OwnerClientId;
-        ulong targetClientId = other.transform.GetComponent<NetworkObject>().OwnerClientId;
-        if (other.transform.GetComponent<PlayerController>().playerHealth.Value > 0)
-        {
-            other.transform.GetComponent<PlayerController>().TakeDamageServerRpc(Damage, sourceClientId, targetClientId);
-            InstantiateDamageNumberServerRpc(targetClientId);
-            // Can be overwritten
-            ChargeUltimateValue(Damage, 10);
-        }
+        base.OnTeamPlayerTriggerExit2D(other);
+        teamInRange.Remove(other.gameObject);
     }
 
+    public override void OnEnemyPlayerTriggerEnter2D(Collider2D other)
+    {
+        base.OnEnemyPlayerTriggerEnter2D(other);
+        enemyInRange.Add(other.gameObject);
+    }
+
+    public override void OnEnemyPlayerTriggerExit2D(Collider2D other)
+    {
+        base.OnEnemyPlayerTriggerExit2D(other);
+        enemyInRange.Remove(other.gameObject);
+    }
+
+    IEnumerator DamageIfStay()
+    {
+        yield return new WaitForSeconds(0.3f);
+    }
 }
