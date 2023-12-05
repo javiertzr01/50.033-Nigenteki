@@ -419,8 +419,8 @@ public class PlayerController : NetworkBehaviour
         RightArmBasicAttack();
         UpdateAnimator();
         InSpawnCheck();
-        IndicateRightArmUpgradable();
-        IndicateLeftArmUpgradable();
+        IndicateRightArmUpgradableServerRpc(OwnerClientId);
+        IndicateLeftArmUpgradableServerRpc(OwnerClientId);
 
         if (shakeTimer > 0)
         {
@@ -686,45 +686,47 @@ public class PlayerController : NetworkBehaviour
         NetworkManager.Singleton.ConnectedClients[deductClientId].PlayerObject.GetComponent<PlayerController>().greenCrystalCount.Value -= upgradeThreshold;
     }
 
-    public void IndicateRightArmUpgradable()
+    [ServerRpc(RequireOwnership = false)]
+    public void IndicateRightArmUpgradableServerRpc(ulong senderClientId)
     {
-        Arm.ArmType armType = rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+        Arm.ArmType armType = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
         if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
         {
-            rightArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
         {
-            rightArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
         {
-            rightArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmUpgradable.Value = true;
         }
         else
         {
-            rightArmUpgradable.Value = false;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().rightArmUpgradable.Value = false;
         }
     }
 
-    public void IndicateLeftArmUpgradable()
+    [ServerRpc(RequireOwnership = false)]
+    public void IndicateLeftArmUpgradableServerRpc(ulong senderClientId)
     {
-        Arm.ArmType armType = leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
+        Arm.ArmType armType = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmHolder.transform.GetChild(0).GetComponent<Arm>().armType;
         if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
         {
-            leftArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
         {
-            leftArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmUpgradable.Value = true;
         }
         else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
         {
-            leftArmUpgradable.Value = true;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmUpgradable.Value = true;
         }
         else
         {
-            leftArmUpgradable.Value = false;
+            NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>().leftArmUpgradable.Value = false;
         }
     }
 
