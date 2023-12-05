@@ -17,6 +17,18 @@ public class BasicShooter : Arm
         ultimateProjectile = projectiles[2];
     }
 
+    public override void OnUpgraded()
+    {
+        base.OnUpgraded();
+        Logger.Instance.LogInfo("Increased Attack Damage");
+    }
+
+    public override void OnMax()
+    {
+        base.OnMax();
+        Logger.Instance.LogInfo("Further Increased Attack Damage");
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void CastBasicAttackServerRpc(ServerRpcParams serverRpcParams = default)
     {

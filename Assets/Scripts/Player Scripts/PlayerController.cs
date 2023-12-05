@@ -86,7 +86,7 @@ public class PlayerController : NetworkBehaviour
     public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
     private float lastDamageTime = -2f; // Initialize to -2 so that healing can start immediately if no damage is taken at the start
-    private int upgradeThreshold = 1;
+    private int upgradeThreshold = 50;
 
     private bool inSpawn;
 

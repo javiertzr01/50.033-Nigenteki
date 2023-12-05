@@ -35,7 +35,7 @@ public class ServerManager : Singleton<ServerManager>
 
         ClientData = new Dictionary<ulong, ClientData>();
 
-        if (NetworkManager.Singleton.StartHost())
+        // if (NetworkManager.Singleton.StartHost())
             //Logger.Instance.LogInfo("Host Started");
     }
 
