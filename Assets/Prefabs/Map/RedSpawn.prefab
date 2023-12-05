@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 809501116175713026}
   m_Layer: 0
   m_Name: SpawnPointBehaviour
-  m_TagString: SpawnPoint
+  m_TagString: ProximityBehaviour
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -820,6 +820,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamId: 0
   spawnHealingValue: 50
+  visibilityDistance: 10
+  maxOpacityDistance: 15
 --- !u!61 &628724088036974618
 BoxCollider2D:
   m_ObjectHideFlags: 0

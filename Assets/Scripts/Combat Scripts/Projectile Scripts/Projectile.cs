@@ -65,7 +65,7 @@ public abstract class Projectile : Spawnables
         {
             OnControlPointTriggerEnter2D(other);
         }
-        else if (other.gameObject.tag == "SpawnPoint") { }
+        else if (other.gameObject.tag == "ProximityBehaviour") { }
         else
         {
             DestroyServerRpc();

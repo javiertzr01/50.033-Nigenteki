@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8484733588856744505}
   m_Layer: 0
   m_Name: ProximityBehavior
-  m_TagString: Untagged
+  m_TagString: ProximityBehaviour
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
