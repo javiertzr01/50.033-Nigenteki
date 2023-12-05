@@ -55,6 +55,10 @@ public class PlayerController : NetworkBehaviour
 
     public GameObject leftArmPrefab;
     public GameObject rightArmPrefab;
+    [SerializeField]
+    private GameObject particleSystemPrefab;
+    [System.NonSerialized]
+    public GameObject healingParticles;
 
     [SerializeField]
     public CinemachineVirtualCamera vc;
@@ -77,7 +81,7 @@ public class PlayerController : NetworkBehaviour
     private bool rightArmBasicUse = false;
     private bool leftArmBasicUse = false;
     private NetworkVariable<float> damageTakenScale = new NetworkVariable<float>(); // Reduce/Increase Damage Taken
-    public float passiveHealthRegenerationPercentage = 0f; // Health Regeneration Percentage
+    private NetworkVariable<float> passiveHealthRegenerationPercentage = new NetworkVariable<float>(); // Health Regeneration Percentage
     private float secondTicker = 0f;
     public bool interactingWithHoneyComb = false;
     [System.NonSerialized] public float healingPerSecond = 0f; // different from passiveHealthRegenerationPercentage as it can be interrupted, and is a flat amount
@@ -148,7 +152,7 @@ public class PlayerController : NetworkBehaviour
 
         defaultMoveSpeed = MoveSpeed;
         defaultDamageTakenScale = DamageTakenScale;
-        defaultPassiveHealthRegenerationPercentage = passiveHealthRegenerationPercentage;
+        defaultPassiveHealthRegenerationPercentage = PassiveHealthRegen;
         defaultHealingPerSecond = healingPerSecond;
     }
 
@@ -205,6 +209,69 @@ public class PlayerController : NetworkBehaviour
         rightArmHolder = rightArmHolderObject;
         Logger.Instance.LogInfo($"Spawned arms on {OwnerClientId}");
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnParticleSystemServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        Logger.Instance.LogInfo($"Spawning particle system on {OwnerClientId}");
+
+        Vector3 particleSystemPosition = player.transform.position + new Vector3(0, -0.4f, 0);
+        GameObject particleSystemClone = Instantiate(particleSystemPrefab, particleSystemPosition, Quaternion.identity);
+
+        // Set the particle system to inactive
+        particleSystemClone.SetActive(false);
+
+        particleSystemClone.transform.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
+        particleSystemClone.GetComponent<NetworkObject>().TrySetParent(player.transform);
+        particleSystemClone.layer = player.layer;
+
+        SpawnParticleSystemClientRpc(particleSystemClone.GetComponent<NetworkObject>().NetworkObjectId, false, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsIds
+            }
+        });
+    }
+
+    [ClientRpc]
+    public void SpawnParticleSystemClientRpc(ulong particleSystemId, bool isActive, ClientRpcParams clientRpcParams = default)
+    {
+        var particleSystemObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[particleSystemId].gameObject;
+        healingParticles = particleSystemObject;
+        healingParticles.SetActive(isActive); // Explicitly set the active state
+        Logger.Instance.LogInfo($"Spawned particle system on {OwnerClientId}");
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ToggleParticleSystemServerRpc(bool isActive, ServerRpcParams serverRpcParams = default)
+    {
+        ToggleParticleSystemClientRpc(isActive, new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = NetworkManager.Singleton.ConnectedClientsIds
+            }
+        });
+    }
+
+    [ClientRpc]
+    private void ToggleParticleSystemClientRpc(bool isActive, ClientRpcParams clientRpcParams = default)
+    {
+        if (healingParticles != null)
+        {
+            healingParticles.SetActive(isActive);
+        }
+    }
+
+    // Call this method to toggle the particle system from server-side code
+    public void ToggleParticleSystem(bool isActive)
+    {
+        ToggleParticleSystemServerRpc(isActive);
+    }
+
+
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -380,6 +447,16 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public float PassiveHealthRegen
+    {
+        get => passiveHealthRegenerationPercentage.Value;
+        set
+        {
+            Logger.Instance.LogInfo($"Adjusted DamageTakenScale to {value} on {OwnerClientId}");
+            passiveHealthRegenerationPercentage.Value = value;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -388,7 +465,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner && !IsClient) return;
         player = transform.gameObject;
         SpawnArmsServerRpc();
-
+        SpawnParticleSystemServerRpc();
 
         MoveSpeed = playerVariables.moveSpeed;
         playerHealth.Value = playerVariables.maxHealth;
@@ -458,10 +535,10 @@ public class PlayerController : NetworkBehaviour
         bool timeSinceLastDamage = Time.time - lastDamageTime >= 2f;
         if (Time.time >= secondTicker)
         {
-            if (passiveHealthRegenerationPercentage > 0f)
+            if (PassiveHealthRegen > 0f)
             {
-                Debug.Log("Passive Regen per second: " + passiveHealthRegenerationPercentage);
-                HealPlayerServerRpc(playerMaxHealth.Value * passiveHealthRegenerationPercentage, GetComponent<NetworkObject>().OwnerClientId);
+                Debug.Log("Passive Regen per second: " + PassiveHealthRegen);
+                HealPlayerServerRpc(playerMaxHealth.Value * PassiveHealthRegen, GetComponent<NetworkObject>().OwnerClientId);
             }
 
             if (healingPerSecond > 0f && timeSinceLastDamage)
@@ -992,6 +1069,18 @@ public class PlayerController : NetworkBehaviour
     public void AdjustDamageTakenScaleServerRpc(float scale)
     {
         DamageTakenScale = scale;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPassiveHealthRegenServerRpc(float percent)
+    {
+        PassiveHealthRegen = percent;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AdjustPassiveHealthRegenServerRpc(float percent)
+    {
+        PassiveHealthRegen += percent;
     }
 
     [ServerRpc(RequireOwnership = false)]
