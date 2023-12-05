@@ -22,7 +22,7 @@ public class MapGeneratorManager : NetworkBehaviour
 
     public void Start()
     {
-        if (IsClient)
+        if (!IsServer && IsClient)
         {
             loadMap.Invoke();
         }
