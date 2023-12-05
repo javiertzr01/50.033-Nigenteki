@@ -10,6 +10,14 @@ Nigenteki is an exhilarating team-based 2D shooter game. In this king-of-the-hil
 3. **Shared Resource Pool**: Players collect resources that contribute to a shared pool. Teams must strategically decide how to distribute resources to enhance their collective effectiveness.
 4. **Team-Centric Gameplay**: Our game mode and meticulously designed maps promote teamwork and exploration. Nigenteki is crafted to encourage collaboration among players as they strive for victory in capturing zones.
 
+### Player Controls
+- **Aim**: Mouse position determines direction of aim
+- **Movement**: WASD keys to move the character
+- **Normal Attack**: Left and right mouse buttons for the respective arms
+- **Special Ability**: Q and E keys for the left and right arm respectively
+- **Ultimate Activation**: 1 and 4 keys for the left and right arm respectively
+- **Upgrade Weapon**: Press Z and C keys when in character team’s spawn to upgrade left and right arm respectively
+
 ## How to use RTT Map Generator
 
 0. Ignore if everything is already set up
