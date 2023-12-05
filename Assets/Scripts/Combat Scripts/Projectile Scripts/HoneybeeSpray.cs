@@ -72,6 +72,7 @@ public class HoneybeeSpray : Projectile
                     ChargeUltimateValue(Damage, 1);
                 }
             }
+            timer = 0.3f;
         }
     }
 
