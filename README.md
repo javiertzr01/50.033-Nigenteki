@@ -41,7 +41,7 @@ Nigenteki is an exhilarating team-based 2D shooter game. In this king-of-the-hil
 - **Ultimate**: Mantis
 
 ### Player Controls
-- **Aim**: Mouse position determines direction of aim
+- **Aim**: Mouse position determines direction of projectile
 - **Movement**: WASD keys to move the character
 - **Normal Attack**: Left and right mouse buttons for the respective arms
 - **Special Ability**: Q and E keys for the left and right arm respectively
