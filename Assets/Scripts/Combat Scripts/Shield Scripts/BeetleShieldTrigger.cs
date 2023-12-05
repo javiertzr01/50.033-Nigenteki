@@ -31,6 +31,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     {
         shieldCollider = gameObject.GetComponent<BoxCollider2D>();
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         animator.enabled = false;
         audioSource0 = gameObject.AddComponent<AudioSource>();
         audioSource1 = gameObject.AddComponent<AudioSource>();
@@ -44,6 +45,7 @@ public class BeetleShieldTrigger : ShieldTrigger
         shieldRegenTimer = 0f;
         Destroyed = false;
         arm = transform.GetComponentInParent<Beetle>();
+        
 
         // Initialize the shield's state based on isShieldActive value
         shieldCollider.enabled = isShieldActive.Value;
