@@ -123,13 +123,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ffeeabc6ebb12d488e3ff222398d60f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileVariable: {fileID: 11400000, guid: fc9185ba3efc7bb43b744e8002b4a67b, type: 2}
+  instantiatingArm: {fileID: 0}
   teamId:
     m_InternalValue: 0
+  projectileVariable: {fileID: 11400000, guid: fc9185ba3efc7bb43b744e8002b4a67b, type: 2}
   isColliding: 0
   startingPosition: {x: 0, y: 0}
   damageNumber: {fileID: 6714799550899306158, guid: 5a4f2903c1acec7459f76a1295bf855c,
     type: 3}
+  damageNumberAddressableName: DamageNumber
 --- !u!114 &2287233595192007597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,7 +267,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 35607aeef16f27f4c98842f64f42b478, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 4de3e50803b6c344186d66918fc297b2,
+    type: 3}
   m_Color: {r: 0.5896226, g: 1, b: 0.9860926, a: 1}
   m_FlipX: 0
   m_FlipY: 0
