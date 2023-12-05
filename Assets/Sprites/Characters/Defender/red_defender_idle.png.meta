@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ae633ce554157764a95a0a1dab84abe8
+guid: c7db4999a5b942440abd13c82f24ae11
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: red_paladin_idle_0
+      name: red_defender_idle_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 644d8a3d1b4c65f4c831794cfb420a93
-      internalID: -922346740
+      spriteID: 1134e35454d90c744bca6e5f063b4793
+      internalID: -1179696772
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_paladin_idle_1
+      name: red_defender_idle_1
       rect:
         serializedVersion: 2
         x: 24
@@ -145,8 +145,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fd4c28ee7b34254e8546c929ca32175
-      internalID: -471182688
+      spriteID: 04f6fa92bdf005f4aad60193afae59e6
+      internalID: -1217394421
       vertices: []
       indices: 
       edges: []
@@ -162,8 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      red_paladin_idle_0: -922346740
-      red_paladin_idle_1: -471182688
+      red_defender_idle_0: -1179696772
+      red_defender_idle_1: -1217394421
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
