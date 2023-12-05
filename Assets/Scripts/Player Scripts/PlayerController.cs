@@ -775,7 +775,7 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerController playerController = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>();
         Arm arm = playerController.transform.GetChild(2).GetChild(0).GetComponent<Arm>();
-        if (arm.armLevel.Value == ArmLevel.Upgraded) 
+        if (arm.armLevel.Value == ArmLevel.Max) 
         {
             playerController.rightArmUpgradable.Value = false;    
             return;
@@ -804,7 +804,7 @@ public class PlayerController : NetworkBehaviour
     {
         PlayerController playerController = NetworkManager.Singleton.ConnectedClients[senderClientId].PlayerObject.GetComponent<PlayerController>();
         Arm arm = playerController.transform.GetChild(1).GetChild(0).GetComponent<Arm>();
-        if (arm.armLevel.Value == ArmLevel.Upgraded) 
+        if (arm.armLevel.Value == ArmLevel.Max) 
         {
             playerController.leftArmUpgradable.Value = false;    
             return;

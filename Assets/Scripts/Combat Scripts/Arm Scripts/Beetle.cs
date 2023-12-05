@@ -63,8 +63,13 @@ public class Beetle : Arm
     public override void OnUpgraded()
     {
         base.OnUpgraded();
+        if (!shieldInitialized)
+        {
+            SpawnShieldServerRpc();
+        }
         beetleShieldTrigger.shieldMaxHealth = armVariable.shieldMaxHealthUpgraded;
         beetleShieldTrigger.ShieldHealth = beetleShieldTrigger.shieldMaxHealth;
+
     }
 
     public override void OnMax()
