@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c7db4999a5b942440abd13c82f24ae11
+guid: 3ee95b8171ae5b2448e29abf3f8ea026
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: red_defender_idle_0
+      name: silkworm_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1134e35454d90c744bca6e5f063b4793
-      internalID: -1179696772
+      spriteID: edc3c99912cf97e4dbe2f4a49406dd77
+      internalID: -565522937
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_defender_idle_1
+      name: silkworm_1
       rect:
         serializedVersion: 2
         x: 24
@@ -145,8 +145,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04f6fa92bdf005f4aad60193afae59e6
-      internalID: -1217394421
+      spriteID: 7069f8ee006e56d4c8eb47a6b283eac7
+      internalID: -1197666212
       vertices: []
       indices: 
       edges: []
@@ -162,8 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      red_defender_idle_0: -1179696772
-      red_defender_idle_1: -1217394421
+      silkworm_0: -565522937
+      silkworm_1: -1197666212
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
