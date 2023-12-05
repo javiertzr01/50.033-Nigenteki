@@ -13,6 +13,8 @@ public class BasicShooter : Arm
     public override void SetProjectiles()
     {
         basicProjectile = projectiles[0];
+        spellProjectile = projectiles[1];
+        ultimateProjectile = projectiles[2];
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -46,6 +48,88 @@ public class BasicShooter : Arm
             });
 
             nextBasicFireTime = Time.time + armVariable.baseFireRate;
+        }
+        else
+        {
+            // TODO: This should be like indication if Player can shoot
+            // UpdateWeaponState(WeaponState.Idle);
+        }
+
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastSkillServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        if (Time.time >= nextBasicFireTime)
+        {
+            Logger.Instance.LogInfo($"Cast Skill ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
+
+            ShakeCameraSkill();
+
+            GameObject spellProjectileClone = SpawnProjectile<Projectile>(clientId, spellProjectile, shootPoint);
+            spellProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
+            FireProjectile(spellProjectileClone, armVariable.skillForce);
+
+            //Audio Player
+            int attackTypeIndex = 1; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);       // TODO: Change to non-ServerRpc + Add to Arms?
+            UpdateWeaponState(WeaponState.BasicAttack);                     // TODO: Add this to Arms so that everyone has
+
+            CastBasicAttackClientRpc(new ClientRpcParams    // REMOVE :This just notifies the client
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
+            nextBasicFireTime = Time.time + armVariable.baseFireRate;
+        }
+        else
+        {
+            // TODO: This should be like indication if Player can shoot
+            // UpdateWeaponState(WeaponState.Idle);
+        }
+
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void CastUltimateServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        var clientId = serverRpcParams.Receive.SenderClientId;
+
+        if (OwnerClientId != clientId) return;
+
+        if (Time.time >= nextBasicFireTime)
+        {
+            Logger.Instance.LogInfo($"Cast Ultimate ServerRpc called by {clientId} with layer: {transform.root.gameObject.layer}");
+
+            ShakeCameraUltimate();
+
+            GameObject ultimateProjectileClone = SpawnProjectile<Projectile>(clientId, ultimateProjectile, shootPoint);
+            ultimateProjectileClone.GetComponent<Projectile>().MaxDistance = 20f;
+            FireProjectile(ultimateProjectileClone, armVariable.ultimateForce);
+
+            //Audio Player
+            int attackTypeIndex = 2; //Basic - 0; Skill - 1; Ultimate - 2;
+            CastAttackSFXServerRpc(attackTypeIndex, serverRpcParams);       // TODO: Change to non-ServerRpc + Add to Arms?
+            UpdateWeaponState(WeaponState.BasicAttack);                     // TODO: Add this to Arms so that everyone has
+
+            CastBasicAttackClientRpc(new ClientRpcParams    // REMOVE :This just notifies the client
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
+            nextBasicFireTime = Time.time + armVariable.ultimateFireRate;
         }
         else
         {
