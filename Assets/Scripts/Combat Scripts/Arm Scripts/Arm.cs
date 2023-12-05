@@ -368,6 +368,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     [ServerRpc(RequireOwnership = false)]
     public void UpgradeArmServerRpc()
     {
+        Logger.Instance.LogInfo("Upgraded Arm");
         UpgradeArm();
     }
 

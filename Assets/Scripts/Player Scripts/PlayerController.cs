@@ -706,16 +706,19 @@ public class PlayerController : NetworkBehaviour
             if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(2).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductRedCrystalCountServerRpc(OwnerClientId);
             }
             else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(2).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductBlueCrystalCountServerRpc(OwnerClientId);
             }
             else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(2).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductGreenCrystalCountServerRpc(OwnerClientId);
             }
         }
@@ -729,16 +732,19 @@ public class PlayerController : NetworkBehaviour
             if (armType == Arm.ArmType.Offense && redCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(1).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductRedCrystalCountServerRpc(OwnerClientId);
             }
             else if (armType == Arm.ArmType.Defense && blueCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(1).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductBlueCrystalCountServerRpc(OwnerClientId);
             }
             else if (armType == Arm.ArmType.Support && greenCrystalCount.Value >= upgradeThreshold)
             {
                 // Call arm upgrade
+                transform.GetChild(1).GetChild(0).GetComponent<Arm>().UpgradeArmServerRpc();
                 DeductGreenCrystalCountServerRpc(OwnerClientId);
             }
         }

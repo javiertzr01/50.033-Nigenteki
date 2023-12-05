@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armName: Honey Bee
   baseForce: 1
-  baseFireRate: 0.08
+  baseFireRate: 0.5
   skillForce: 0
   skillCoolDown: 15
   skillDuration: 10
@@ -25,3 +25,4 @@ MonoBehaviour:
   ultimateCharge: 100
   ultimateDuration: 20
   shieldMaxHealth: 0
+  shieldMaxHealthUpgraded: 0
