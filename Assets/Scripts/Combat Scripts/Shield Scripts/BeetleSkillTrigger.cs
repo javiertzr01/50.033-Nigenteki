@@ -29,7 +29,6 @@ public class BeetleSkillTrigger : ShieldTrigger
 
     public override void TriggerEnter2DLogic(Collider2D other)
     {
-        TakeDamageServerRpc(other.gameObject.GetComponent<Projectile>().Damage, OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
