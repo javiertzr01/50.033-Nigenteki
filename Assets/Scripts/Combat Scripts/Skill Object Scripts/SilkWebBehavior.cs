@@ -1,52 +1,59 @@
 using Unity.Netcode;
 using UnityEngine;
 
-// TODO: FIX THIS SCRIPT
 public class SilkWebBehavior : NetworkBehaviour
 {
     private SpriteRenderer spriteRenderer;
-    private Transform playerTransform;
+    [SerializeField] private float visibilityDistance = 10f; // Distance within which the SilkWeb becomes visible to the enemy team
+    [SerializeField] private float maxOpacityDistance = 15f; // Distance at which the SilkWeb is fully transparent to the enemy team
 
-    [SerializeField] private float maxOpacityDistance = 15f; // Adjust as needed
-    [SerializeField] private float opacityChangeSpeed = 1.0f; // Adjust as needed
-    [SerializeField] private float fullyOpaqueDistance = 10f; // Adjust as needed
-
-    private float targetOpacity = 0f;
-    private float currentOpacity = 0f;
 
     private void Awake()
     {
-        spriteRenderer = transform.parent.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = false;
     }
 
-    private void UpdateOpacity()
+    private void Update()
     {
-        // Calculate the distance between the SilkWeb and the player
-        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        if (NetworkManager.Singleton.LocalClient.PlayerObject.TryGetComponent(out PlayerController player))
+        {
+            UpdateVisibility(player);
+        }
+    }
 
-        // Calculate the target opacity based on the distance
-        float fullyOpaqueRange = maxOpacityDistance - fullyOpaqueDistance;
-        targetOpacity = Mathf.Clamp01(1f - Mathf.Clamp01((distanceToPlayer - fullyOpaqueDistance) / fullyOpaqueRange));
+    private void UpdateVisibility(PlayerController player)
+    {
+        int silkWebTeamId = transform.parent.GetComponent<SilkWeb>().teamId.Value; // Assuming SilkWeb has a NetworkVariable<int> teamId
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-        // Gradually change the opacity toward the target
-        currentOpacity = Mathf.MoveTowards(currentOpacity, targetOpacity, opacityChangeSpeed * Time.deltaTime);
-
-        // Set the opacity in the material's color
-        Color spriteColor = spriteRenderer.material.color;
-        spriteColor.a = currentOpacity;
-        spriteRenderer.material.color = spriteColor;
-
-        // Enable the sprite when opacity is not zero
-        spriteRenderer.enabled = currentOpacity > 0f;
+        if (player.teamId.Value == silkWebTeamId)
+        {
+            // If the player is on the same team as the SilkWeb, it's always fully visible
+            spriteRenderer.enabled = true;
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
+        }
+        else
+        {
+            // If the player is on a different team, adjust the SilkWeb's opacity based on distance
+            if (distanceToPlayer <= visibilityDistance)
+            {
+                spriteRenderer.enabled = true;
+                float opacity = 1f - (distanceToPlayer / maxOpacityDistance);
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, opacity);
+            }
+            else
+            {
+                spriteRenderer.enabled = false;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            playerTransform = other.transform;
-            UpdateOpacity();
+            UpdateVisibility(other.GetComponent<PlayerController>());
         }
     }
 
@@ -54,9 +61,7 @@ public class SilkWebBehavior : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Make the sprite fully transparent when the player exits the trigger zone
-            targetOpacity = 0f;
-            spriteRenderer.enabled = false;
+            UpdateVisibility(other.GetComponent<PlayerController>());
         }
     }
 }
