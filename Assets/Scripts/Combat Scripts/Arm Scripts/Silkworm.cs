@@ -91,18 +91,19 @@ public class Silkworm : Arm
             ProjectileListAdd(activeSpellProjectiles, skillProjectile);
 
             // Decrease the number of available skill charges
-            SkillCharges--;
+            SkillCharges--;                                 
             Debug.Log("Decrease Silkworm Skill Charge: " + SkillCharges);
         }
 
         // Cast the Skill ClientRpc
-        CastSkillClientRpc(new ClientRpcParams              // REMOVE :This just notifies the client
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { clientId }
-            }
-        });
+        CastSkillClientRpc();                               // Reflect SkillChargeson Client
+    }
+
+    [ClientRpc]
+    public override void CastSkillClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (IsHost) return;
+        SkillCharges--;
     }
 
 
@@ -145,6 +146,7 @@ public class Silkworm : Arm
     [ClientRpc]
     public void ProjectileListAddClientRpc(ulong objectId)
     {
+        if (IsHost) return;
         activeSpellProjectiles.Add(NetworkManager.Singleton.SpawnManager.SpawnedObjects[objectId].gameObject);
     }
 
@@ -157,6 +159,7 @@ public class Silkworm : Arm
     [ClientRpc]
     public void ProjectileListRemoveClientRpc(int index)
     {
+        if (IsHost) return;
         activeSpellProjectiles.RemoveAt(index);
     }
 }

@@ -81,8 +81,10 @@ public class Beetle : Arm
     [ClientRpc]
     public void SpawnShieldClientRpc(ulong shieldId)
     {
+        if (IsHost) return;
         currentShield = NetworkManager.Singleton.SpawnManager.SpawnedObjects[shieldId].gameObject;
         beetleShieldTrigger = currentShield.GetComponent<BeetleShieldTrigger>();
+        shieldInitialized = true;
         Logger.Instance.LogInfo($"Spawned Shield on {OwnerClientId}");
     }
 

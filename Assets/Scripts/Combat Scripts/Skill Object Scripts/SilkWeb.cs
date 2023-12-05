@@ -52,11 +52,8 @@ public class SilkWeb : SkillObject
     [ClientRpc]
     public void RemoveAndShiftClientRpc(int index)
     {
+        if (IsHost) return;
         Silkworm arm = (Silkworm) instantiatingArm;
-        Debug.Log(OwnerClientId);
-        Debug.Log($"Instantiating Arm: {instantiatingArm}");
-        Debug.Log($"ActiveSpellProjectilesList: {arm.activeSpellProjectiles}");
-
         arm.activeSpellProjectiles.RemoveAt(index);
     }
 

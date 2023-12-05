@@ -503,6 +503,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void SpriteDirectionClientRpc(bool value)
     {
+        if (IsHost) return;
         transform.GetComponent<SpriteRenderer>().flipX = value;
     }
 

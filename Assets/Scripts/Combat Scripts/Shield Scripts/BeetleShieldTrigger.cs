@@ -124,6 +124,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     [ClientRpc]
     private void UpdateShieldStatusClientRpc(float health, bool destroyed)
     {
+        if (IsHost) return;
         ShieldHealth = health;
         Destroyed = destroyed;
     }

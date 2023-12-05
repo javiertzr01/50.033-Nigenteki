@@ -213,6 +213,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     [ClientRpc]
     public void AdjustUltimateChargeClientRpc(float charge)
     {
+        if (IsHost) return;
         UltimateCharge = charge;
     }
 
@@ -236,6 +237,7 @@ public abstract class Arm : NetworkBehaviour, INetworkSerializable
     [ClientRpc]
     public virtual void SpawnProjectileClientRpc(ulong projectileId)
     {
+        if (IsHost) return;
         GameObject projectileClone = NetworkManager.Singleton.SpawnManager.SpawnedObjects[projectileId].gameObject;
         projectileClone.GetComponent<Spawnables>().instantiatingArm = gameObject.GetComponent<Arm>();
     }
