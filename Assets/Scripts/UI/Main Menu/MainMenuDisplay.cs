@@ -36,7 +36,7 @@ public class MainMenuDisplay : MonoBehaviour
         if (RelayManager.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCodeInputField.text))
             await RelayManager.Instance.JoinRelay(joinCodeInputField.text);
 
-        // if (NetworkManager.Singleton.StartClient())
+        if (NetworkManager.Singleton.StartClient()){}
             //Logger.Instance.LogInfo("Client Started");
     }
 }
