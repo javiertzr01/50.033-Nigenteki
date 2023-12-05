@@ -9,6 +9,9 @@ public abstract class ShieldTrigger : Spawnables
     protected bool _destroyed;
     [SerializeField]
     private float _shieldCurrentHealth;
+    [SerializeField]
+    protected Animator animator;
+    
 
     public float ShieldHealth
     {

@@ -20,6 +20,7 @@ public class BeetleShieldTrigger : ShieldTrigger
     {
         shieldCollider = gameObject.GetComponent<BoxCollider2D>();
         shieldSprite = gameObject.GetComponentInChildren<SpriteRenderer>();
+        animator.enabled = false;
     }
 
     void Start()
@@ -56,6 +57,14 @@ public class BeetleShieldTrigger : ShieldTrigger
         {
             // Reset the timer if the shield is active or not destroyed
             shieldRegenTimer = 0f;
+            if (ShieldHealth < 0.25f * arm.armVariable.shieldMaxHealth)
+            {
+                animator.enabled = true;
+            }
+            else if (animator.enabled)
+            {
+                animator.enabled = false;
+            }
         }
         if ((shieldCollider.enabled == isShieldActive.Value) && (shieldSprite.enabled == isShieldActive.Value)) {return;}
         else
