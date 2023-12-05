@@ -1,5 +1,14 @@
 # Nigenteki
  50.033 Game Development Project Group 11
+ 
+## General Information
+Nigenteki is an exhilarating team-based 2D shooter game. In this king-of-the-hill-esque gameplay, players form trios and engage in strategic battles to capture zones and emerge victorious.
+
+### Key Features
+1. **Tactical Gameplay**: Nigenteki places a heavy emphasis on tactical decision-making, challenging players to make strategic choices in fast-paced combat scenarios.
+2. **Customisable Loadouts**: Each player can personalise their character by selecting up to 2 "arms," each offering unique Offensive, Defensive, or Support abilities. Players can experiment with different arm combinations to discover the perfect setup that aligns with their preferred playstyle.
+3. **Shared Resource Pool**: Players collect resources that contribute to a shared pool. Teams must strategically decide how to distribute resources to enhance their collective effectiveness.
+4. **Team-Centric Gameplay**: Our game mode and meticulously designed maps promote teamwork and exploration. Nigenteki is crafted to encourage collaboration among players as they strive for victory in capturing zones.
 
 ## How to use RTT Map Generator
 
